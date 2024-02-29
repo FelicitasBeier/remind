@@ -603,7 +603,7 @@ o_margAdjCostInv(ttot,regi,te)$(ttot.val ge max(2010, cm_startyear) AND teAdj(te
       + p_adj_deltacapoffset("2010",regi,te)$(ttot.val eq 2010) + p_adj_deltacapoffset("2015",regi,te)$(ttot.val eq 2015)
       + p_adj_deltacapoffset("2020",regi,te)$(ttot.val eq 2020) + p_adj_deltacapoffset("2025",regi,te)$(ttot.val eq 2025)
     )
-    * (1.02 + pm_prtp(regi)) ** (pm_ts(ttot) / 2)
+    * (1 + 0.02/pm_ies(regi) + pm_prtp(regi)) ** (pm_ts(ttot) / 2)
 ;
 
 *** CG: calculate average adjustment cost for capacity investment: vm_costInvTeAdj / vm_deltaCap
@@ -616,8 +616,8 @@ o_avgAdjCostInv(ttot,regi,te)$(ttot.val ge 2010 AND teAdj(te) AND (sum(te2rlf(te
 o_avgAdjCost_2_InvCost_ratioPc(ttot,regi,te)$(vm_costInvTeDir.l(ttot,regi,te) ge 1E-22) = vm_costInvTeAdj.l(ttot,regi,te)/vm_costInvTeDir.l(ttot,regi,te) * 100;
 
 *** calculation of PE and SE Prices (useful for internal use and reporting purposes)
-pm_SEPrice(ttot,regi,entySE)$(abs (qm_budget.m(ttot,regi)) gt sm_eps AND (NOT (sameas(entySE,"seel")))) = 
-       q_balSe.m(ttot,regi,entySE) / qm_budget.m(ttot,regi);
+pm_SEPrice(ttot,regi,entySe)$(abs (qm_budget.m(ttot,regi)) gt sm_eps AND (NOT (sameas(entySe,"seel")))) = 
+       q_balSe.m(ttot,regi,entySe) / qm_budget.m(ttot,regi);
 
 pm_PEPrice(ttot,regi,entyPe)$(abs (qm_budget.m(ttot,regi)) gt sm_eps) = 
        q_balPe.m(ttot,regi,entyPe) / qm_budget.m(ttot,regi);
@@ -710,7 +710,7 @@ o_emissions_energy_extraction(ttot,regi,emi,entyPe)$(ttot.val ge 2005) =
 o_emissions_energy_supply_gross(ttot,regi,emi)$(ttot.val ge 2005) =
     sum(pe2se(entyPe,entySe,te)$(pm_emifac(ttot,regi,entyPe,entySe,te,emi)>0),
          pm_emifac(ttot,regi,entyPe,entySe,te,emi)
-         * vm_demPE.l(ttot,regi,entyPe,entySe,te)
+         * vm_demPe.l(ttot,regi,entyPe,entySe,te)
     )*o_emi_conv(emi)
     +
     sum(entyPe, o_emissions_energy_extraction(ttot,regi,emi,entyPe))
@@ -719,7 +719,7 @@ o_emissions_energy_supply_gross(ttot,regi,emi)$(ttot.val ge 2005) =
 o_emissions_energy_supply_gross_carrier(ttot,regi,emi,entySe)$(ttot.val ge 2005) =
     sum((entyPe,te)$(pe2se(entyPe,entySe,te) AND (pm_emifac(ttot,regi,entyPe,entySe,te,emi)>0)),
          pm_emifac(ttot,regi,entyPe,entySe,te,emi)
-         * vm_demPE.l(ttot,regi,entyPe,entySe,te)
+         * vm_demPe.l(ttot,regi,entyPe,entySe,te)
     )*o_emi_conv(emi)
     +
     (
@@ -739,7 +739,7 @@ o_emissions_energy_negative(ttot,regi,emi)$(ttot.val ge 2005) =
     (
      sum(pe2se(entyPe,entySe,te)$(pm_emifac(ttot,regi,entyPe,entySe,te,emi)<0),
          pm_emifac(ttot,regi,entyPe,entySe,te,emi)
-         * vm_demPE.l(ttot,regi,entyPe,entySe,te)
+         * vm_demPe.l(ttot,regi,entyPe,entySe,te)
     )
     +
     sum((ccs2Leak(enty,enty2,te,emi),teCCS2rlf(te,rlf)),
@@ -810,7 +810,7 @@ o_capture_industry(ttot,regi,"co2")$(ttot.val ge 2005) =
 
 ***Carbon Management|Carbon Capture|Primary Energy|Biomass (Mt CO2/yr)
 o_capture_energy_bio(ttot,regi,"co2")$(ttot.val ge 2005) =
-    sum(enty3$pebio(enty3),
+    sum(enty3$peBio(enty3),
         sum(emi2te(enty3,enty4,te2,"cco2"),
             vm_emiTeDetail.l(ttot,regi,enty3,enty4,te2,"cco2")
         )
@@ -818,7 +818,7 @@ o_capture_energy_bio(ttot,regi,"co2")$(ttot.val ge 2005) =
 
 ***Carbon Management|Carbon Capture|Primary Energy|Fossil (Mt CO2/yr)
 o_capture_energy_fos(ttot,regi,"co2")$(ttot.val ge 2005) =
-    sum(enty3$(NOT(pebio(enty3))),
+    sum(enty3$(NOT(peBio(enty3))),
         sum(emi2te(enty3,enty4,te2,"cco2"),
             vm_emiTeDetail.l(ttot,regi,enty3,enty4,te2,"cco2")
         )
@@ -850,7 +850,7 @@ o_carbon_reemitted(ttot,regi,"co2")$(ttot.val ge 2005) =
 
 *CG**ML*: capital interest rate
 p_r(ttot,regi)$(ttot.val gt 2005 and ttot.val le 2130)
-    = (( (vm_cons.l(ttot+1,regi)/pm_pop(ttot+1,regi)) /
+    = 1 / pm_ies(regi) * (( (vm_cons.l(ttot+1,regi)/pm_pop(ttot+1,regi)) /
       (vm_cons.l(ttot-1,regi)/pm_pop(ttot-1,regi)) )
       ** (1 / ( pm_ttot_val(ttot+1)- pm_ttot_val(ttot-1))) - 1) + pm_prtp(regi)
 ;

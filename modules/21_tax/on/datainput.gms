@@ -84,7 +84,7 @@ $endIf.vehiclesSubsidies
 
   p21_tau_fe_tax(ttot,all_regi,emi_sectors,entyFe)$f21_tau_fe_tax(ttot,all_regi,emi_sectors,entyFe) = f21_tau_fe_tax(ttot,all_regi,emi_sectors,entyFe)*0.001/sm_EJ_2_TWa;
   p21_tau_fe_sub(ttot,all_regi,emi_sectors,entyFe)$f21_tau_fe_sub(ttot,all_regi,emi_sectors,entyFe) = f21_tau_fe_sub(ttot,all_regi,emi_sectors,entyFe)*0.001/sm_EJ_2_TWa;
-  p21_tau_fuEx_sub(ttot,regi,entyPE)$f21_tau_fuEx_sub(ttot,regi,entyPE) = f21_tau_fuEx_sub(ttot,regi,entyPE)*0.001/sm_EJ_2_TWa;
+  p21_tau_fuEx_sub(ttot,regi,entyPe)$f21_tau_fuEx_sub(ttot,regi,entyPe) = f21_tau_fuEx_sub(ttot,regi,entyPe)*0.001/sm_EJ_2_TWa;
 
   p21_max_fe_sub(ttot,all_regi,entyFe)$f21_max_fe_sub(ttot,all_regi,entyFe) = f21_max_fe_sub(ttot,all_regi,entyFe)*0.001/sm_EJ_2_TWa;
   p21_prop_fe_sub(ttot,all_regi,entyFe)$f21_prop_fe_sub(ttot,all_regi,entyFe) = f21_prop_fe_sub(ttot,all_regi,entyFe);
@@ -246,5 +246,10 @@ $ifthen.importtaxrc %cm_taxrc_RE% == "REdirect"
 Execute_Loadpoint 'input_ref' p21_ref_costInvTeDir_RE = vm_costInvTeDir.l;
 Execute_Loadpoint 'input_ref' p21_ref_costInvTeAdj_RE = vm_costInvTeAdj.l;
 $endif.importtaxrc
+
+if (cm_startyear gt 2005,
+execute_load "input_ref.gdx", pm_taxrevCO2LUC0;
+execute_load "input_ref.gdx", pm_taxrevGHG0;
+);
 
 *** EOF ./modules/21_tax/on/datainput.gms
