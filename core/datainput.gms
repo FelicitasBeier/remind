@@ -222,6 +222,13 @@ $ENDIF.WindOff
 
 display fm_dataglob;
 
+*TD* ccsinje cost scenarios
+* low estimate: ccsinje cost prior to 03/2024; i.e. ~11 USD/tCO2 in 2025, decreasing to ~7.5USD/tCO2 as of 2035
+$if "%cm_ccsinjeCost%" == "low" fm_dataglob("tech_stat","ccsinje") = 2;
+$if "%cm_ccsinjeCost%" == "low" fm_dataglob("inco0","ccsinje") = 220;
+$if "%cm_ccsinjeCost%" == "low" fm_dataglob("constrTme","ccsinje") = 0;
+* high estimate: ~20USD/tCO2 (constant), assuming upper end of storage cost and long transport distances
+$if "%cm_ccsinjeCost%" == "high" fm_dataglob("inco0","ccsinje") = 550;
 ***---------------------------------------------------------------------------
 *** Manipulating global or regional cost technology data - relative value
 ***---------------------------------------------------------------------------
@@ -804,9 +811,9 @@ loop(regi,
 
 *RP* calculate annuity of a technology
 p_discountedLifetime(te) = sum(opTimeYr, (sum(regi, pm_omeg(regi,opTimeYr,te))/sum(regi,1)) / 1.06**opTimeYr.val );
-p_teAnnuity(te) = 1/p_discountedLifetime(te) ;
+pm_teAnnuity(te) = 1/p_discountedLifetime(te) ;
 
-display p_discountedLifetime, p_teAnnuity;
+display p_discountedLifetime, pm_teAnnuity;
 
 *** read in data on Nuclear capacities used as bound on vm_cap.fx("2015",regi,"tnrs","1"), vm_deltaCap.fx("2020",regi,"tnrs","1") and vm_deltaCap.up("2025" and "2030")
 parameter pm_NuclearConstraint(ttot,all_regi,all_te)       "parameter with the real-world capacities, construction and plans"
@@ -823,8 +830,8 @@ if(pm_NuclearConstraint("2020",regi,"tnrs")<0,
 );
 );
 
-*** read in data on CCS capacities used as bound on vm_co2CCS.up("2020",regi,"cco2","ico2","ccsinje","1")
-parameter pm_boundCapCCS(all_regi)        "installed and planed capacity of CCS"
+*** read in data on CCS capacities and announced projects used as upper and lower bound on vm_co2CCS in 2025 and 2030
+parameter pm_boundCapCCS(ttot,all_regi,bounds)        "installed and planned capacity of CCS"
 /
 $ondelim
 $include "./core/input/pm_boundCapCCS.cs4r"
@@ -1301,8 +1308,21 @@ if(c_macscen eq 1,
 *pm_macCostSwitch(enty)=pm_macSwitch(enty);
 
 *** for NDC and NPi switch off landuse MACs
+$if %carbonprice% == "off"      pm_macSwitch(emiMacMagpie) = 0;
 $if %carbonprice% == "NDC"      pm_macSwitch(emiMacMagpie) = 0;
 $if %carbonprice% == "NPi"      pm_macSwitch(emiMacMagpie) = 0;
+
+*** Load historical carbon prices defined in $/t CO2, need to be rescaled to right unit
+pm_taxCO2eq(t,regi)$(t.val le 2020) = 0;
+parameter f_taxCO2eqHist(ttot,all_regi)       "historic CO2 prices ($/tCO2)"
+/
+$ondelim
+$include "./core/input/pm_taxCO2eqHist.cs4r"
+$offdelim
+/
+;
+pm_taxCO2eq(t,regi)$(t.val le 2020) = f_taxCO2eqHist(t,regi) * sm_DptCO2_2_TDpGtC;
+
 
 *DK* LU emissions are abated in MAgPIE in coupling mode
 *** An alternative to the approach below could be to introduce a new value for c_macswitch that only deactivates the LU MACs

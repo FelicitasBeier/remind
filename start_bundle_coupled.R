@@ -417,7 +417,7 @@ for(scen in common){
 
   # Set description
   if ("description" %in% names(settings_remind) && ! is.na(settings_remind[scen, "description"])) {
-    cfg_rem$description <- gsub('"', '', settings_remind[scen, "description"])
+    cfg_rem$description <- iconv(gsub('"', '', settings_remind[scen, "description"]), from = "UTF-8", to = "ASCII//TRANSLIT")
   } else {
     cfg_rem$description <- paste0("Coupled REMIND and MAgPIE run ", scen, " started by ", path_settings_remind, " and ", path_settings_coupled, ".")
   }
@@ -641,7 +641,7 @@ for (scen in common) {
       }
       slurmOptions <- combine_slurmConfig(paste0("--qos=", runEnv$qos, " --job-name=", fullrunname, " --output=", logfile,
         " --open-mode=append --mail-type=END --comment=REMIND-MAgPIE --tasks-per-node=", runEnv$numberOfTasks,
-        if (runEnv$numberOfTasks == 1) " --mem=16000"), runEnv$sbatch)
+        if (runEnv$numberOfTasks == 1) " --mem=8000"), runEnv$sbatch)
       slurmCommand <- paste0("sbatch ", slurmOptions, " --wrap=\"Rscript start_coupled.R coupled_config=", Rdatafile, "\"")
       message(slurmCommand)
       exitCode <- system(slurmCommand)

@@ -274,31 +274,31 @@ loop(trade$(NOT tradeSe(trade)),
  );
 );
 
-*** critertion "infes": and are all solutions optimal?
+*** critertion "infes": is any region neither optimal nor intermediate non-optimal -> then it is infeasible 
 loop(regi,
-     if((p80_repy(regi,'modelstat') ne 2) and (p80_repy(regi,'modelstat') ne 7),
-         s80_bool = 0;
-         p80_messageShow("infes") = YES;
-     );
+  if( (p80_repy(regi,'modelstat') ne 2) and (p80_repy(regi,'modelstat') ne 7),    !! 2 is optimal, 7 nonopt,            
+    s80_bool = 0;
+    p80_messageShow("infes") = YES;
+  );
 *** critertion "nonopt": The next lines are a workaround for the status 7
 *** problem. If the objective value does not differ too much from the last known
 *** optimal solution, accept this solution as if it were optimal. 
-     p80_convNashObjVal_iter(iteration,regi) = p80_repy(regi,'objval') - p80_repyLastOptim(regi,'objval');
-     if (1 le iteration.val,
-        !! no last iteration if this is the first; NA value in p80_repyLastOptim is
-        !! sticky, so test this separately
-        if ( p80_repy(regi,'modelstat') eq 7
-           !! The 1E-4 are quite arbitrary. One should do more research on how
-           !! the solution differs over iteration when status 7 occurs. 
-           AND p80_convNashObjVal_iter(iteration,regi) lt - 1e-4,
-           s80_bool = 0;
-           p80_messageShow("nonopt") = YES;     
-           display "Not all regions were status 2 in the last iteration. The deviation of the objective function from the last optimal solution is too large to be accepted:";
-           s80_dummy = p80_repy(regi,'objval') - p80_repyLastOptim(regi,'objval');
-           display s80_dummy;
-        );
-     );
-); !!regi
+  p80_convNashObjVal_iter(iteration,regi) = p80_repy(regi,'objval') - p80_repyLastOptim(regi,'objval');
+  if (1 le iteration.val,
+    !! no last iteration if this is the first; NA value in p80_repyLastOptim is
+    !! sticky, so test this separately
+    if ( p80_repy(regi,'modelstat') eq 7
+        !! The 1E-4 are quite arbitrary. One should do more research on how
+        !! the solution differs over iteration when status 7 occurs. 
+        AND p80_convNashObjVal_iter(iteration,regi) lt - 1e-4,
+      s80_bool = 0;
+      p80_messageShow("nonopt") = YES;     
+      display "Not all regions were status 2 in the last iteration. The deviation of the objective function from the last optimal solution is too large to be accepted:";
+      s80_dummy = p80_repy(regi,'objval') - p80_repyLastOptim(regi,'objval');
+      display s80_dummy;
+    );
+  );
+); !! loop over regi
 
 *** criterion only for checking, not applied anymore: are the anticipation terms sufficienctly small?
 p80_fadeoutPriceAnticip_iter(iteration) = sm_fadeoutPriceAnticip;
@@ -406,6 +406,7 @@ display p80_repy;
 
 display "trade convergence indicators";
 display p80_surplusMaxTolerance, p80_surplusMax2100;
+display p80_defic_trade, p80_defic_sum,p80_defic_sum_rel;
 
 display "Reasons for non-convergence in this iteration (if not yet converged)";
 
@@ -462,7 +463,8 @@ $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A quantity target has not been reached yet.";
           display "#### Check out the pm_implicitQttyTarget_dev parameter of 47_regipol module.";
-          display "#### The deviation must to be less than cm_implicitQttyTarget_tolerance. By default within 1%, i.e. in between -0.01 and 0.01 of the defined target.";
+          display "#### The relative deviation must to be less than cm_implicitQttyTarget_tolerance, which is 1 percent by default.";
+          display "#### For taxes, this means every value > +0.01, while for subsidies everything < -0.01 is problematic in the following lines.";
           display cm_implicitQttyTarget_tolerance, pm_implicitQttyTarget_dev;
 	      );
 $endif.cm_implicitQttyTarget
@@ -640,29 +642,28 @@ if(s80_bool eq 1,
 
 );
 
-
-*** check if any region has failed to solve consecutively for a certain number of times
-if(cm_abortOnConsecFail, !! execute only if consecutive failures switch is non-zero
-    loop(regi,
-        if(((p80_repy(regi,"solvestat") eq 1) and (p80_repy(regi,"modelstat") eq 2))
-        or ((p80_repy(regi,"solvestat") eq 4) and (p80_repy(regi,"modelstat") eq 7)), !! region was solved successfully
-            p80_trackConsecFail(regi) = 0;
-        else
-            p80_trackConsecFail(regi) = p80_trackConsecFail(regi) + 1;
-        );
+*** check if any region has failed to solve consecutively for
+*** cm_abortOnConsecFail times
+if (cm_abortOnConsecFail gt 0,
+  loop (regi,
+    if (   (    p80_repy_iteration(regi,"solvestat",iteration) eq 1
+            AND p80_repy_iteration(regi,"modelstat",iteration) eq 2)
+	OR (    p80_repy_iteration(regi,"solvestat",iteration) eq 4
+	    AND p80_repy_iteration(regi,"modelstat",iteration) eq 7),
+      !! region was solved successfully
+      p80_trackConsecFail(regi) = 0;
+    else
+      !! region failed to solve
+      p80_trackConsecFail(regi) = p80_trackConsecFail(regi) + 1;
     );
-    loop(regi,
-        if(p80_trackConsecFail(regi) >= cm_abortOnConsecFail,
-            execute_unload "abort.gdx";
-            display p80_trackConsecFail;
-            abort "Run was aborted because the maximum number of consecutive failures was reached in at least one region!";
-        );
-    )
-)
+  );
 
-
-
-
+  if (smax(regi, p80_trackConsecFail(regi)) >= cm_abortOnConsecFail,
+    execute_unload "abort.gdx";
+    display p80_trackConsecFail;
+    abort "Run was aborted because the maximum number of consecutive failures was reached in at least one region!";
+  );
+);
 
 ***Fade out LT correction terms, they should only be important in the first iterations and might interfere with ST corrections.
 ***p80_etaLT(trade) = p80_etaLT(trade)*0.5;
