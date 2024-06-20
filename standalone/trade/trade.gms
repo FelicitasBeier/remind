@@ -122,6 +122,7 @@ $setGlobal codePerformance  off       !! def = off
 ***-----------------------------------------------------------------------------
 ***--------------- declaration of parameters for switches ----------------------
 parameters
+cm_nash_mode          "mode for solving nash problem, (1): debug (2): parallel"
 cm_iteration_max      "number of Negishi iterations"
 c_solver_try_max      "maximum number of inner iterations within one Negishi iteration (<10)"
 c_keep_iteration_gdxes   "save intermediate iteration gdxes"
@@ -237,6 +238,7 @@ cm_deuCDRmax                 "switch to limit maximum annual CDR amount in Germa
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+cm_nash_mode           = 2;     !! def = 2  !! regexp = 1|2
 cm_iteration_max       = 1;     !! def = 1
 c_solver_try_max       = 2;     !! def = 2
 c_keep_iteration_gdxes = 0;     !! def = 0
@@ -276,10 +278,10 @@ cm_1stgen_phaseout      = 0;              !! def = 0
 $setglobal cm_tradbio_phaseout  default   !! def = default
 cm_phaseoutBiolc        = 0;              !! def = 0
 
-$setglobal cm_POPscen  pop_SSP2EU  !! def = pop_SSP2EU
-$setglobal cm_GDPscen  gdp_SSP2EU  !! def = gdp_SSP2EU
-$setglobal cm_demScen  gdp_SSP2EU  !! def = gdp_SSP2EU
-$setglobal c_GDPpcScen  SSP2EU     !! def = gdp_SSP2   (automatically adjusted by start_run() based on GDPscen) 
+$setglobal cm_POPscen  pop_SSP2  !! def = pop_SSP2
+$setglobal cm_GDPscen  gdp_SSP2  !! def = gdp_SSP2
+$setglobal cm_demScen  gdp_SSP2  !! def = gdp_SSP2
+$setglobal c_GDPpcScen  SSP2     !! def = gdp_SSP2   (automatically adjusted by start_run() based on GDPscen) 
 
 *AG* and *CB* for cm_startyear greater than 2005, you have to copy the fulldata.gdx (rename it to: input_ref.gdx) from the run you want to build your new run onto.
 cm_startyear      = 2005;      !! def = 2005 for a BAU, 2015 for policy runs
@@ -428,7 +430,6 @@ cm_deuCDRmax = -1; !! def = -1
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *--------------------flags------------------------------------------------------------
 $SETGLOBAL cm_SlowConvergence  off        !! def = off
-$setGlobal cm_nash_mode  parallel      !! def = parallel
 $setGLobal cm_debug_preloop  off !! def = off
 $setglobal cm_INCONV_PENALTY  on         !! def = on
 $setglobal cm_INCONV_PENALTY_bioSwitch  off !! def = off

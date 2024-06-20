@@ -6,11 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### changed
+
+### added
+
+### fixed
+
+### removed
+
+## [3.3.1] - 2024-06-18
+
+### changed
+- new inptu data (6.77) including new GDP and population data([#83](https://github.com/pik-piam/mrdrivers/pull/83)) [[#1684]](https://github.com/remindmodel/remind/pull/1684)
+- **37_industry** remove subsector-specific shares of SE
+  origins in FE carriers for performance reasons [[#1659]](https://github.com/remindmodel/remind/pull/1659)
+- **37_industry** make process-based steel production model the default over the ces-based model [[#1663]](https://github.com/remindmodel/remind/pull/1663)
+- **37_industry** fixed incineration of plastic and non-plastic waste causing
+  non-zero emissions for biomass and synfuels
+  [[#1682]](https://github.com/remindmodel/remind/pull/1682)
+- **core** another change of preference parameters and associated computation of interest rates/mark ups [[#1663]](https://github.com/remindmodel/remind/pull/1663)
+- **scripts** do not check anymore that MAgPIE uses renv
+  [[1646](https://github.com/remindmodel/remind/pull/1646)]
+- **scripts** adjust function calls after moving functionality from `remind2` [[#578]]](https://github.com/pik-piam/remind2/pull/578) to `piamPlotComparison` and `piamutils` [[#1661](https://github.com/remindmodel/remind/pull/1661)
+- **scripts** enhance output script `reportCEScalib` to include additional plot formats [[#1671](https://github.com/remindmodel/remind/pull/1671)
+
+### added
+- **24_trade** add optinal trade scenario for EUR hydrogen and e-liquids imports [[#1666](https://github.com/remindmodel/remind/pull/1666)] 
+
 ## [3.3.0] - 2024-03-28
 
 ### changed
 - **37_industry** changed industry to have subsector-specific shares of SE
-  origins in FE carriers[[#1620]](https://github.com/remindmodel/remind/pull/1620)
+  origins in FE carriers [[#1620]](https://github.com/remindmodel/remind/pull/1620)
 
 ### added
 - **config** regex tests for many parameters [[#1356](https://github.com/remindmodel/remind/pull/1356)]
@@ -30,9 +57,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **scripts** add MAGICCv7.5.3 with AR6 settings as output script, add compareScenarios2 option
     [[#1475](https://github.com/remindmodel/remind/pull/1475), [[#1615](https://github.com/remindmodel/remind/pull/1615)]
 - **scripts** add 'make test-fix' which runs codeCheck in interactive mode, adjusting not_used.txt files
-    [[#1625](https://github.com/remindmodel/remind/pull/1625)
+    [[#1625](https://github.com/remindmodel/remind/pull/1625)]
 - **testthat** test and compile all config files [[#1356](https://github.com/remindmodel/remind/pull/1356)]
 - **testthat** test existence of all required input data [[#1577](https://github.com/remindmodel/remind/pull/1577)]
+- **80_optimization** For Nash mode: after infeasibilities continue in debug mode before aborting
+    [[#1636](https://github.com/remindmodel/remind/pull/1636)]
 
 ### fixed
 - **26_agCosts** **30_biomass** fully fix landuse and MAGICC6 variables in delayed transition runs to reference run
