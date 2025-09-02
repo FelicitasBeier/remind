@@ -314,6 +314,12 @@ if(p80_DevPriceAnticipGlobAllMax2100Iter(iteration) gt 0.1 * p80_surplusMaxToler
   p80_messageShow("DevPriceAnticip") = YES;
 );
 
+*' criterion "Did REMIND run sufficient iterations (currently set at 18, to allow for at least 4 iterations with EDGE-T)
+if( (iteration.val le 17),
+  s80_bool=0;                
+  p80_messageShow("IterationNumber") = YES;
+);
+
 ***additional criterion: did taxes converge? (only checked if cm_TaxConvCheck is 1)
 p80_convNashTaxrev_iter(iteration,t,regi) = 0;
 loop(regi,
@@ -376,10 +382,26 @@ $endIf.cm_implicitPePriceTarget
 
 *** check global budget target from core/postsolve, must be within 2 Gt of target value
 p80_globalBudget_absDev_iter(iteration) = sm_globalBudget_absDev;
-if (abs(p80_globalBudget_absDev_iter(iteration)) gt cm_budgetCO2_absDevTol,
+if ( abs(p80_globalBudget_absDev_iter(iteration)) gt cm_budgetCO2_absDevTol , !! check if CO2 budget met in tolerance range,
   s80_bool = 0;
   p80_messageShow("target") = YES;
 );
+
+*** check global budget target for peak budgets,
+*** 1) check whether cm_peakBudgYr corresponds to year of maximum cumulative CO2 emissions
+*** If not 2) check whether difference in cumulative emissions between both time steps is smaller than sm_peakbudget_diff_tolerance
+*** If neither 1) nor 2) satisfied, converge criterion not fullfilled and keep on iterating.
+$ifthen.carbonprice %carbonprice% == "functionalForm"
+if (  (     cm_iterative_target_adj eq 9
+        AND cm_peakBudgYr ne sm_peakBudgYr_check  )
+      OR
+      (   cm_iterative_target_adj eq 9
+      AND abs(sm_peakbudget_diff) lt sm_peakbudget_diff_tolerance),
+  s80_bool = 0;
+  p80_messageShow("target") = YES;
+);
+$endIf.carbonprice
+
 
 *** additional criterion: if damage internalization is on, is damage iteration converged?
 p80_sccConvergenceMaxDeviation_iter(iteration) = pm_sccConvergenceMaxDeviation;
@@ -446,6 +468,9 @@ display "Reasons for non-convergence in this iteration (if not yet converged)";
           display "#### pm_taxCO2eq_anchor_iterationdiff (difference in global anchor carbon price to the last iteration [T$/GtC]) in diagnostics section below."; 
           display sm_globalBudget_absDev;
 	      );
+        if(sameas(convMessage80, "IterationNumber"),
+          display "#### 0.) REMIND did not run sufficient iterations (currently set at 18, to allow for at least 4 iterations with EDGE-T)";
+        );
 $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"       
         if(sameas(convMessage80, "regiTarget"),
 		      display "#### 7) A regional climate target has not been reached yet.";
@@ -709,14 +734,6 @@ loop(regi,
 p80_eoWeights(regi) = p80_eoWeights(regi) / sum(regi2, p80_eoWeights(regi2) );
 
 
-*** hard coded weights only to be used if due to infeasibilities internal computation of weights (above) does not work
-loop(regi,
-  if (pm_SolNonInfes(regi) ne 1,
-     loop(regi2,
-        p80_eoWeights(regi2) = p80_eoWeights_fix(regi2);
-     );
-  );
-);
 
 p80_eoEmiMarg(regi) = p80_eoWeights(regi) * (p80_eoMargPermBudg(regi) + p80_eoMargEmiCum(regi));
 p80_count=0;
