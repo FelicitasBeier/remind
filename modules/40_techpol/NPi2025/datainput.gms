@@ -6,6 +6,12 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./modules/40_techpol/NPi2025/datainput.gms
 
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+***                                Capacity Targets
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+
 Table f40_TechBound(ttot,all_regi,NPi_version,all_te) "Table for all NPi versions with NPi capacity targets (GW)"
 $offlisting
 $ondelim
@@ -43,6 +49,32 @@ p40_FE_RenShare(t,"EUR")$(t.val ge 2030) =  0.425;
 
 display p40_ElecBioBound;
 display p40_TechBound; !! good to see if the input is displayed correctly
+
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+***                                Renewable Share Targets
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+$ontext
+*** renewable share targets per REMIND region from input data
+table f40_RenShare(ttot,all_regi,ShareTargetType) "input data of renewable share targets in NPi [share]"
+$ondelim
+$include "./modules/40_techpol/NPi2025/input/f40_RenShare.cs3r"
+$offdelim
+;
+
+p40_RenShare(ttot,all_regi,ShareTargetType) = f40_RenShare(ttot,all_regi,ShareTargetType);
+$offtext
+
+p40_RenShare(ttot,all_regi,ShareTargetType) = 0;
+*** some tests
+p40_RenShare("2025","CHA","NonBioRenewable") = 0.2;
+p40_RenShare("2030","CHA","NonFossil") = 0.38;
+p40_RenShare("2030","CAZ","Renewable") = 0.62;
+p40_RenShare("2030","IND","Renewable") = 0.43;
+p40_RenShare("2030","EUR","FE") = 0.41;
+p40_RenShare("2040","EUR","Renewable") = 0.65;
+p40_RenShare("2040","JPN","Renewable") = 0.41;
 
 *** EOF ./modules/40_techpol/NPi2025/datainput.gms
 

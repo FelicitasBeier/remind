@@ -16,13 +16,18 @@ Parameter
     p40_PElowcarbonBound(ttot,iso_regi)          "Lower bound on low carbon share, e.g. 0.2 for 20%"
     p40_El_RenShare(ttot,iso_regi)               "Lower bound on low carbon share, e.g. 0.2 for 20%"
     p40_CoalBound(ttot,iso_regi)                 "level for upper bound on absolute capacities, in GW for all technologies except electromobility"
-    p40_FE_RenShare(ttot,iso_regi)               "Lower bound on ren share, e.g. 0.2 for 20%";
+    p40_FE_RenShare(ttot,iso_regi)               "Lower bound on ren share, e.g. 0.2 for 20%"
 *   p40_ElCap_RenShare(ttot,all_regi)            "Lower bound on low carbon share in total installed capacity, e.g. 0.2 for 20%";
 
-Equation q40_ElecBioBound                              "equation low-carbon push technology policy for bio power";
-Equation q40_FE_RenShare                               "Lower bound on renewable share";
-Equation q40_windBound				                   "lower bound on combined wind onshore and offshore";
+    p40_RenShare(ttot,all_regi,ShareTargetType)  "renewable share targets in NPi per REMIND region aggregated from country-level targets [share]"
+;
+    
+Equation 
+    q40_ElecBioBound                              "equation low-carbon push technology policy for bio power"
+    q40_windBound				                  "lower bound on combined wind onshore and offshore"
 
+    q40_RenShare                                  "constraint to enforce minimum share of renewables based on renewable share targets of NPi"
+;
 *** EOF ./modules/40_techpol/NPi2025/declarations.gms
 
 
