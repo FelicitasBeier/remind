@@ -226,6 +226,13 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     # - take start == 1 from the coupled config and not from the standalone config, bzw. overwrite the latter with the first
     # - proceed as normal with reading the scenario_config.csv that corresponds to the scenario_config_coupled.csv
   
+    if (grepl("_coupled", config.file)) {
+      cat(paste("\nReading config file", config.file, "\n"))
+      settings_coupled <- readCheckScenarioConfig(config.file, ".")
+      scenarios_coupled <- selectScenarios(settings = settings, interactive = "--interactive" %in% flags, startgroup = startgroup)
+      config.file <- gsub("_coupled", config.file)
+    }
+
     cat(paste("\nReading config file", config.file, "\n"))
 
     # Read-in the switches table, use first column as row names
