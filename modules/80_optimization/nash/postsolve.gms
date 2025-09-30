@@ -387,7 +387,6 @@ if ( abs(p80_globalBudget_absDev_iter(iteration)) gt cm_budgetCO2_absDevTol , !!
   p80_messageShow("globalbudget") = YES;
 );
 
-
 $ifthen.carbonprice %carbonprice% == "functionalForm"
 *** check whether cm_peakBudgYr corresponds to year of maximum cumulative CO2 emissions
 if (  (     cm_iterative_target_adj eq 9
@@ -402,6 +401,26 @@ if (  (   cm_iterative_target_adj eq 9
   s80_bool = 0;
   p80_messageShow("peakbudget") = YES;
 );
+
+*** check regional budget target, must be within tolerance level of target value
+!!$ifthen.cm_iterative_target_adj (cm_iterative_target_adj == "4") OR (cm_iterative_target_adj == "44")
+if(cm_iterative_target_adj eq 55,
+  p80_regionalBudget_absDev_iter(iteration,regi) = pm_budgetDeviation(regi);
+  loop(regi,
+  if(cm_regionalBudgetTolerance_Abs = 0, 
+    if (abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_regionalBudgetTolerance_Rel * pm_budgetCO2from2020Regi(regi)),
+      s80_bool = 0;
+      p80_messageShow("regiBudget") = YES;
+    );
+  else
+    if (abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_regionalBudgetTolerance_Abs),
+      s80_bool = 0;
+      p80_messageShow("regiBudget") = YES;
+    );
+  );
+  );  
+);
+!!$endIf.cm_iterative_target_adj
 $endIf.carbonprice
 
 
@@ -479,13 +498,19 @@ $ifthen.carbonprice %carbonprice% == "functionalForm"
 		      display "#### 6.) PeakBudget not reached: sm_peakbudget_diff is greater than sm_peakbudget_diff_tolerance.";
           display sm_peakbudget_diff;
 	      );
+        if(sameas(convMessage80, "regiBudget"),
+		      display "#### 7.) A regional budget target has not been reached yet.";
+               display "#### pm_budgetCO2from2020Regi. Convergence determined by pm_regionalBudget_absDevTol or cm_regionalBudgetTolerance_Rel.";
+          display "#### Also check pm_taxCO2eq_iter (regional CO2 tax paths tracked over iterations [T$/GtC])";
+          display pm_factorRescale_taxCO2Regi_Funneled2, p80_regionalBudget_absDev_iter;
+        );
 $endIf.carbonprice
         if(sameas(convMessage80, "IterationNumber"),
           display "#### 0.) REMIND did not run sufficient iterations (currently set at 18, to allow for at least 4 iterations with EDGE-T)";
         );
 $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"       
         if(sameas(convMessage80, "regiTarget"),
-		      display "#### 7) A regional climate target has not been reached yet.";
+		      display "#### 7.) A regional climate target has not been reached yet.";
           display "#### Check out the pm_emiMktTarget_dev parameter of 47_regipol module.";
           display "#### For budget targets, the parameter gives the percentage deviation of current emissions in relation to the target value.";
           display "#### For yearly targets, the parameter gives the current emissions minus the target value in relative terms to the 2005 emissions.";

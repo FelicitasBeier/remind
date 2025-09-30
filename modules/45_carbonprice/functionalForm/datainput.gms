@@ -7,8 +7,8 @@
 *** SOF ./modules/45_carbonprice/functionalForm/datainput.gms
 
 *** Check that cm_iterative_target_adj is equal to 0, 5, 7, or 9
-if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9) ),
-  abort "The realization 45_carbonprice/functionalForm is only compatible with cm_iterative_target_adj = 0, 5, 7 or 9. Please adjust config file accordingly"
+if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9) OR (cm_iterative_target_adj eq 4) OR (cm_iterative_target_adj eq 44)),
+  abort "The realization 45_carbonprice/functionalForm is only compatible with cm_iterative_target_adj = 0, 4, 44, 5, 7 or 9. Please adjust config file accordingly"
 );
 
 *** Read pm_taxCO2eq from path_gdx_ref
@@ -18,6 +18,28 @@ display p45_taxCO2eq_path_gdx_ref;
 *** -------- initial declaration of parameters for iterative target adjustment
 o45_reached_until2150pricepath(iteration) = 0;
 
+
+*** ---- for regional carbon budgets (cm_iterative_target_adj eq 4) OR (cm_iterative_target_adj eq 44)
+if (not ((cm_iterative_target_adj = 4) OR (cm_iterative_target_adj = 44)),
+pm_budgetCO2from2020Regi(regi) = 1;          !! not sure if needed
+pm_budgetCO2from2020RegiShare(regi)  = 1;    !!
+else
+pm_budgetCO2from2020Regi(regi) = pm_budgetCO2from2020RegiShare(regi) * cm_budgetCO2from2020;
+);
+
+** Compute the absolute budget deviation tolerance level
+if(cm_regionalBudgetTolerance_Abs > 0,
+    pm_regionalBudget_absDevTol(regi) = cm_regionalBudgetTolerance_Abs;
+  else 
+  pm_regionalBudget_absDevTol(regi) =  cm_regionalBudgetTolerance_Rel * pm_budgetCO2from2020Regi(regi);
+);
+
+loop(iteration,
+p45_FunnelUpper(iteration) = cm_funnelFactor * EXP( -cm_funnelExponent * iteration.val) + 1 + cm_funnelLower;
+p45_FunnelLower(iteration) = 1/ ( cm_funnelFactor * EXP( -cm_funnelExponent * iteration.val) + 1 + cm_funnelLower);
+);
+
+s45_YearBeforeStartYear = smax(ttot$( ttot.val lt cm_startyear ), ttot.val); !! Timestep before startyear
 
 ***-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *** Part I (Global anchor trajectory): The functional form (linear/exponential) of the global anchor trajectory is chosen via cm_taxCO2_functionalForm. 
