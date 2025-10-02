@@ -153,80 +153,64 @@ remind2::convGDX2MIF_REMIND2MAgPIE(gdx = "fulldata.gdx", file = "REMIND_rem2mag.
 message("\nFinished reporting - ", round(Sys.time()))
 
 # Load REMIND config
-load("config.Rdata")
-cfg_rem <- cfg
-rm(cfg)
+elementsLoaded <- load("config.Rdata")
 
-path_remind_run    <- file.path(cfg_rem$remind_folder, cfg_rem$results_folder)
-pathToRemindReport <- file.path(cfg_rem$remind_folder, cfg_rem$results_folder, "REMIND_rem2mag.mif")
-
-# Define path to MAgPIE 
-# Later: move to start.R
-path_magpie <- normalizePath(file.path(cfg_rem$remind_folder, "magpie"), mustWork = FALSE)
-if (! dir.exists(path_magpie)) path_magpie <- normalizePath(file.path(cfg_rem$remind_folder, "..", "magpie"), mustWork = FALSE)
+path_remind_run    <- file.path(cfg$remind_folder, cfg$results_folder)
+pathToRemindReport <- file.path(cfg$remind_folder, cfg$results_folder, "REMIND_rem2mag.mif")
 
 # Switch to MAgPIE main folder
 message("### COUPLING ", i, " ### Preparing MAgPIE - ", round(Sys.time()))
 message("Set working directory from ", getwd())
-message("                      to   ", path_magpie, "\n")
-setwd(path_magpie)
+message("                      to   ", cfg$path_magpie, "\n")
+setwd(cfg$path_magpie)
 source("scripts/start_functions.R")
 
-# preliminary: since at the moment there is no MAgPIE cfg available here, load MAgPIE default
-# later: load MAgPIE cfg from REMIND config in the REMIND run folder
-source(file.path(path_magpie, "config", "default.cfg"))
-cfg_mag <- cfg
-rm(cfg)
+runname <- gsub("output\\/", "", cfg$results_folder)
+cfg$cfg_mag$results_folder <- paste0("output/",runname,"-mag-",i)
+cfg$cfg_mag$title          <- paste0(runname,"-mag-",i)
+cfg$cfg_mag$path_to_report_bioenergy <- pathToRemindReport
+# Set path for GHG prices only if path_to_report_ghgprices is NA. This can only be the case in the first 
+# Nash iteration. In all later iterations it will not be NA anymore since they inherit it from the preceding
+# iteration. If in the first iteration path_to_report_ghgprices is not NA (path to external mif) nothing 
+# will be changed and MAgPIE will thus use the GHG prices from the externel path.
+if (is.na(cfg$cfg_mag$path_to_report_ghgprices) cfg$cfg_mag$path_to_report_ghgprices <- pathToRemindReport
 
-runname <- gsub("output\\/", "", cfg_rem$results_folder)
-cfg_mag$results_folder <- paste0("output/",runname,"-mag-",i)
-cfg_mag$title          <- paste0(runname,"-mag-",i)
-cfg_mag$path_to_report_bioenergy <- pathToRemindReport
-# if provided use ghg prices for land (MAgPIE) from a different REMIND run than the one MAgPIE runs coupled to
-use_external_ghgprices <- ifelse(is.na(cfg_mag$path_to_report_ghgprices), FALSE, TRUE)
-# if no different mif was set for GHG prices use the same as for bioenergy
-if(! use_external_ghgprices) cfg_mag$path_to_report_ghgprices <- pathToRemindReport
-
-# ---------------- move to start.R -------------------------------
-  cfg_mag$sequential <- TRUE
-  cfg_mag$force_replace <- TRUE
-  # always select 'coupling' scenario
-  cfg_mag <- gms::setScenario(cfg_mag, "coupling", scenario_config = file.path(path_magpie, "config", "scenario_config.csv"))
-  
-  magpie_empty <- FALSE
-  if (magpie_empty) {
-    # Find latest fulldata.gdx from automated model test (AMT) runs
-    amtRunDirs <- list.files("/p/projects/landuse/tests/magpie/output",
-                            pattern = "default_\\d{4}-\\d{2}-\\d{2}_\\d{2}\\.\\d{2}.\\d{2}",
-                            full.names = TRUE)
-    fullDataGdxs <- file.path(amtRunDirs, "fulldata.gdx")
-    latestFullData <- sort(fullDataGdxs[file.exists(fullDataGdxs)], decreasing = TRUE)[[1]]
-    cfg_mag <- configureEmptyModel(cfg_mag, latestFullData)  # defined in start_functions.R
-    # also configure magpie to only run the reportings necessary for coupling
-    # the other reportings are pointless anyway with an empty model
-    cfg_mag$output <- c("extra/reportMAgPIE2REMIND")
-  }
-
-# ----------------------------------------------------------------
-
-if (!is.null(renv::project())) {
-  message("Using REMIND's renv.lock for MAgPIE")
-  cfg_mag$renv_lock <- normalizePath(file.path(path_remind_run, "renv.lock"))
+# ---------------- MAgPIE empty -------------------------------
+# Needs to be done once per scenario actually. Thus, could be moved to start.R
+# However, so far MAgPIE 'start_functions.R' only needs to be sourced here and
+# not in start.R. So to avoid also sourcing it there, this code block stays here.
+if (cfg$magpie_empty) {
+  # Find latest fulldata.gdx from automated model test (AMT) runs
+  amtRunDirs <- list.files("/p/projects/landuse/tests/magpie/output",
+                          pattern = "default_\\d{4}-\\d{2}-\\d{2}_\\d{2}\\.\\d{2}.\\d{2}",
+                          full.names = TRUE)
+  fullDataGdxs <- file.path(amtRunDirs, "fulldata.gdx")
+  latestFullData <- sort(fullDataGdxs[file.exists(fullDataGdxs)], decreasing = TRUE)[[1]]
+  cfg$cfg_mag <- configureEmptyModel(cfg$cfg_mag, latestFullData)  # defined in start_functions.R
+  # also configure magpie to only run the reportings necessary for coupling
+  # the other reportings are pointless anyway with an empty model
+  cfg$cfg_mag$output <- c("extra/reportMAgPIE2REMIND")
 }
 
-# Providing MAgPIE with gdx from last iteration's solution only for time steps >= cfg_rem$gms$cm_startyear
-# For years prior to cfg_rem$gms$cm_startyear MAgPIE output has to be identical across iterations.
+# ----------------------------------------------------------------
+if (!is.null(renv::project())) {
+  message("Using REMIND's renv.lock for MAgPIE")
+  cfg$cfg_mag$renv_lock <- normalizePath(file.path(path_remind_run, "renv.lock"))
+}
+
+# Providing MAgPIE with gdx from last iteration's solution only for time steps >= cfg$gms$cm_startyear
+# For years prior to cfg$gms$cm_startyear MAgPIE output has to be identical across iterations.
 # Because gdxes might slightly lead to a different solution exclude gdxes for the fixing years.
 if (i > 1) {
   message("### COUPLING ", i, " ### Copying MAgPIE gdx files from previous iteration")
-  gdxlist <- paste0("output/", runname, "-mag-", i-1, "/magpie_y", seq(cfg_rem$gms$cm_startyear,2150,5), ".gdx")
-  cfg_mag$files2export$start <- .setgdxcopy(".gdx",cfg_mag$files2export$start,gdxlist)
+  gdxlist <- paste0("output/", runname, "-mag-", i-1, "/magpie_y", seq(cfg$gms$cm_startyear,2150,5), ".gdx")
+  cfg$cfg_mag$files2export$start <- .setgdxcopy(".gdx",cfg$cfg_mag$files2export$start,gdxlist)
 }
 
 # Start MAgPIE
-message("### COUPLING ", i, " ### Starting MAgPIE - ", round(Sys.time()), "\nwith  Report = ", pathToRemindReport, "\n      Folder = ", cfg_mag$results_folder)
-outfolder_mag <- start_run(cfg_mag, codeCheck=FALSE)
-pathToMagpieReport <- file.path(path_magpie, outfolder_mag, "report.mif")
+message("### COUPLING ", i, " ### Starting MAgPIE - ", round(Sys.time()), "\nwith  Report = ", pathToRemindReport, "\n      Folder = ", cfg$cfg_mag$results_folder)
+outfolder_mag <- start_run(cfg$cfg_mag, codeCheck = FALSE)
+pathToMagpieReport <- file.path(cfg$path_magpie, outfolder_mag, "report.mif")
 message("### COUPLING ", i, " ### MAgPIE finished in ", outfolder_mag, " - ", round(Sys.time()))
 
 # Checking whether MAgPIE is optimal in all years
@@ -247,8 +231,8 @@ message("                      to   ", path_remind_run, "\n")
 setwd(path_remind_run)
 
 message("### COUPLING ", i, " ### Transferring data from MAgPIE ", pathToMagpieReport, " to REMIND magpieData.gdx - ", round(Sys.time()))
-getMagpieData(path_to_report = pathToMagpieReport)
+getMagpieData(path_to_report = pathToMagpieReport, var_luc = cfg$var_luc)
 message("\n### COUPLING ", i, " ### Continuing with REMIND Nash iteration - ", round(Sys.time()))
 
-# what else should be saved?
-# save(cfg_rem, cfg_mag, pathToMagpieReport, file = "config.Rdata")
+# Save the same elements that were loaded (they may have been updated in the meantime)
+save(list = elementsLoaded, file = "config.Rdata")
