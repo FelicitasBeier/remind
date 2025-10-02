@@ -105,7 +105,7 @@
 *'
 *' These prefixes are extended in some cases by a second letter:
 *'
-*' * "?m_" to designate objects used in the core and in at least one module.
+*' * "?m_" to designate objects used in the core and in at least one module. Declare it where it is calculated.
 *' * "?00_" to designate objects used in a single module, exclusively, with the 2-digit number corresponding
 *'          to the module number.
 *'
