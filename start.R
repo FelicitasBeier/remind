@@ -234,11 +234,12 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
   if (! length(config.file) == 0) {
     
-    # MAgPIE coupling: if provided read scenario_config_coupled.csv before reading the scenario_config.csv
+    # MAgPIE coupling: if a file containing "_coupled" is passed to this script, it activates the coupled mode.
+    # Read scenario_config_coupled.csv before reading the scenario_config.csv
     if (grepl("_coupled", config.file)) {
       message("\nYou provided a scenario_config_coupled.csv.\nStarting REMIND in coupled mode with MAgPIE.\nReading ", config.file, "\n")
       settings_coupled <- readCheckScenarioConfig(config.file, ".")
-      scenarios_coupled <- selectScenarios(settings = settings, interactive = "--interactive" %in% flags, startgroup = startgroup)
+      scenarios_coupled <- selectScenarios(settings = settings_coupled, interactive = "--interactive" %in% flags, startgroup = startgroup)
       config.coupled <- config.file
       config.file <- gsub("_coupled", config.file)
     }
@@ -435,7 +436,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # GHG prices will be set to zero (in MAgPIE) until and including the year specified here
       cfg_mag$gms$c56_mute_ghgprices_until <- scenarios_coupled[scen, "no_ghgprices_land_until"]
 
-      # Write choice of land-use change variable to config. Use smoothed variable
+      # Write choice of land-use change variable to config. Use raw variable
       # if not specified otherwise in coupled config, i.e. if the column is missing
       # completely or if the row entry is empty.
       if (! "var_luc" %in% names(scenarios_coupled) || is.na(scenarios_coupled[scen, "var_luc"])) {
