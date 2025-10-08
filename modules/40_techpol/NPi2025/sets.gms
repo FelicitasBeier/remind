@@ -9,23 +9,25 @@
 
 *** Sets neeed for renewable share targets
 Sets
-ShareTargetType     "Renewable share target types"
+RenShareTargetType     "Renewable share target types"
 /
-    Renewable               "renewable share in electricity"
-    NonBioRenewable         "non-biomass renewable share in electricity"
-    NonFossil               "non-fossil share in electricity"
-    FE                      "renewable share in final energy"
+    RenElec                     "renewable share in secondary energy electricity"
+    NonBioRenElec               "non-biomass renewable share in secondary energy electricity"
+    NonFossilElec               "non-fossil share in secondary energy electricity"
+    RenFE                       "renewable share in total final energy"
 /
 ;
 
 Sets
 *** Mappings needed for renewable share targets (set filled with entries in sets_calculations.gms)
-TargetType2InOutEnty(ShareTargetType,all_enty,all_enty)    "map renewable share target type to energy carriers used to calculate numerator (first enty) and denominator (second enty) of share"
+TargetType2ShareEnty(RenShareTargetType,all_enty)    "map renewable share target type to energy carriers used to calculate numerator of share, e.g. renewable electricity"
+/
+/
+
+TargetType2TotalEnty(RenShareTargetType,all_enty)    "map renewable share target type to energy carriers used to calculate denominator of share, e.g. total electricity"
 /
 /
 ;
-
-
 
 
 *** EOF ./modules/40_techpol/NPi2025/sets.gms

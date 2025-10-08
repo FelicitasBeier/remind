@@ -55,26 +55,20 @@ display p40_TechBound; !! good to see if the input is displayed correctly
 ***                                Renewable Share Targets
 *------------------------------------------------------------------------------------
 *------------------------------------------------------------------------------------
-$ontext
+
+
 *** renewable share targets per REMIND region from input data
-table f40_RenShare(ttot,all_regi,ShareTargetType) "input data of renewable share targets in NPi [share]"
+table f40_RenShareTargets(ttot,all_regi,RenShareTargetType) "input data of renewable share targets in NPi [share]"
 $ondelim
-$include "./modules/40_techpol/NPi2025/input/f40_RenShare.cs3r"
+$include "./modules/40_techpol/NPi2025/input/f40_RenShareTargets.cs3r"
 $offdelim
 ;
 
-p40_RenShare(ttot,all_regi,ShareTargetType) = f40_RenShare(ttot,all_regi,ShareTargetType);
-$offtext
+*** apply renewable share targets to target year and all time steps afterwards
+loop( (ttot,all_regi,RenShareTargetType)$(f40_RenShareTargets(ttot,all_regi,RenShareTargetType)),
+  p40_RenShareTargets(t,all_regi,RenShareTargetType)$(t.val ge ttot.val) = f40_RenShareTargets(ttot,all_regi,RenShareTargetType);
+);
 
-p40_RenShare(ttot,all_regi,ShareTargetType) = 0;
-*** some tests
-p40_RenShare("2025","CHA","NonBioRenewable") = 0.2;
-p40_RenShare("2030","CHA","NonFossil") = 0.38;
-p40_RenShare("2030","CAZ","Renewable") = 0.62;
-p40_RenShare("2030","IND","Renewable") = 0.43;
-p40_RenShare("2030","EUR","FE") = 0.41;
-p40_RenShare("2040","EUR","Renewable") = 0.65;
-p40_RenShare("2040","JPN","Renewable") = 0.41;
 
 *** EOF ./modules/40_techpol/NPi2025/datainput.gms
 

@@ -1271,6 +1271,12 @@ parameter
 ;
   c_edgetReportAfter2010 = 0;   !! def = 0 full reporting  !! regexp = 1|0
 *'
+parameter
+  c40_RenShareTargets         "switch that turn on renewable share targets in the NPi2025 realization of the techpol module"
+;
+*' Note that the switch is only active in the NPi2025 realization of the 40_techpol module.
+  c40_RenShareTargets = 1;      !! def = 1 renewable share targets are on !! regexp = 1|0
+*'
 *'
 *'
 ***-----------------------------------------------------------------------------
