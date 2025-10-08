@@ -237,11 +237,11 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     # MAgPIE coupling: if a file containing "_coupled" is passed to this script, it activates the coupled mode.
     # Read scenario_config_coupled.csv before reading the scenario_config.csv
     if (grepl("_coupled", config.file)) {
-      message("\nYou provided a scenario_config_coupled.csv.\nStarting REMIND in coupled mode with MAgPIE.\nReading ", config.file, "\n")
+      message("\nStarting REMIND in coupled mode with MAgPIE,\n as you have provided a scenario_config_coupled.csv.\nReading ", config.file, "\n")
       settings_coupled <- readCheckScenarioConfig(config.file, ".")
       scenarios_coupled <- selectScenarios(settings = settings_coupled, interactive = "--interactive" %in% flags, startgroup = startgroup)
       config.coupled <- config.file
-      config.file <- gsub("_coupled", config.file)
+      config.file <- gsub("_coupled", "", config.file)
     }
 
     cat(paste("\nReading config file", config.file, "\n"))
@@ -261,7 +261,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
         message("The following scenarios are given in '",config.coupled ,"' but could not be found in '", config.file, "':")
         message("  ", paste(missing, collapse = ", "), "\n")
       }
-      common <- intersect(rownames(settings_remind), rownames(scenarios_coupled))
+      common <- intersect(rownames(settings), rownames(scenarios_coupled))
       if (! identical(common, character(0))) {
         message("\n################################\n")
         message("The following ", length(common), " scenarios will be started:")
@@ -382,7 +382,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
     # =================== MAgPIE coupling ===================
 
-    if (exist("scenarios_coupled")) {
+    if (exists("scenarios_coupled")) {
       cfg$gms$cm_MAgPIE_Nash <- 1 # activate MAgPIE coupling
       # If a path to a MAgPIE report is supplied, let GAMS execute mag2rem but only the getReportDate part without actually configuring and running MAgPIE
       # scenarios_coupled[scen, "path_report"]
@@ -479,8 +479,10 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       #  # for negishi and model tests: use only one CPU
       #  numberOfTasks <- 1
       #}
+  
+      errorsfound <- errorsfound + checkSettingsRemMag(cfg, cfg_mag, testmode = "--test" %in% flags)
       
-      cfg <- append(cfg, cfg_mag)
+      cfg <- append(cfg, list("cfg_mag" = cfg_mag))
     }
 
     # ================== End MAgPIE =========================
@@ -489,8 +491,6 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     if ("errorsfoundInCheckFixCfg" %in% names(cfg)) {
       errorsfound <- errorsfound + cfg$errorsfoundInCheckFixCfg
     }
-    
-    errorsfound <- errorsfound + checkSettingsRemMag(cfg, cfg_mag, testmode = "--test" %in% flags)
 
     # save the cfg object for the later automatic start of subsequent runs (after preceding run finished)
     if (! any(c("--test", "--gamscompile") %in% flags)) {

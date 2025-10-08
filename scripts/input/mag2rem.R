@@ -173,7 +173,7 @@ cfg$cfg_mag$path_to_report_bioenergy <- pathToRemindReport
 # Nash iteration. In all later iterations it will not be NA anymore since they inherit it from the preceding
 # iteration. If in the first iteration path_to_report_ghgprices is not NA (path to external mif) nothing 
 # will be changed and MAgPIE will thus use the GHG prices from the externel path.
-if (is.na(cfg$cfg_mag$path_to_report_ghgprices) cfg$cfg_mag$path_to_report_ghgprices <- pathToRemindReport
+if (is.na(cfg$cfg_mag$path_to_report_ghgprices)) cfg$cfg_mag$path_to_report_ghgprices <- pathToRemindReport
 
 # ---------------- MAgPIE empty -------------------------------
 # Needs to be done once per scenario actually. Thus, could be moved to start.R
