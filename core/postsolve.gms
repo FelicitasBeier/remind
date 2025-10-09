@@ -461,7 +461,7 @@ p_FEPrice_by_FE_iter(iteration,t,regi,entyFe) = p_FEPrice_by_FE(t,regi,entyFe);
 *** Track demand for purpose-grown ligno-cellulosic biomass across iterations
 o_vm_pebiolc_price(iteration,ttot,regi)  = vm_pebiolc_price.l(ttot,regi);
 o_vm_fuExtr_pebiolc(iteration,ttot,regi) = vm_fuExtr.l(ttot,regi,"pebiolc","1");
-o_PEDem_Bio_ECrops(iteration,ttot,regi) = vm_fuExtr.l(ttot,regi,"pebiolc","1") + (1 - pm_costsPEtradeMp(ttot,regi"pebiolc")) * vm_Mport.l(ttot,regi,"pebiolc") - vm_Xport.l(ttot,regi"pebiolc");
+o_PEDem_Bio_ECrops(iteration,ttot,regi) = vm_fuExtr.l(ttot,regi,"pebiolc","1") + (1 - pm_costsPEtradeMp(regi,"pebiolc")) * vm_Mport.l(ttot,regi,"pebiolc") - vm_Xport.l(ttot,regi,"pebiolc");
 o_vm_emiMacSector_co2luc(iteration,ttot,regi) = vm_emiMacSector.l(ttot,regi,"co2luc");
 
 *** EOF ./core/postsolve.gms
