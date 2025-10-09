@@ -45,6 +45,7 @@ p30_fuelex_dummy(all_regi)         "Dummy for bio-energy supply per region"
 
 *** Parameters used to track other parameters across Nash iterations
 o_p30_pebiolc_pricmult(iteration,ttot,all_regi)                  "track p30_pebiolc_pricmult across Nash iterations"
+o_p30_pebiolc_pricemag(iteration,ttot,all_regi)                  "track o_p30_pebiolc_pricemag across Nash iterations"
 o_p30_pebiolc_price_emu_preloop(iteration,ttot,all_regi)         "track p30_pebiolc_price_emu_preloop across Nash iterations"
 o_p30_pebiolc_price_emu_preloop_shifted(iteration,ttot,all_regi) "track p30_pebiolc_price_emu_preloop_shifted across Nash iterations"
 o_p30_pebiolc_costs_emu_preloop(iteration,ttot,all_regi)         "track p30_pebiolc_costs_emu_preloop across Nash iterations"
