@@ -28,10 +28,13 @@ if (!exists("source_include") | !exists("runs") | !exists("folder")) {
 ############################# DEFINE FUNCTIONS ###########################
 
 # Plot dimension specified for 'color' over dimension specified for 'xaxis' as line plot or bar plot
-myplot <- function(data, type = "line", xaxis = "period", color = "iteration", scales = "free_y", ylab = NULL, title = NULL) {
-  getNames(data) <- gsub(".*rem-","",getNames(data))
-  getSets(data) <- c("region","year","iteration")
+myplot <- function(parameterName, type = "line", xaxis = "period", color = "iteration", scales = "free_y", ylab = NULL, title = NULL) {
+  #getNames(data) <- gsub(".*rem-","",getNames(data))
+  #getSets(data) <- c("region","year","iteration")
+  data <- gdx::readGDX(file.path(runname, "fulldata.gdx"), parameterName, restore_zeros = FALSE)
+  print(str(data))
   dat <- quitte::as.quitte(data)
+  print(dat)
   dat[[color]] <- as.factor(dat[[color]]) # convert dimension that should be distinguished by color to factors (relevant if years are plotted over iterations)
   text_size <- 10
   scale_color <- as.character(mip::plotstyle(as.character(unique(dat[[color]])),out="color"))
@@ -87,10 +90,11 @@ plot_iterations <- function(runname) {
   # p30_pebiolc_pricemag * tdptwyr2dpgj
   # modules/30_biomass/magpie/presolve.gms
   # o_p30_pebiolc_pricemag
+  
+  var <- "o_p30_pebiolc_pricmult"
+  p_price_mag <- myplot(var, ylab = "$/GJ", title = paste(runname, var, sep = "\n"))
 
-  p_price_mag <- myplot(reports[r, years, var], ylab = "$/GJ", title = paste(runname, var, sep = "\n"))
-
-
+if(FALSE){
   # ---- Plot: MAgPIE co2luc ----
 
   var <- "Emi|CO2|+|Land-Use Change (Mt CO2/yr)"
@@ -187,23 +191,23 @@ plot_iterations <- function(runname) {
   p_price_carbon_it_2 <- myplot(reports[r, getYears(reports)>"y2020" & getYears(reports)<="y2100", var],
                                 ylab = "$/tCO2", xaxis = "iteration", color = "period", title = title)
 
-
+}
   # ---- Print to pdf ----
 
   out <- lusweave::swopen(template = "david")
 
   lusweave::swfigure(out, print, p_price_mag,         sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_fuelex,            sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_fuelex_it,         sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_fuelex_it_fix,     sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_fuelex_it_2060,    sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_demPE_it,         sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_emi_mag,           sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_mult,              sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_shift,             sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_price_carbon,      sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_price_carbon_it_1, sw_option = "height=9,width=16")
-  lusweave::swfigure(out, print, p_price_carbon_it_2, sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_fuelex,            sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_fuelex_it,         sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_fuelex_it_fix,     sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_fuelex_it_2060,    sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_demPE_it,         sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_emi_mag,           sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_mult,              sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_shift,             sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_price_carbon,      sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_price_carbon_it_1, sw_option = "height=9,width=16")
+  #lusweave::swfigure(out, print, p_price_carbon_it_2, sw_option = "height=9,width=16")
 
   filename <- paste0(runname, "-", length(getItems(reports, dim = 3.1)))
   lusweave::swclose(out, outfile = filename, clean_output = TRUE, save_stream = FALSE)
@@ -217,9 +221,9 @@ withr::with_dir(folder, {
   if (is.null(runs)) {
     message("\nNo run specified by user. Searching for all runs available in this folder:")
     # Find fulldata.gdx files of all runs
-    runs <- Sys.glob("*-rem-*/fulldata.gdx")
+    runs <- Sys.glob("C_*/fulldata.gdx")
     # Remove everything but the scenario name from the folder names and remove duplicates
-    runs <- unique(sub("-rem-[0-9]+/fulldata.gdx","",runs))
+    runs <- unique(sub("/fulldata.gdx","",runs))
     message(paste(runs, collapse = ", "))
     message("")
   }
