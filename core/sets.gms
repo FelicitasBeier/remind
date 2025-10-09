@@ -2306,6 +2306,11 @@ steps         "iterator for MAC steps"
 /
     1*801
 /
+
+magpieIter(iteration) "iterations in which MAgPIE runs in presolve"
+/
+    2,10,15,20,25
+/
 ;
 
 ***-----------------------------------------------------------------------------

@@ -515,7 +515,7 @@ parameter
 parameter
   cm_MAgPIE_Nash      "run MAgPIE between Nash iterations"
 ;
-  cm_MAgPIE_Nash   = 1;     !! def = 0  !! regexp = [0-1]
+  cm_MAgPIE_Nash   = 0;     !! def = 0  !! regexp = [0-1]
 *' * (0): REMIND runs standalone (emission factors are used, shiftfactors are set to zero)
 *' * (1): MAgPIE runs between certain Nash iterations (emission factors are set to zero because emissions are retrieved from the MAgPIE reporting, shift factors for supply curves are calculated)
 
