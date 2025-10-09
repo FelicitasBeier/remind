@@ -19,3 +19,5 @@ cm_startyear,input,questionnaire
 cm_H2targets,input,questionnaire
 cm_phaseoutBiolc,input,questionnaire
 cm_nucscen,input,questionnaire
+pm_conv_TWa_EJ,input,not needed
+cm_RenShareTargets,input,not needed

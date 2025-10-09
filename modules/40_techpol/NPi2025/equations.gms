@@ -31,7 +31,7 @@ q40_windBound(t,regi)$(t.val gt 2025 AND p40_TechBound(t,regi,"wind") gt 0)..
 *** Note that for 4. we approximately use the renewable share in total secondary energy instead of final energy to reduce the complexity of the implementation.
 *** Moreover, we count hydrogen as a renewable source by assumption since most hydrogen in REMIND is of renewable origin.
 q40_RenShare(t,regi,RenShareTargetType)$(p40_RenShareTargets(t,regi,RenShareTargetType)
-                                          AND c40_RenShareTargets eq 1)..
+                                          AND cm_RenShareTargets eq 1)..
   sum(TargetType2ShareEnty(RenShareTargetType,enty),
     sum(TargetType2TotalEnty(RenShareTargetType,enty2),
 *** Renewable SE production of output SE carrier (enty2) as main product
