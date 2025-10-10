@@ -14,18 +14,13 @@ library(ggplot2,  quietly = TRUE, warn.conflicts = FALSE)
 
 ############################# BASIC CONFIGURATION #############################
 
-if (!exists("source_include") | !exists("runs") | !exists("folder")) {
-  message("Script started from command line.")
-  message("ls(): ", paste(ls(), collapse = ", "))
-  runs <- if (exists("outputdirs")) unique(sub("-rem-[0-9]*", "", basename(outputdirs))) else NULL
-  folder <- "./output"
-  lucode2::readArgs("runs", "folder")
+if (!exists("source_include")) {
+  lucode2::readArgs("outputdir")
 } else {
   message("Script was sourced.")
-  runs <- outputdir
-  message("runs  : ", paste(runs, collapse = ", "))
-  #message("folder: ", paste(folder, collapse = ", "))
 }
+
+runs <- outputdir
 
 ############################# DEFINE FUNCTIONS ###########################
 
@@ -231,25 +226,12 @@ plot_iterations <- function(runname) {
   return("Done\n")
 }
 
-#withr::with_dir(folder, {
-#
-#  # ---- Search for runs if not provided----
-#  if (is.null(runs)) {
-#    message("\nNo run specified by user. Searching for all runs available in this folder:")
-#    # Find fulldata.gdx files of all runs
-#    runs <- Sys.glob("C_*/fulldata.gdx")
-#    # Remove everything but the scenario name from the folder names and remove duplicates
-#    runs <- unique(sub("/fulldata.gdx","",runs))
-#    message(paste(runs, collapse = ", "))
-#    message("")
-#  }
 
-  # ---- Loop over runs ans plot ----
-  for (runname in runs) {
-    message("##################### ",runname," #################################")
-    ret <- plot_iterations(runname)
-    message(ret)
-  }
+# ---- Loop over runs ans plot ----
+for (runname in runs) {
+  message("##################### ",runname," #################################")
+  ret <- plot_iterations(runname)
+  message(ret)
+}
 
-#})
 
