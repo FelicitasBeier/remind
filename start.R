@@ -388,6 +388,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # scenarios_coupled[scen, "path_report"]
       
       cfg$title <- paste0("C_", cfg$title) # add prefix indicating a coupled run
+      cfg$output <- c(setdiff(cfg$output, "plotRemMagNash"), "plotRemMagNash")
       cfg$path_magpie <- path_magpie
       cfg$magpie_empty <- isTRUE(scenarios_coupled[scen, "magpie_empty"]) # if magpie should be replaced by an empty model
       
