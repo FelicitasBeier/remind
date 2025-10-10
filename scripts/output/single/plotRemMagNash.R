@@ -22,8 +22,9 @@ if (!exists("source_include") | !exists("runs") | !exists("folder")) {
   lucode2::readArgs("runs", "folder")
 } else {
   message("Script was sourced.")
+  runs <- outputdir
   message("runs  : ", paste(runs, collapse = ", "))
-  message("folder: ", paste(folder, collapse = ", "))
+  #message("folder: ", paste(folder, collapse = ", "))
 }
 
 ############################# DEFINE FUNCTIONS ###########################
@@ -34,6 +35,7 @@ myplot <- function(dat, type = "line", xaxis = "ttot", color = "iteration", scal
   # Zero values are not stored in the gdx and are this missing in dat.
   # Add '0' for the missing combinations of iteration, ttot, all_regi.
   dat <- tidyr::complete(dat, iteration, ttot, all_regi, fill = list("value" = 0))
+  dat <- dat |> filter(ttot > 2000)
   
   # convert dimension that should be distinguished by color to factors (relevant if years are plotted over iterations)
   dat[[color]] <- as.factor(dat[[color]]) 
@@ -178,7 +180,7 @@ plot_iterations <- function(runname) {
     semi_join(magpieIter, by = join_by(iteration))
   
   p_mult <- myplot(dat, title = paste(runname, var, par, sep = "\n"))
-  p_mult_it <- myplot(dat |> filter(ttot > 2000), xaxis = "iteration", color = "ttot", title = paste(runname, var, par, sep = "\n"))
+  p_mult_it <- myplot(dat, xaxis = "iteration", color = "ttot", title = paste(runname, var, par, sep = "\n"))
 
 
   # ---- Plot: REMIND co2 price ----
@@ -229,18 +231,18 @@ plot_iterations <- function(runname) {
   return("Done\n")
 }
 
-withr::with_dir(folder, {
-
-  # ---- Search for runs if not provided----
-  if (is.null(runs)) {
-    message("\nNo run specified by user. Searching for all runs available in this folder:")
-    # Find fulldata.gdx files of all runs
-    runs <- Sys.glob("C_*/fulldata.gdx")
-    # Remove everything but the scenario name from the folder names and remove duplicates
-    runs <- unique(sub("/fulldata.gdx","",runs))
-    message(paste(runs, collapse = ", "))
-    message("")
-  }
+#withr::with_dir(folder, {
+#
+#  # ---- Search for runs if not provided----
+#  if (is.null(runs)) {
+#    message("\nNo run specified by user. Searching for all runs available in this folder:")
+#    # Find fulldata.gdx files of all runs
+#    runs <- Sys.glob("C_*/fulldata.gdx")
+#    # Remove everything but the scenario name from the folder names and remove duplicates
+#    runs <- unique(sub("/fulldata.gdx","",runs))
+#    message(paste(runs, collapse = ", "))
+#    message("")
+#  }
 
   # ---- Loop over runs ans plot ----
   for (runname in runs) {
@@ -249,5 +251,5 @@ withr::with_dir(folder, {
     message(ret)
   }
 
-})
+#})
 
