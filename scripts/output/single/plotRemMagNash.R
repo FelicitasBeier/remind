@@ -178,6 +178,7 @@ plot_iterations <- function(runname) {
     semi_join(magpieIter, by = join_by(iteration))
   
   p_mult <- myplot(dat, title = paste(runname, var, par, sep = "\n"))
+  p_mult_it <- myplot(dat |> filter(ttot > 2000), xaxis = "iteration", color = "ttot", title = paste(runname, var, par, sep = "\n"))
 
 
   # ---- Plot: REMIND co2 price ----
@@ -216,6 +217,7 @@ plot_iterations <- function(runname) {
   lusweave::swfigure(out, print, p_demPE_it,          sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_emi_mag,           sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_mult,              sw_option = "height=9,width=16")
+  lusweave::swfigure(out, print, p_mult_it,           sw_option = "height=9,width=16")
   #lusweave::swfigure(out, print, p_shift,             sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_price_carbon,      sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_price_carbon_it_1, sw_option = "height=9,width=16")
