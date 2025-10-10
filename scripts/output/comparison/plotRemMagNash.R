@@ -7,9 +7,10 @@
 
 ############################# LOAD LIBRARIES #############################
 
-library(magclass, quietly = TRUE, warn.conflicts = FALSE)
+library(dplyr,    quietly = TRUE, warn.conflicts = FALSE)
 library(ggplot2,  quietly = TRUE, warn.conflicts = FALSE)
-# Functions from other libraries are loaded using ::
+# Functions from the following libraries are loaded using ::
+# lucode2, tidyr, mip, quitte, lusweave, withr
 
 ############################# BASIC CONFIGURATION #############################
 
@@ -68,7 +69,7 @@ plot_iterations <- function(runname) {
   TWa2EJ <- 31.5576 # TWa to EJ (1 a = 365.25*24*3600 s = 31557600 s)
   sm_tdptwyr2dpgj <- 31.71 # convert [TerraDollar per TWyear] to [Dollar per GJoule]
   GtC_2_MtCO2 <- 44/12 * 1000
-  magpieIter <- quitte::read.gdx(gdxName, "magpieIter") |> filter(iteration>2)
+  magpieIter <- quitte::read.gdx(gdxName, "magpieIter") |> filter(iteration > 2)
 
   # ---- Plot: MAgPIE prices for purpose grown bioenergy ----
 
@@ -76,8 +77,6 @@ plot_iterations <- function(runname) {
 
   # modules/30_biomass/magpie/presolve.gms
   par <- "o_p30_pebiolc_pricemag"
-  
-  dat <- gdx::readGDX(gdxName, par, restore_zeros = FALSE)
   
   dat <- quitte::read.gdx(gdxName, par) |>
     mutate(value = value * sm_tdptwyr2dpgj) |>
@@ -124,10 +123,11 @@ plot_iterations <- function(runname) {
   
   title <- paste(runname, var, par, sep = "\n")
 
-  p_fuelex         <- myplot(dat,                                                                        ylab = "EJ/yr", title = title)
-  p_fuelex_it      <- myplot(dat,                                   xaxis = "iteration", color = "ttot", ylab = "EJ/yr", title = title)
-  p_fuelex_it_fix  <- myplot(dat,                                   xaxis = "iteration", color = "ttot", ylab = "EJ/yr", title = title, scales = "fixed")
-  p_fuelex_it_2060 <- myplot(dat|>filter(ttot==2060), type = "bar", xaxis = "iteration", color = "ttot", ylab = "EJ/yr", title = title, scales = "fixed")
+  p_fuelex         <- myplot(dat,                                      ylab = "EJ/yr", title = title)
+  p_fuelex_it      <- myplot(dat, xaxis = "iteration", color = "ttot", ylab = "EJ/yr", title = title)
+  p_fuelex_it_fix  <- myplot(dat, xaxis = "iteration", color = "ttot", ylab = "EJ/yr", title = title, scales = "fixed")
+  p_fuelex_it_2060 <- myplot(dat |> filter(ttot == 2060), type = "bar", 
+                                  xaxis = "iteration", color = "ttot", ylab = "EJ/yr", title = title, scales = "fixed")
   
 
   # ---- Plot: REMIND Demand for purpose grown bioenergy ----
@@ -137,11 +137,6 @@ plot_iterations <- function(runname) {
 
   var <- "PE|Biomass|+++|Energy Crops (EJ/yr)"
   
-  # fuExtr <- readGDX(gdx, "vm_fuExtr", field = "l")[, y, ] * TWa_2_EJ
-  # pm_costsPEtradeMp <- readGDX(gdx, "pm_costsPEtradeMp", restore_zeros = FALSE)
-  # Mport  <- readGDX(gdx, "vm_Mport", field = "l")[, y, ] * TWa_2_EJ
-  # Xport  <- readGDX(gdx, "vm_Xport", field = "l")[, y, ] * TWa_2_EJ
-  # fuExtr[, , "pebiolc.1"] + (1 - pm_costsPEtradeMp[, , "pebiolc"]) * Mport[, , "pebiolc"] - Xport[, , "pebiolc"]  
   # core/postsolve.gms:
   # o_PEDem_Bio_ECrops(iteration,ttot,regi) = vm_fuExtr.l(ttot,regi,"pebiolc","1") + (1 - pm_costsPEtradeMp(ttot,regi"pebiolc")) * vm_Mport.l(ttot,regi,"pebiolc") - vm_Xport.l(ttot,regi"pebiolc");
   
