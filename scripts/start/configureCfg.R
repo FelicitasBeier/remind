@@ -122,6 +122,13 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
     # add table with information about runs that need the fulldata.gdx of the current run as input
     icfg$RunsUsingTHISgdxAsInput <- iscenarios %>% select(contains("path_gdx")) %>%              # select columns that have "path_gdx" in their name
                                                    filter(rowSums(. == iscen, na.rm = TRUE) > 0) # select rows that have the current scenario in any column
+                                                   
+    # For coupled runs add "C_" to scenario names
+    if(length(cfg$RunsUsingTHISgdxAsInput) > 0 & cfg$gms$cm_MAgPIE_Nash > 0) {
+      selection <- !is.na(cfg$RunsUsingTHISgdxAsInput)
+      cfg$RunsUsingTHISgdxAsInput[selection] <- paste0("C_", cfg$RunsUsingTHISgdxAsInput[selection])
+      rownames(cfg$RunsUsingTHISgdxAsInput) <- paste0("C_", rownames(cfg$RunsUsingTHISgdxAsInput))
+    }
 
     return(icfg)
 }
