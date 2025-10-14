@@ -344,6 +344,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
     # configure cfg according to settings from csv if provided
     if (! length(config.file) == 0) {
+      if (exists("scenarios_coupled")) cfg$gms$cm_MAgPIE_Nash <- 1 # activate MAgPIE coupling, used in configureCfg below
       cfg <- configureCfg(cfg, scen, scenarios,
                           verboseGamsCompile = ! "--gamscompile" %in% flags || "--interactive" %in% flags)
       errorsfound <- sum(errorsfound, cfg$errorsfoundInConfigureCfg)
@@ -383,7 +384,6 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     # =================== MAgPIE coupling ===================
 
     if (exists("scenarios_coupled")) {
-      cfg$gms$cm_MAgPIE_Nash <- 1 # activate MAgPIE coupling
       # If a path to a MAgPIE report is supplied, let GAMS execute mag2rem but only the getReportDate part without actually configuring and running MAgPIE
       # scenarios_coupled[scen, "path_report"]
       
