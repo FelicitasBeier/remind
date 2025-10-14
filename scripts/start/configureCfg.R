@@ -124,10 +124,11 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
                                                    filter(rowSums(. == iscen, na.rm = TRUE) > 0) # select rows that have the current scenario in any column
                                                    
     # For coupled runs add "C_" to scenario names
-    if(length(cfg$RunsUsingTHISgdxAsInput) > 0 & cfg$gms$cm_MAgPIE_Nash > 0) {
-      selection <- !is.na(cfg$RunsUsingTHISgdxAsInput)
-      cfg$RunsUsingTHISgdxAsInput[selection] <- paste0("C_", cfg$RunsUsingTHISgdxAsInput[selection])
-      rownames(cfg$RunsUsingTHISgdxAsInput) <- paste0("C_", rownames(cfg$RunsUsingTHISgdxAsInput))
+    if(nrow(icfg$RunsUsingTHISgdxAsInput) > 0 & icfg$gms$cm_MAgPIE_Nash > 0) {
+      selection <- !is.na(icfg$RunsUsingTHISgdxAsInput)
+      icfg$RunsUsingTHISgdxAsInput[selection] <- paste0("C_", icfg$RunsUsingTHISgdxAsInput[selection])
+      print(icfg$RunsUsingTHISgdxAsInput)
+      rownames(icfg$RunsUsingTHISgdxAsInput) <- paste0("C_", rownames(icfg$RunsUsingTHISgdxAsInput))
     }
 
     return(icfg)
