@@ -111,10 +111,15 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
         }
       }
     }
-
+    
     # Define path where the GDXs will be taken from
     gdxlist <- unlist(iscenarios[iscen, names(path_gdx_list)])
     names(gdxlist) <- path_gdx_list
+    
+    # if MAgPIE coupled prepend 'C_' to name of reference scenarios
+    if(icfg$gms$cm_MAgPIE_Nash > 0) {
+      gdxlist[gdxlist %in% rownames(iscenarios)] <- paste0("C_", gdxlist[gdxlist %in% rownames(iscenarios)])
+    }
 
     # add gdxlist to list of files2export
     icfg$files2export$start <- c(icfg$files2export$start, gdxlist, config.file)
