@@ -99,12 +99,9 @@ display p_efFossilFuelExtr;
 ***--------------------------------------
 
 *** Decide whether MAgPIE should be executed. Also triggers the update of MAgPIE data in multiple locations.
-if(magpieIter(iteration)
-   AND ord(iteration) ge cm_startIter_MAgPIE
-   AND cm_MAgPIE_Nash eq 1,
-
+if(magpieIter(iteration) AND cm_MAgPIE_Nash eq 1,
     sm_updateMagpieData = 1; !! Run MAgPIE in this Nash iteration
-    else
+else
     sm_updateMagpieData = 0; !! Don't run MAgPIE in this Nash iteration
 );
 
