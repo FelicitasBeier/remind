@@ -2307,9 +2307,9 @@ steps         "iterator for MAC steps"
     1*801
 /
 
-magpieIter(iteration) "iterations in which MAgPIE runs in presolve"
+magpieIter(iteration) "Nash iterations in which MAgPIE runs in core/presolve"
 /
-    2,10,15,20,25
+    10,15,20,25,30
 /
 ;
 

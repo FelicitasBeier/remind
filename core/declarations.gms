@@ -652,8 +652,11 @@ sm_eps                       "small number: 1e-9 "  /1e-9/
 sm_CES_calibration_iteration "current calibration iteration number, loaded from environment variable cm_CES_calibration_iteration"  /0/
 
 sm_magpieIter                "Count the number of MAgPIE iterations, starting with zero" /0/
+sm_magpieIterEnd             "Number of MAgPIE iterations that have to be performed. Equals the number of elements defined in the set magpieIter"
 sm_updateMagpieData          "Boolean defined in core/presolve indicating if MAgPIE is running in the current Nash iteration (1) or not (0)" /0/
 ;
+
+sm_magpieIterEnd = card(magpieIter);
 
 * GA sm_dmac changes depending on the choice of MACs in c_nonco2_macc_version
 $ifthen %c_nonco2_macc_version% == "PBL_2007"
