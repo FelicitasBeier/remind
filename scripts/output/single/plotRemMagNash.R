@@ -27,10 +27,10 @@ runs <- outputdir
 # Plot dimension specified for 'color' over dimension specified for 'xaxis' as line plot or bar plot
 myplot <- function(dat, type = "line", xaxis = "ttot", color = "iteration", scales = "free_y", ylab = NULL, title = NULL) {
   
-  # Zero values are not stored in the gdx and are this missing in dat.
+  # Zero values are not stored in the gdx and are thus missing in dat.
   # Add '0' for the missing combinations of iteration, ttot, all_regi.
-  dat <- tidyr::complete(dat, iteration, ttot, all_regi, fill = list("value" = 0))
-  dat <- dat |> filter(ttot > 2000)
+  dat <- dat |> tidyr::complete(iteration, ttot, all_regi, fill = list("value" = 0)) |>
+                filter(ttot > 2000)
   
   # convert dimension that should be distinguished by color to factors (relevant if years are plotted over iterations)
   dat[[color]] <- as.factor(dat[[color]]) 
@@ -109,9 +109,9 @@ plot_iterations <- function(runname) {
   #   -> "Primary Energy Production|Biomass|Energy Crops (EJ/yr)" (used also in coupling interface in MAgPIE)
   var <- "Primary Energy Production|Biomass|Energy Crops (EJ/yr)"
 
-  # modules/30_biomass/magpie/postsolve.gms:
+  # core/postsolve.gms:
   # o_vm_fuExtr_pebiolc = vm_fuExtr.l(ttot,regi,"pebiolc","1");
-  
+ 
   par <- "o_vm_fuExtr_pebiolc"
   
   dat <- quitte::read.gdx(gdxName, par) |>
