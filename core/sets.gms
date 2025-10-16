@@ -302,8 +302,6 @@ all_te          "all energy technologies, including from modules"
     idreaf_ng    "Route: NG Direct reduction / EAF without CCS"
     idreaf_ng_ccs "Route: H2 Direct reduction / EAF with CCS"
     seceaf       "Route: Scrap-loaded EAF"
-    pcc          "outdated technology, only here to avoid compilation errors if input data containing information for this technology are used"
-    pco          "outdated technology, only here to avoid compilation errors if input data containing information for this technology are used"
 *** outdated entries, still used in module 04 until structuremappings are fixed
     tdbiohoi        "transmission and distribution for heating oil from biomass origin to industry"
     tdfoshoi        "transmission and distribution for heating oil from fossil origin to industry"
