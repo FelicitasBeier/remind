@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### input data/calibration
 
 ### changed
--
+- **45_carbonprice** Use ScenarioMIP settings as new default for regional carbon price differentiation in 45_carbonprice/functionalForm 
+    [[#2229](https://github.com/remindmodel/remind/pull/2229)]
 
 ### added
 -
