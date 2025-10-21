@@ -29,15 +29,6 @@ Equation
     q40_RenShare                                  "constraint to enforce minimum share of renewables based on renewable share targets of NPi"
 ;
 
-*** some outpute parameters to check q40_RenShare equation
-Parameters
-o40_Renewable(ttot,all_regi,RenShareTargetType)                "Renewable energy per target type [EJ/yr]"
-o40_Total(ttot,all_regi,RenShareTargetType)                    "Total energy per target type [EJ/yr]"
-o40_Total_MainProd(ttot,all_regi,RenShareTargetType)           "Total energy per target type from main product [EJ/yr]"
-o40_Total_CoupledProd(ttot,all_regi,RenShareTargetType)        "Total energy per target type from coupled product [EJ/yr]"
-;
-
-
 
 *** EOF ./modules/40_techpol/NPi2025/declarations.gms
 
