@@ -1384,11 +1384,6 @@ if(c_macscen eq 1,
   pm_macSwitch(ttot,regi,emiMacSector) = 1;
 );
 
-*** for NDC and NPi switch off landuse MACs
-$if %carbonprice% == "off"      pm_macSwitch(ttot,regi,emiMacMagpie) = 0;
-$if %carbonprice% == "NDC"      pm_macSwitch(ttot,regi,emiMacMagpie) = 0;
-$if %carbonprice% == "NPi"      pm_macSwitch(ttot,regi,emiMacMagpie) = 0;
-
 *** Load historical carbon prices defined in $/t CO2, need to be rescaled to right unit
 pm_taxCO2eq(ttot,regi)$(ttot.val le 2020) = 0;
 parameter fm_taxCO2eqHist(ttot,all_regi)       "historic CO2 prices [$/tCO2]"
