@@ -17,6 +17,70 @@ emisForEmiFac(all_enty)  "types of emissions that are only calculated in a post-
         NH3
 /
 
+all_sectorEmi "all sectors with emissions"
+/   indst        "emissions from industry sector"
+    res          "emissions from residential sector"
+    trans        "emissions from transport sector"
+    power        "emissions from power sector"
+    solvents     "emissions from solvents"
+    extraction   "emissions from fuel extraction"
+    indprocess   "process emissions from industry"
+    waste        "emissions from waste"
+/
+
+sectorEndoEmi(all_sectorEmi)   "sectors with endogenous emissions"
+/
+    indst    "industry"
+    res      "residential"
+    trans    "transport"
+    power    "power"
+/
+
+sectorExogEmi(all_sectorEmi) "sectors with exogenous emissions"
+/
+    solvents
+    extraction
+    indprocess
+    waste
+/
+
+sectorEndoEmi2te(all_enty,all_enty,all_te,sectorEndoEmi)   "map sectors to technologies"
+/
+    pegas.seel.ngcc.power
+    pegas.seel.ngt.power
+    seh2.seel.h2turb.power
+    pegas.seel.gaschp.power
+    pegas.sehe.gashp.power
+    pegas.segafos.gastr.indst
+    pegas.segafos.gastr.res
+    pecoal.seel.pc.power
+    pecoal.seel.coalchp.power
+    pecoal.sehe.coalhp.power
+    pecoal.sesofos.coaltr.indst
+    pecoal.sesofos.coaltr.res
+    peoil.seliqfos.refliq.trans
+    peoil.seliqfos.refliq.indst
+    peoil.seliqfos.refliq.res
+    peoil.seel.dot.power
+    pebiolc.seel.biochp.power
+    pebiolc.sehe.biohp.power
+    pebiolc.sesobio.biotr.indst
+    pebiolc.sesobio.biotr.res
+    pebiolc.sesobio.biotrmod.indst
+    seliqbio.fehos.tdbiohos.indst
+    seliqfos.fehos.tdfoshos.indst
+    seliqsyn.fehos.tdsynhos.indst
+    seliqbio.fehos.tdbiohos.res
+    seliqfos.fehos.tdfoshos.res
+    seliqsyn.fehos.tdsynhos.res
+    seliqbio.fedie.tdbiodie.trans
+    seliqfos.fedie.tdfosdie.trans
+    seliqsyn.fedie.tdsyndie.trans
+    seliqbio.fepet.tdbiopet.trans
+    seliqfos.fepet.tdfospet.trans
+    seliqsyn.fepet.tdsynpet.trans
+/
+
 sectorEndoEmi2te_dyn11(all_enty,all_enty,all_te,sectorEndoEmi)  "map sectors to technologies"
 /
 pecoal.seel.igcc.power
