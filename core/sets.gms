@@ -20,7 +20,8 @@ c_description    "%c_description%"   /"for model description, see explanatory te
 c_results_folder "%c_results_folder%"  /"for cfg$results_folder, see explanatory text"/
 c_model_version  "model version" /%c_model_version%/
 cm_GDPpopScen    "cm_GDPpopScen as set for use in GDX"      /%cm_GDPpopScen%/
-
+cm_APssp         "cm_APssp as set for use in GDX"           /%cm_APssp%/
+cm_APscen        "cm_APscen as set for use in GDX"          /%cm_APscen%/
 
 all_GDPpopScen    "all possible GDP scenarios"
 /
