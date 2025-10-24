@@ -344,6 +344,16 @@ loop((ttot,ttot2,ext_regi,emiMktExt)$pm_emiMktTarget_dev(ttot,ttot2,ext_regi,emi
 );
 $endif.emiMkt
 
+$ifthen.NDC "%carbonprice%" == "NDC" 
+*** additional criterion: Were NDC emissions targets reached?
+loop((t,regi)$pm_NDCEmiTargetDeviation(t,regi),
+  if(abs(pm_NDCEmiTargetDeviation(t,regi) ) gt cm_NDC_target_DevTol,
+    s80_bool = 0;
+    p80_messageShow("NDC") = YES;
+  );
+);
+$endif.NDC
+
 *** additional criterion: Were the quantity targets reached by implicit taxes and/or subsidies? 
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"
 p80_implicitQttyTarget_dev_iter(iteration,ttot,ext_regi,qttyTarget,qttyTargetGroup) = pm_implicitQttyTarget_dev(ttot,ext_regi,qttyTarget,qttyTargetGroup);
@@ -495,6 +505,13 @@ $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"
           display pm_taxemiMkt_iteration;
 	      );
 $endif.emiMkt  
+$ifthen.NDC "%carbonprice%" == "NDC"       
+        if(sameas(convMessage80, "NDC"),
+		      display "#### 8) Some regional NDC target has not been reached within the tolerance of cm_NDC_target_DevTol";
+          display "#### Check pm_NDCEmiTargetDeviation, which is the relative deviation of emissions from the target";
+          display pm_NDCEmiTargetDeviation;
+	      );
+$endif.NDC 
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"    
         if(sameas(convMessage80, "implicitEnergyTarget"),
 		      display "#### 10) A quantity target has not been reached yet.";
