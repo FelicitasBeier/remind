@@ -1961,6 +1961,13 @@ $setglobal cm_repeatNonOpt off      !! def = off  !! regexp = off|on
 *' @stop
 
 *-------------------------------------------------------------------------------------
+*** Track runtime
+File runtime /runtime.txt /;
+runtime.pc = 5;
+putclose runtime system.date system.Time "GAMS" "start";
+runtime.ap = 1;
+*-------------------------------------------------------------------------------------
+
 *** automated checks and settings
 *ag* set conopt version
 option nlp = %cm_conoptv%;
@@ -2016,5 +2023,8 @@ $ifthen.c_skip_output %c_skip_output% == "off"
 $include    "./core/output.gms";
 $batinclude "./modules/include.gms"    output
 $endif.c_skip_output
+
+*** Track runtime
+putclose runtime system.date system.Time "GAMS" "end";
 
 *** EOF ./main.gms

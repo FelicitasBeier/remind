@@ -1,5 +1,13 @@
 *** SOF ./modules/50_damages/KotzWenz/postsolve.gms
+
+*** Track runtime
+putclose runtime system.date system.Time "run_KotzWenz_damages" "start" iteration.val;
+
 execute "Rscript run_KotzWenz_damages.R"
+
+*** Track runtime
+putclose runtime system.date system.Time "run_KotzWenz_damages" "end" iteration.val;
+
 execute_loadpoint 'pm_KotzWenz_damageIso' p50_damageIsoPerc=pm_damageIso;
 execute_loadpoint 'pm_KotzWenz_damageMarginalIso' p50_damageMarginalIsoPerc=pm_damageMarginalIso;
 

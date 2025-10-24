@@ -84,7 +84,10 @@ if (cm_nash_mode eq 1,
 o_modelstat = 100;
 loop(sol_itr$(sol_itr.val <= cm_solver_try_max),
     if(o_modelstat ne 2,
+*** Track runtime
+    putclose runtime system.date system.Time "solve" "start" iteration.val;
 $batinclude "./modules/include.gms" solve
+    putclose runtime system.date system.Time "solve" "end" iteration.val;
     )
 );  !! end of sol_itr loop, when o_modelstat is not equal to 2
 

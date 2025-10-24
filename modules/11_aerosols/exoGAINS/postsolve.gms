@@ -18,8 +18,14 @@ if((o_modelstat le 2),
     Execute_Unload 'fulldata_exoGAINS';
 );
 
+*** Track runtime
+putclose runtime system.date system.Time "exoGAINS" "start" iteration.val;
+
 *** Calculate AP emissions
 Execute "Rscript exoGAINSAirpollutants.R";
+
+*** Track runtime
+putclose runtime system.date system.Time "exoGAINS" "end" iteration.val;
 
 *** Read input ref results for tall with following dimensions: p11_emiAPexsolve(tall,all_regi,all_sectorEmi,emiRCP)
 if((cm_startyear gt 2005),
