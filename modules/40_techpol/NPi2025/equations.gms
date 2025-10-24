@@ -8,7 +8,11 @@
 
 *' @equations
 
-
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+***                                Capacity Targets
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
 
 ***am minimum targets for certain technologies
 q40_ElecBioBound(t,regi)$(t.val gt 2025)..
@@ -21,6 +25,13 @@ q40_windBound(t,regi)$(t.val gt 2025 AND p40_TechBound(t,regi,"wind") gt 0)..
   sum(teWind, vm_cap(t,regi,teWind,"1")) 
     =g= p40_TechBound(t,regi,"wind") * 0.001
 ;
+
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+***                                Renewable Share Targets
+*------------------------------------------------------------------------------------
+*------------------------------------------------------------------------------------
+
 
 *** Minimum shares of renewable energy should be met in target year based on renewable energy share targets of NPI scenario.
 *** Constraint currently supports the following target types (RenShareTargetType):
