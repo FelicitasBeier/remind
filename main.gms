@@ -1963,8 +1963,9 @@ $setglobal cm_repeatNonOpt off      !! def = off  !! regexp = off|on
 *-------------------------------------------------------------------------------------
 *** Track runtime
 File runtime /runtime.txt /;
-runtime.pc = 5;
-putclose runtime system.date system.Time "GAMS" "start";
+***runtime.pc = 5;
+runtime.nd = 0;
+putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",GAMS,start" 0:0;
 runtime.ap = 1;
 *-------------------------------------------------------------------------------------
 
@@ -2025,6 +2026,6 @@ $batinclude "./modules/include.gms"    output
 $endif.c_skip_output
 
 *** Track runtime
-putclose runtime system.date system.Time "GAMS" "end";
+putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",GAMS,end" 0:0;
 
 *** EOF ./main.gms

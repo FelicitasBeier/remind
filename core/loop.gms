@@ -85,9 +85,9 @@ o_modelstat = 100;
 loop(sol_itr$(sol_itr.val <= cm_solver_try_max),
     if(o_modelstat ne 2,
 *** Track runtime
-    putclose runtime system.date system.Time "solve" "start" iteration.val;
+    putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",solve,start" iteration.val:0;
 $batinclude "./modules/include.gms" solve
-    putclose runtime system.date system.Time "solve" "end" iteration.val;
+    putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",solve,end" iteration.val:0;
     )
 );  !! end of sol_itr loop, when o_modelstat is not equal to 2
 

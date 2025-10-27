@@ -108,7 +108,7 @@ else
 *** Run MAgPIE
 if (sm_updateMagpieData eq 1,
 *** Track runtime
-   putclose runtime system.date system.Time "mag2rem" "start" iteration.val;
+   putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",mag2rem,start" iteration.val:0;
 *** Temporarily change numeric round format (nr) and number of decimals (nd) of the
 *** outpt of the put_utility such that the arguments passed to mag2rem.R have integer format
   sm_tmp  = logfile.nr;
@@ -119,7 +119,7 @@ if (sm_updateMagpieData eq 1,
   put_utility  "exec" / "Rscript mag2rem.R " sm_magpieIter " " ord(iteration);
   logfile.nr = sm_tmp;
   logfile.nd = sm_tmp2;
-  putclose runtime system.date system.Time "mag2rem" "end" iteration.val;
+  putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",mag2rem,end" iteration.val:0;
 *** In coupled runs overwrite pebiolc production from look-up table with actual MAgPIE values
 *** Read production of 2nd gen. purpose grown bioenergy from MAgPIE (given to MAgPIE from previous Remind run)
   Execute_Loadpoint 'magpieData.gdx' pm_pebiolc_demandmag;

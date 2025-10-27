@@ -19,13 +19,12 @@ if((o_modelstat le 2),
 );
 
 *** Track runtime
-putclose runtime system.date system.Time "exoGAINS" "start" iteration.val;
-
+putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",exoGAINS,start" iteration.val:0;
 *** Calculate AP emissions
 Execute "Rscript exoGAINSAirpollutants.R";
 
 *** Track runtime
-putclose runtime system.date system.Time "exoGAINS" "end" iteration.val;
+putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",exoGAINS,end" iteration.val:0;
 
 *** Read input ref results for tall with following dimensions: p11_emiAPexsolve(tall,all_regi,all_sectorEmi,emiRCP)
 if((cm_startyear gt 2005),

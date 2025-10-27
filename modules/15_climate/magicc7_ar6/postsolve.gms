@@ -21,12 +21,12 @@ Execute_unload 'fulldata_postsolve';
 * Run the climate assessment script. Takes around 2-3m for a single parameter set, including harmonization and infilling
 
 *** Track runtime
-putclose runtime system.date system.Time "climateAssessmentInterimRun" "start" iteration.val;
+putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",climateAssessmentInterimRun,start" iteration.val:0;
 
 Execute "Rscript climateAssessmentInterimRun.R";
 
 *** Track runtime
-putclose runtime system.date system.Time "climateAssessmentInterimRun" "end" iteration.val;
+putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",climateAssessmentInterimRun,end" iteration.val:0;
 
 * Read in results
 Execute_Loadpoint 'p15_forc_magicc'  p15_forc_magicc;
@@ -72,14 +72,7 @@ $ifthen.cm_magicc_tirf "%cm_magicc_temperatureImpulseResponse%" == "on"
 * thus only compute TIRF after each of the first 10 iterations, then only every fifth iteration. 
 * runtime is ca 30s, so switching on TIRF adds ca 10min to runtime
 if( ((iteration.val le 10) or ( mod(iteration.val,5 ) eq 0)) ,
-*** Track runtime
-    putclose runtime system.date system.Time "climateAssessmentInterimRun" "start" iteration.val;
-    
     execute "Rscript climateAssessmentImpulseResponse.R";
-
-*** Track runtime
-    putclose runtime system.date system.Time "climateAssessmentInterimRun" "start" iteration.val;
-
     execute_loadpoint 'pm_magicc_temperatureImpulseResponse'  pm_temperatureImpulseResponseCO2 = pm_temperatureImpulseResponse;
 );
 *NOTE the MAGICC results (*.OUT files) are from  the last pulse experiment now, so take care if reading them in after this point.
