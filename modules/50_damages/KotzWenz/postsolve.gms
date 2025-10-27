@@ -1,12 +1,12 @@
 *** SOF ./modules/50_damages/KotzWenz/postsolve.gms
 
 *** Track runtime
-putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",run_KotzWenz_damages,start" iteration.val:0;
+putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",run_KotzWenz_damages,start" iteration.val:0;
 
 execute "Rscript run_KotzWenz_damages.R"
 
 *** Track runtime
-putclose runtime gyear(now):0:0 "-" gmonth(now):0:0 "-" gday(now):0:0 " " ghour(now):0:0 ":" gminute(now):0:0 ":" gsecond(now):0:0 ",run_KotzWenz_damages,end" iteration.val:0;
+putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",run_KotzWenz_damages,end" iteration.val:0;
 
 execute_loadpoint 'pm_KotzWenz_damageIso' p50_damageIsoPerc=pm_damageIso;
 execute_loadpoint 'pm_KotzWenz_damageMarginalIso' p50_damageMarginalIsoPerc=pm_damageMarginalIso;
