@@ -25,10 +25,17 @@ if((cm_iterative_target_adj eq 4) OR (cm_iterative_target_adj eq 44),
   !!  Save the best available information about the reaction of the actual budget to the change in prices 
   if (iteration.val ge 2,
      !! determine the (price change / budget change) in the last iteration. If no change in tax, then 0; no change of budget at all is very unlikely, thus negligible risk of infeasibility
-      p45_TaxBudgetSlopeCurrent(regi) = (pm_taxCO2eq_iter(iteration, "2100", regi) - pm_taxCO2eq_iter(iteration-1, "2100", regi)) 
-                                        / (p45_actualbudgetco2Regi_iter(iteration, regi) -  p45_actualbudgetco2Regi_iter(iteration - 1, regi));
-      p45_TaxBudgetSlopeCurrent_iter(iteration, regi) = p45_TaxBudgetSlopeCurrent(regi); 
-
+      loop(regi,
+        if ((p45_actualbudgetco2Regi_iter(iteration, regi) -  p45_actualbudgetco2Regi_iter(iteration - 1, regi)) ne 0,
+        p45_TaxBudgetSlopeCurrent(regi) = (pm_taxCO2eq_iter(iteration, "2100", regi) - pm_taxCO2eq_iter(iteration-1, "2100", regi))
+                                          / (p45_actualbudgetco2Regi_iter(iteration, regi) -  p45_actualbudgetco2Regi_iter(iteration - 1, regi));
+        else
+        p45_TaxBudgetSlopeCurrent(regi) = 1000; !! TBD: it has now happened, that there was absolutely no change in the budget between iterations. 
+                                                !! How to deal with that case? Preliminary idea: 1000 as a marker for this case
+         ); !! If condition
+        );  !! Regi loop
+      p45_TaxBudgetSlopeCurrent_iter(iteration, regi) = p45_TaxBudgetSlopeCurrent(regi);
+      
       !! The slope is expected to be negative (i.e. price increase leads to lower actual budget). 
       !! If it is indeed negative, update the information from the previous iterations. (if there was no change, then the previously estalished relation remains available)
       loop(regi, 
@@ -37,6 +44,8 @@ if((cm_iterative_target_adj eq 4) OR (cm_iterative_target_adj eq 44),
           ); !! If condition
           ); !! Regi loop
       p45_TaxBudgetSlopeBest_iter(iteration,regi) = p45_TaxBudgetSlopeBest(regi);
+
+      
   );
 
 *** 2. Compute the rescaling factor 
@@ -124,7 +133,7 @@ else   !! if not yet within tolerance
   ); !! if iteration far enough
 
 !! if alternating adjustment: set "actual" adjustment factors to 1 according to iteration number
-if ((cm_CPadjustmentAlternating eq 1) and (iteration.val ge 4),
+if ((cm_CPadjustmentAlternating eq 1) and (iteration.val ge 8),
   !! a) uneven iteration => only update downwards
   if ((mod(iteration.val, 2) eq 1), 
   loop(regi, 
