@@ -403,8 +403,7 @@ if (  (   cm_iterative_target_adj eq 9
 );
 
 *** check regional budget target, must be within tolerance level of target value
-!!$ifthen.cm_iterative_target_adj (cm_iterative_target_adj == "4") OR (cm_iterative_target_adj == "44")
-if(cm_iterative_target_adj eq 55,
+if(cm_iterative_target_adj eq 44,
   p80_regionalBudget_absDev_iter(iteration,regi) = pm_budgetDeviation(regi);
   loop(regi,
   if(cm_regionalBudgetTolerance_Abs = 0, 
@@ -412,7 +411,7 @@ if(cm_iterative_target_adj eq 55,
       s80_bool = 0;
       p80_messageShow("regiBudget") = YES;
     );
-  else
+  elseif(cm_iterative_target_adj eq 4),
     if (abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_regionalBudgetTolerance_Abs),
       s80_bool = 0;
       p80_messageShow("regiBudget") = YES;
@@ -420,7 +419,6 @@ if(cm_iterative_target_adj eq 55,
   );
   );  
 );
-!!$endIf.cm_iterative_target_adj
 $endIf.carbonprice
 
 
