@@ -80,16 +80,18 @@ if (cm_nash_mode eq 1,
       ;
 );
 
+*** For each Nash iteration track runtime of solution (all regions and soliter)
+putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",solve,start," iteration.val:0;
 
 o_modelstat = 100;
 loop(sol_itr$(sol_itr.val <= cm_solver_try_max),
     if(o_modelstat ne 2,
-*** Track runtime
-    putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",solve,start" iteration.val:0;
 $batinclude "./modules/include.gms" solve
-    putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",solve,end" iteration.val:0;
     )
 );  !! end of sol_itr loop, when o_modelstat is not equal to 2
+
+*** Track runtime
+putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",solve,end," iteration.val:0;
 
 ***---------------------------------------------------------
 ***     Track of changes between iterations
