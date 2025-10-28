@@ -10,12 +10,12 @@ if( (ord(iteration) le 25 and ord(iteration) ge cm_startIter_EDGET and (mod(ord(
     or (ord(iteration) le 45  and ord(iteration) gt 25 and  (mod(ord(iteration), 3) eq 0))
     or (ord(iteration)  gt 45 and  (mod(ord(iteration), 5) eq 0)),
 
-    *** Track runtime
+*** Track runtime
     putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",iterativeEdgeTransport,start" iteration.val:0;
 
     Execute "Rscript -e 'edgeTransport::iterativeEdgeTransport()'";
 
-    *** Track runtime
+*** Track runtime
     putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",iterativeEdgeTransport,end" iteration.val:0;
 
     Execute_Loadpoint 'p35_esCapCost' p35_esCapCost;
