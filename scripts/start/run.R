@@ -108,6 +108,9 @@ run <- function() {
   timeGAMSEnd  <- Sys.time()
   gams_runtime <- timeGAMSEnd - timeGAMSStart
   timeOutputStart <- Sys.time()
+  
+  # Record the time when the output starts in runtime.log
+  write(paste(Sys.time(), "output", 0, sep = ","), file = "runtime.log", append = TRUE)
 
   # If REMIND actually did run
   if (cfg$action == "ce" && cfg$gms$c_skip_output != "on") {
@@ -268,11 +271,18 @@ run <- function() {
   # get runtime for output
   timeOutputEnd <- Sys.time()
 
+  # Record the time when the run finishes in runtime.log
+  write(paste(Sys.time(), "end", 0, sep = ","), file = paste0(cfg$results_folder, "/runtime.log"), append = TRUE)
+  
+  # Add the runtime.log to runstatistics.rda
+  runtime <- readr::read_csv(paste0(cfg$results_folder, "/runtime.log"), col_names = c("time","phase", "iteration")) |> suppressMessages())
+
   # Save run statistics to local file
   cat("\nSaving timeOutputStart and timeOutputEnd to runstatistics.rda\n")
-  lucode2::runstatistics(file           = paste0(cfg$results_folder, "/runstatistics.rda"),
+  lucode2::runstatistics(file          = paste0(cfg$results_folder, "/runstatistics.rda"),
                        timeOutputStart = timeOutputStart,
-                       timeOutputEnd   = timeOutputEnd)
+                       timeOutputEnd   = timeOutputEnd,
+                       runtime         = runtime)
 
   return(cfg$results_folder)
   # on.exit sets working directory back to results folder

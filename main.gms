@@ -1962,11 +1962,12 @@ $setglobal cm_repeatNonOpt off      !! def = off  !! regexp = off|on
 
 *-------------------------------------------------------------------------------------
 *** Track runtime
-File runtime /runtime.txt /;
+File runtime /runtime.log /;
 ***runtime.pc = 5;
 runtime.nd = 0;
-putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",GAMS,start," 0:0;
 runtime.ap = 1;
+putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",GAMS," 0:0;
+
 *-------------------------------------------------------------------------------------
 
 *** automated checks and settings
@@ -2024,8 +2025,5 @@ $ifthen.c_skip_output %c_skip_output% == "off"
 $include    "./core/output.gms";
 $batinclude "./modules/include.gms"    output
 $endif.c_skip_output
-
-*** Track runtime
-putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",GAMS,end," 0:0;
 
 *** EOF ./main.gms

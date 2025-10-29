@@ -19,7 +19,7 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
   
   # ---- Read mapping of MAgPIE variables to REMIND variables ----
   
-  mapping <- readr::read_csv2(mapping, col_types = cols(), show_col_types = FALSE)
+  mapping <- readr::read_csv2(mapping, col_types = cols(), show_col_types = FALSE) |> suppressMessages()
   #mapping$magName <- gsub(" \\(.*\\)$","",mapping$magName) # remove unit
   
   # ---- Read and prepare MAgPIE data ----

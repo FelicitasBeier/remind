@@ -8,6 +8,10 @@
 prepare <- function() {
 
   timePrepareStart <- Sys.time()
+  # Record the time when the preparation starts in runtime.log
+  # The content of this file will be added to runstatistics.rda at the end.
+  cat("Saving timePrepareStart to runtime.log\n")
+  write(paste(Sys.time(), "prepare", 0, sep = ","), file = "runtime.log")
 
   # Load libraries
   #require(lucode, quietly = TRUE,warn.conflicts =FALSE)
