@@ -275,7 +275,7 @@ run <- function() {
   write(paste(Sys.time(), "end", 0, sep = ","), file = paste0(cfg$results_folder, "/runtime.log"), append = TRUE)
   
   # Add the runtime.log to runstatistics.rda
-  runtime <- readr::read_csv(paste0(cfg$results_folder, "/runtime.log"), col_names = c("time","phase", "iteration")) |> suppressMessages())
+  runtime <- readr::read_csv(paste0(cfg$results_folder, "/runtime.log"), col_names = c("time","phase", "iteration")) |> suppressMessages()
 
   # Save run statistics to local file
   cat("\nSaving timeOutputStart and timeOutputEnd to runstatistics.rda\n")

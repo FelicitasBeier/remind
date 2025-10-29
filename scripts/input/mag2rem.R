@@ -137,16 +137,19 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
 # Obtain number of MAgPIE iteration and Nash iteration passed to this script by GAMS
 args <- commandArgs(trailingOnly = TRUE)
 i <- as.numeric(args[1])
-OrdNashIteration <- as.numeric(args[2])
+NashIteration <- as.numeric(args[2])
+
+# Record the time when the preparation for MAgPIE starts in runtime.log
+write(paste(Sys.time(), "mag2rem", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
 
 # Rename gdx from previous MAgPIE iteration so that REMIND can only continue if a new one could be successfully created
 if(file.exists("magpieData.gdx")) file.rename("magpieData.gdx", paste0("magpieData-", i-1,".gdx")) 
 
-# Log MAgPIE iterations (can be removed late)
-write(paste(format(Sys.time(), "%Y-%m-%d_%H.%M.%S"), i, OrdNashIteration), file = "iteration.log", append = TRUE)
+# Log MAgPIE iterations (can be removed later)
+write(paste(format(Sys.time(), "%Y-%m-%d_%H.%M.%S"), i, NashIteration), file = "iteration.log", append = TRUE)
 
 # Create reduced REMIND reporting
-message("\n### COUPLING ", i, " ", OrdNashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
+message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
 if(!file.exists("fulldata.gdx")) stop("The MAgPIE coupling script 'mag2rem.R' could not find a REMIND fulldata.gdx file!")
 scenario <- lucode2::getScenNames(".")
 remind2::convGDX2MIF_REMIND2MAgPIE(gdx = "fulldata.gdx", file = "REMIND_rem2mag.mif", scenario = scenario)
@@ -157,6 +160,9 @@ elementsLoaded <- load("config.Rdata")
 
 path_remind_run    <- file.path(cfg$remind_folder, cfg$results_folder)
 pathToRemindReport <- file.path(cfg$remind_folder, cfg$results_folder, "REMIND_rem2mag.mif")
+
+# Record the time when MAgPIE starts in runtime.log
+write(paste(Sys.time(), "MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
 
 # Switch to MAgPIE main folder
 message("### COUPLING ", i, " ### Preparing MAgPIE - ", round(Sys.time()))
@@ -229,6 +235,9 @@ message("### COUPLING ", i, " ### Preparing REMIND")
 message("Set working directory from ", getwd())
 message("                      to   ", path_remind_run, "\n")
 setwd(path_remind_run)
+
+# Record the time when the data transfer from MAgPIE to REMIND starts in runtime.log
+write(paste(Sys.time(), "mag2rem", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
 
 message("### COUPLING ", i, " ### Transferring data from MAgPIE ", pathToMagpieReport, " to REMIND magpieData.gdx - ", round(Sys.time()))
 getMagpieData(path_to_report = pathToMagpieReport, var_luc = cfg$var_luc)
