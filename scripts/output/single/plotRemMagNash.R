@@ -222,7 +222,10 @@ plot_iterations <- function(runname) {
 
   filename <- paste0(runname)
   lusweave::swclose(out, outfile = filename, clean_output = TRUE, save_stream = FALSE)
-  file.remove(paste0(filename,c(".log",".out")))
+  file.remove(paste0(filename),".log")
+  # out files have "." replaced with "-_-_-" in their names
+  file.remove(paste0(gsub("\\.","-_-_-",filename),".out"))
+  
   return("Done\n")
 }
 
