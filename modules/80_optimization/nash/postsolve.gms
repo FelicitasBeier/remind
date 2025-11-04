@@ -624,7 +624,7 @@ $endIf.cm_implicitPePriceTarget
 
 ***if all conditions are met, stop optimization.
 if(s80_bool eq 1,
-  if(sm_magpieIter < sm_magpieIterEnd,
+  if((sm_magpieIter < sm_magpieIterEnd) AND (cm_MAgPIE_Nash eq 1),
     display "######################################################################################################";
     display "Nash converged but MAgPIE hasn't run often enough yet. Continuing Nash.";
     display "######################################################################################################";
