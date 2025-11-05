@@ -347,7 +347,10 @@ $endif.emiMkt
 $ifthen.NDC "%carbonprice%" == "NDC" 
 *** additional criterion: Were NDC emissions targets reached?
 loop((t,regi)$pm_NDCEmiTargetDeviation(t,regi),
-  if(abs(pm_NDCEmiTargetDeviation(t,regi) ) gt cm_NDC_target_DevTol,
+*** criterion actual emissions need to be either below target or only up to cm_NDC_target_DevTol higher than goal emissions
+  if( (pm_NDCEmiTargetDeviation(t,regi)  le -cm_NDC_target_DevTol)
+*** exclude SSA from target check because we do not implement this target but assume CO2 price ceiling
+      AND NOT sameas(regi,"SSA"),
     s80_bool = 0;
     p80_messageShow("NDC") = YES;
   );
