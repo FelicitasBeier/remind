@@ -31,6 +31,19 @@ loop(regi$(sameAs(regi,"DEU")),
 );
 $endIf.tech_bounds_2025
 
+*' renewable power and heat pump growth scenarios for Germany between 2025 and 2030
+$ifthen.cm_VREminCap_Ger "%cm_VREminCap_Ger%" == "CurrPol"
+    vm_deltaCap.lo("2030",regi,"windon","1")$(sameAs(regi,"DEU")) = 6/1000;
+    vm_deltaCap.lo("2030",regi,"windoff","1")$(sameAs(regi,"DEU")) = 2/1000;
+    vm_cap.lo("2030",regi,"geohe","1")$(sameAs(regi,"DEU")) = 7/1000;
+$endIf.cm_VREminCap_Ger
+
+$ifthen.cm_VREminCap_Ger "%cm_VREminCap_Ger%" == "Opt"
+    vm_deltaCap.lo("2030",regi,"windon","1")$(sameAs(regi,"DEU")) = 7.5/1000;
+    vm_deltaCap.lo("2030",regi,"windoff","1")$(sameAs(regi,"DEU")) = 3/1000;
+    vm_cap.lo("2030",regi,"geohe","1")$(sameAs(regi,"DEU")) = 7/1000;
+$endIf.cm_VREminCap_Ger
+
 
 *' These bounds account for historic gas power development.
 *' TODO: Historical fixings should be done in the core the via input data from mrremind, this still needs to be moved
