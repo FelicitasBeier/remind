@@ -384,11 +384,33 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     # =================== MAgPIE coupling ===================
 
     if (exists("scenarios_coupled")) {
-      # If a path to a MAgPIE report is supplied, let GAMS execute mag2rem but only the getReportDate part without actually configuring and running MAgPIE
-      # scenarios_coupled[scen, "path_report"]
+    
+      # If a starting point was provided find out what it is and how to continue
+      if ("continueFromHere" %in% names(scenarios_coupled) && !is.na(scenarios_coupled[scen, "continueFromHere"])) {
+        # Let magpie.R run in first Nash iteration
+        cfg$c_magpieIter <- paste0("1,", cfg$c_magpieIter) 
+
+        # Find out what is in continueFromHere
+        if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "report.mif")) {
+          # Is a MAgPIE report 
+          # -> continue with REMIND: dont run MAgPIE, only run getMagpieData()
+          cfg$continueFromHere <- c("getMagpieData" = scenarios_coupled[scen, "continueFromHere"])
+        } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], ".mif")) {
+          # If its not a report.mif but a mif assume it is a REMIND_generic_*.mif 
+          # -> continue with MAgPIE without producing a REMIND report
+          cfg$continueFromHere <- c("runMAgPIE" = scenarios_coupled[scen, "continueFromHere"])
+        } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "fulldata.gdx")) {
+          # If its a fulldata.gdx assume it is from REMIND
+          # -> continue with MAgPIE and and produce a REMIND report (= run the full magpie.R)
+          cfg$continueFromHere <- c("full" = scenarios_coupled[scen, "continueFromHere"])
+        } else {
+          message(red, "Error", NC, ": Could not find what is given in 'scenarios_coupled[scen, continueFromHere]': ", scenarios_coupled[scen, "continueFromHere"])
+          errorsfound <- errorsfound + 1
+        }
+      }
       
       cfg$title <- paste0("C_", cfg$title) # add prefix indicating a coupled run
-      cfg$output <- c(setdiff(cfg$output, "plotRemMagNash"), "plotRemMagNash")
+      cfg$output <- c(setdiff(cfg$output, "plotRemMagNash"), "plotRemMagNash") # plot convergence
       cfg$path_magpie <- path_magpie
       cfg$magpie_empty <- isTRUE(scenarios_coupled[scen, "magpie_empty"]) # if magpie should be replaced by an empty model
       
@@ -445,7 +467,8 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       } else if (scenarios_coupled[scen, "var_luc"] %in% c("smooth", "raw")) {
         cfg$var_luc <- scenarios_coupled[scen, "var_luc"]
       } else {
-        stop(paste0("Unkown setting in coupled config file for 'var_luc': `", scenarios_coupled[scen, "var_luc"], "`. Please chose either `smooth` or `raw`"))
+        message(red, "Error", NC, ": Unkown setting in coupled config file for 'var_luc': `", scenarios_coupled[scen, "var_luc"], "`. Please chose either `smooth` or `raw`")
+        errorsfound <- errorsfound + 1
       }
 
       # if provided use ghg prices for land (MAgPIE) from a different REMIND run than the one MAgPIE runs coupled to
