@@ -1,5 +1,4 @@
 
-
 # Delete entries in stack that contain needle and append new
 .setgdxcopy <- function(needle,stack,new){
   matches <- grepl(needle,stack)
@@ -15,6 +14,8 @@
 }
 
 createREMINDReporting <- function(gdx) {
+  # Record the time when the preparation for MAgPIE starts in runtime.log
+  write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "convGDX2MIF_REMIND2MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   # Create reduced REMIND reporting
   message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
   if(!file.exists(gdx)) stop("The MAgPIE coupling script 'mag2rem.R' could not find a REMIND fulldata.gdx file!")
@@ -122,7 +123,7 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
   
   # ---- Record runtime when the data transfer from MAgPIE to REMIND starts in runtime.log ----
 
-  write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "mag2rem", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
+  write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "getMagpieData", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   message("### COUPLING ", i, " ### Transferring data from MAgPIE ", pathToMagpieReport, " to REMIND magpieData.gdx - ", round(Sys.time()))
 
   # ---- Read mapping of MAgPIE variables to REMIND variables ----
@@ -240,9 +241,6 @@ args <- commandArgs(trailingOnly = TRUE)
 i <- as.numeric(args[1])
 NashIteration <- as.numeric(args[2])
 
-# Record the time when the preparation for MAgPIE starts in runtime.log
-write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "mag2rem", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
-
 # Rename gdx from previous MAgPIE iteration so that REMIND can only continue if a new one could be successfully created
 if(file.exists("magpieData.gdx")) file.rename("magpieData.gdx", paste0("magpieData-", i-1,".gdx")) 
 
@@ -254,13 +252,13 @@ if (is.null(cfg$continueFromHere)) {
   pathToRemindReport <- createREMINDReporting(gdx = "fulldata.gdx")
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
   
-} else if (names(cfg$continueFromHere) %in% "full")) {
+} else if (names(cfg$continueFromHere) %in% "full") {
   # No regular magpie iteration
   # Continue from an external REMIND fulldata.gdx
   pathToRemindReport <- createREMINDReporting(gdx = cfg$continueFromHere)
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
 
-} else if (names(cfg$continueFromHere) %in% "runMAgPIE")) {
+} else if (names(cfg$continueFromHere) %in% "runMAgPIE") {
   # No regular magpie iteration 
   # Continue from an external REMIND mif
   pathToRemindReport <- cfg$continueFromHere

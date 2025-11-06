@@ -388,21 +388,24 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # If a starting point was provided find out what it is and how to continue
       if ("continueFromHere" %in% names(scenarios_coupled) && !is.na(scenarios_coupled[scen, "continueFromHere"])) {
         # Let magpie.R run in first Nash iteration
-        cfg$c_magpieIter <- paste0("1,", cfg$c_magpieIter) 
+        cfg$gms$c_magpieIter <- paste0("1,", cfg$gms$c_magpieIter) 
 
         # Find out what is in continueFromHere
         if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "report.mif")) {
           # Is a MAgPIE report 
           # -> continue with REMIND: dont run MAgPIE, only run getMagpieData()
           cfg$continueFromHere <- c("getMagpieData" = scenarios_coupled[scen, "continueFromHere"])
+          message("Continuing MAgPIE coupling from MAgPIE report ", scenarios_coupled[scen, "continueFromHere"])
         } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], ".mif")) {
           # If its not a report.mif but a mif assume it is a REMIND_generic_*.mif 
           # -> continue with MAgPIE without producing a REMIND report
           cfg$continueFromHere <- c("runMAgPIE" = scenarios_coupled[scen, "continueFromHere"])
+          message("Continuing MAgPIE coupling from REMIND report ", scenarios_coupled[scen, "continueFromHere"])
         } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "fulldata.gdx")) {
           # If its a fulldata.gdx assume it is from REMIND
           # -> continue with MAgPIE and and produce a REMIND report (= run the full magpie.R)
           cfg$continueFromHere <- c("full" = scenarios_coupled[scen, "continueFromHere"])
+          message("Continuing MAgPIE coupling from REMIND gdx ", scenarios_coupled[scen, "continueFromHere"])
         } else {
           message(red, "Error", NC, ": Could not find what is given in 'scenarios_coupled[scen, continueFromHere]': ", scenarios_coupled[scen, "continueFromHere"])
           errorsfound <- errorsfound + 1
