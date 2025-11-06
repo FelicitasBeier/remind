@@ -115,7 +115,7 @@ if (sm_updateMagpieData eq 1,
   logfile.nr = 1;
   logfile.nd = 0;
   sm_magpieIter = sm_magpieIter + 1;
-  put_utility  "exec" / "Rscript mag2rem.R " sm_magpieIter " " ord(iteration);
+  put_utility  "exec.checkErrorLevel" / "Rscript mag2rem.R " sm_magpieIter " " ord(iteration);
   logfile.nr = sm_tmp;
   logfile.nd = sm_tmp2;
 *** Track runtime
