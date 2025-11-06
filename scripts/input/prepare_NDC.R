@@ -40,7 +40,7 @@ prepare_NDC <- function(gdx, cfg) {
     comment.char = "*** "
   )
   file.copy(
-    "./modules/45_carbonprice/NDC/inputpm_BAU_reg_emi_wo_LU_wo_bunkers.cs4r",
+    "./modules/45_carbonprice/NDC/input/pm_BAU_reg_emi_wo_LU_wo_bunkers.cs4r",
     "./modules/46_carbonpriceRegi/NDC/input/pm_BAU_reg_emi_wo_LU_wo_bunkers.cs4r"
   )
 }
