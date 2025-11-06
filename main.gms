@@ -912,6 +912,11 @@ parameter
 *' *  (2) until year 3000 ("never")
 *'
 parameter
+  cm_NDC_target_DevTol  "allowed NDC emissions target deviation relative to target emissions [45_carbonprice = NDC]"
+;
+  cm_NDC_target_DevTol = 0.01;           !! def = 0.01  
+*' *  value between 0-1 to define the maximum allowed deviation of REMIND emissions and target emissions normalized to target emissions to consider NDC target as reached
+parameter
   cm_gdximport_target       "whether or not the starting value for iteratively adjusted CO2 tax trajectories for all regions (scenarios defined by cm_iterative_target_adj) should be read in from the input.gdx"
 ;
   cm_gdximport_target      = 0;      !! def = 0  !! regexp = 0|1
