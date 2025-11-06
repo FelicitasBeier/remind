@@ -1264,7 +1264,7 @@ parameter
 *' The content of this setgloabal is only used once to write it to the 'magpieIter' set in core/set.gms. 
 *' It is only a setglobal so that it is possible to deviate from the default by overwriting it from outside (prepare.R).
 *'
-$setglobal c_magpieIter  "20,24,28,32"     !! def = "20,24,28,32"  !! regexp = ^[0-9]{1,2}(,[0-9]{1,2})*$
+$setglobal c_magpieIter  "20,24,28,32"     !! def = "20,24,28,32"  !! This regular expression works in manual test but not in checkFixCfg [0-9]{1,2}(,[0-9]{1,2})*
 
 *' cm_MAgPIE_coupling    "switch on OLD coupling mode with MAgPIE. OLD means MAgPIE does not run between the Nash iterations but after REMIND completed. CURRENTLY NOT SUPPORTED!"
 *'
