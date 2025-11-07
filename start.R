@@ -237,14 +237,14 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     # MAgPIE coupling: if a file containing "_coupled" is passed to this script, it activates the coupled mode.
     # Read scenario_config_coupled.csv before reading the scenario_config.csv
     if (grepl("_coupled", config.file)) {
-      message("\nStarting REMIND in coupled mode with MAgPIE,\n as you have provided a scenario_config_coupled.csv.\nReading ", config.file, "\n")
+      message("\nStarting REMIND in coupled mode with MAgPIE,\n as you have provided a scenario_config_coupled.csv.\nReading ", config.file)
       settings_coupled <- readCheckScenarioConfig(config.file, ".")
       scenarios_coupled <- selectScenarios(settings = settings_coupled, interactive = "--interactive" %in% flags, startgroup = startgroup)
       config.coupled <- config.file
       config.file <- gsub("_coupled", "", config.file)
     }
 
-    cat(paste("\nReading config file", config.file, "\n"))
+    message("Reading config file ", config.file)
 
     # Read-in the switches table, use first column as row names
     settings <- readCheckScenarioConfig(config.file, ".")
@@ -395,17 +395,17 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
           # Is a MAgPIE report 
           # -> continue with REMIND: dont run MAgPIE, only run getMagpieData()
           cfg$continueFromHere <- c("getMagpieData" = scenarios_coupled[scen, "continueFromHere"])
-          message("Continuing MAgPIE coupling from MAgPIE report ", scenarios_coupled[scen, "continueFromHere"])
+          message("   Continuing MAgPIE coupling from MAgPIE report ", scenarios_coupled[scen, "continueFromHere"])
         } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], ".mif")) {
           # If its not a report.mif but a mif assume it is a REMIND_generic_*.mif 
           # -> continue with MAgPIE without producing a REMIND report
           cfg$continueFromHere <- c("runMAgPIE" = scenarios_coupled[scen, "continueFromHere"])
-          message("Continuing MAgPIE coupling from REMIND report ", scenarios_coupled[scen, "continueFromHere"])
+          message("   Continuing MAgPIE coupling from REMIND report ", scenarios_coupled[scen, "continueFromHere"])
         } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "fulldata.gdx")) {
           # If its a fulldata.gdx assume it is from REMIND
           # -> continue with MAgPIE and and produce a REMIND report (= run the full magpie.R)
           cfg$continueFromHere <- c("full" = scenarios_coupled[scen, "continueFromHere"])
-          message("Continuing MAgPIE coupling from REMIND gdx ", scenarios_coupled[scen, "continueFromHere"])
+          message("   Continuing MAgPIE coupling from REMIND gdx ", scenarios_coupled[scen, "continueFromHere"])
         } else {
           message(red, "Error", NC, ": Could not find what is given in 'scenarios_coupled[scen, continueFromHere]': ", scenarios_coupled[scen, "continueFromHere"])
           errorsfound <- errorsfound + 1
@@ -430,6 +430,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       magpieScenarios <- scenarios_coupled[scen, grepl("scenario_config|magpie_scen", colnames(scenarios_coupled)), drop = FALSE]
 
       # configure MAgPIE using the scenarios extracted above
+      message("Configuring MAgPIE")
       if (nrow(magpieScenarios) > 0) {
         for (i in seq_len(ncol(magpieScenarios))) {
           pathToScenarioConfig <- colnames(magpieScenarios)[i]
