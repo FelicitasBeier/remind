@@ -66,7 +66,7 @@ plot_iterations <- function(runname) {
   TWa2EJ <- 31.5576 # TWa to EJ (1 a = 365.25*24*3600 s = 31557600 s)
   sm_tdptwyr2dpgj <- 31.71 # convert [TerraDollar per TWyear] to [Dollar per GJoule]
   GtC_2_MtCO2 <- 44/12 * 1000
-  magpieIter <- quitte::read.gdx(gdxName, "magpieIter") |> filter(iteration > 2)
+  magpieIter <- quitte::read.gdx(gdxName, "magpieIter")
 
   # ---- Plot: MAgPIE prices for purpose grown bioenergy ----
 
