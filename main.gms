@@ -1010,13 +1010,6 @@ parameter
 *' *  (1): decreasing price over time, independent of actual deployment. Lower price path. Fits best for peak budget runs with 650 Gt CO2 as of 2020.
 *' *  (2): decreasing price over time, independent of actual deployment. Higher price path.Fits best for peak budget runs with 650 Gt CO2 as of 2020.
 *' *  (any other number): constant price. Chose 0 to turn it off. Unit: [2015 USD / t BC]. Suggested range: 100-200 USD/tBC. Better choice for runs with higher peak budget.
-parameter 
-  cm_33_BiocharUseLimits        "exogenous limitation of biochar use, based on cropland application and cement substitution"
-;
-  cm_33_BiocharUseLimits = 1.04; !! def = 1.04  !! regexp = is.nonnegative
-*' * (1):   only cropland application 
-*' * (0-1): only cement application, decimal = percent of cement substituted. Main range 2-4%, up to 1-10% (see table S7, 10.1038/s44284-024-00069-x)
-*' * (1-2): land use limitation + the share of cement (cm_33_BiocharUseLimits - 1)
 parameter
   cm_33_maxFeShare                "max share of the CDR sectors' FE demand in the region's total FE demand, by FE type. Default is 10%"
 ;
