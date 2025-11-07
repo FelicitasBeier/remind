@@ -247,7 +247,7 @@ if(file.exists("magpieData.gdx")) file.rename("magpieData.gdx", paste0("magpieDa
 # Load REMIND config
 elementsLoaded <- load("config.Rdata")
 
-if (is.null(cfg$continueFromHere)) {
+if (is.null(cfg$continueFromHere) || NashIteration > 1) {
   # Regular magpie iteration
   pathToRemindReport <- createREMINDReporting(gdx = "fulldata.gdx")
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
@@ -255,26 +255,26 @@ if (is.null(cfg$continueFromHere)) {
 } else if (names(cfg$continueFromHere) %in% "full") {
   # No regular magpie iteration
   # Continue from an external REMIND fulldata.gdx
+  message("Continuing with createREMINDReporting using ", cfg$continueFromHere)
   pathToRemindReport <- createREMINDReporting(gdx = cfg$continueFromHere)
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
 
 } else if (names(cfg$continueFromHere) %in% "runMAgPIE") {
   # No regular magpie iteration 
   # Continue from an external REMIND mif
+  message("Continuing with runMAgPIE using ", cfg$continueFromHere)
   pathToRemindReport <- cfg$continueFromHere
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
 
 } else if (names(cfg$continueFromHere) %in% "getMagpieData") {
   # No regular magpie iteration
   # Continue from an external MAgPIE mif
+  message("Continuing with getMagpieData using ", cfg$continueFromHere)
   pathToMagpieReport <- cfg$continueFromHere
 }
 
 # In any case transfer MAgPIE data from report to magpieData.gdx
 getMagpieData(path_to_report = pathToMagpieReport, var_luc = cfg$var_luc)
-
-# For the next iterations empty cfg$continueFromHere otherwise it would be the starting point for all coming iterations
-cfg$continueFromHere <- NULL
 
 # Save the same elements that were loaded (they may have been updated in the meantime)
 save(list = elementsLoaded, file = "config.Rdata")
