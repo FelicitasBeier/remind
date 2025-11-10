@@ -284,13 +284,12 @@ loop(teBiopyr(te) $ (not sameas(te, "biopyrliq")), !! established industrial tec
 
 loop(te $ sameas(te, "biopyrliq"), !! does not yet exist commercially
   vm_cap.fx(t,regi,"biopyrliq",rlf)  $ (t.val <= 2025) = 0;
+  vm_deltaCap.lo(t,regi,"biopyrliq",rlf) $ (t.val > cm_startyear) = 1e-8; !! initiate a negligible increase to help model find the technology
+  vm_deltaCap.up(t,regi,"biopyrliq",rlf) $ (t.val > cm_startyear) = inf; !! revert fixing to small values above
   if(c_biopyrOptions le 1,
-    vm_deltaCap.fx(t,regi,"biopyrliq",rlf) $ (t.val >= cm_startyear) = 0; 
-  else
-    vm_deltaCap.lo(t,regi,"biopyrliq",rlf) $ (t.val > cm_startyear) = 1e-8; !! initiate a negligible increase to help model find the technology
+  vm_deltaCap.fx(t,regi,"biopyrliq",rlf) $ (t.val >= cm_startyear) = 0;
   );
 );
-
 
 *** ==================================================================
 *' #### 4. Assumptions on carbon management
