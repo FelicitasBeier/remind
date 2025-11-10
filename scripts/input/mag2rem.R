@@ -15,7 +15,7 @@
 
 createREMINDReporting <- function(gdx) {
   # Record the time when the preparation for MAgPIE starts in runtime.log
-  write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "convGDX2MIF_REMIND2MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
+  write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "convGDX2MIF_REMIND2MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   # Create reduced REMIND reporting
   message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
   if(!file.exists(gdx)) stop("The MAgPIE coupling script 'mag2rem.R' could not find a REMIND fulldata.gdx file!")
@@ -27,7 +27,7 @@ createREMINDReporting <- function(gdx) {
 
 runMAgPIE <- function(pathToRemindReport) {
   # Record the time when MAgPIE starts in runtime.log
-  write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
+  write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   
   # Switch to MAgPIE main folder
   message("### COUPLING ", i, " ### Preparing MAgPIE - ", round(Sys.time()))
@@ -123,7 +123,7 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
   
   # ---- Record runtime when the data transfer from MAgPIE to REMIND starts in runtime.log ----
 
-  write(paste(format(Sys.time(), "%Y-%m-%d %H.%M.%S"), "getMagpieData", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
+  write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "getMagpieData", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   message("### COUPLING ", i, " ### Transferring data from MAgPIE ", pathToMagpieReport, " to REMIND magpieData.gdx - ", round(Sys.time()))
 
   # ---- Read mapping of MAgPIE variables to REMIND variables ----
