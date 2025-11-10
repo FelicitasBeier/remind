@@ -21,6 +21,8 @@ model_biopresolve_c /q30_pebiolc_costs/
 *** If REMIND runs coupled to MAgPIE they get updated in presolve.gms
 v30_priceshift.fx(ttot,regi) = 0;
 v30_pricemult.fx(ttot,regi)  = 1;
+*** Also save it to p30_pebiolc_pricmult so that it can be tracked before MAgPIE runs for the first time
+p30_pebiolc_pricmult(ttot,regi)$(v30_pricemult.l(ttot,regi) gt 0) = v30_pricemult.l(ttot,regi);
 
 ***------------ Step 1: Fix fuelex to MAgPIE demand -------------
 *** BEFORE calculation: Regular emulator equations are applied to calculate costs.
