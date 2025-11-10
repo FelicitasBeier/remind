@@ -48,38 +48,6 @@ p45_regiDiff_startyearValue_data(ext_regi)  "input data for regional carbon pric
 / %cm_taxCO2_regiDiff_startyearValue% /
 $endIf.taxCO2regiDiffStartyearValue1
 
-
-*** If there is a regional budget, read regional carbon budget from switch and set additionally needed parameters
-pm_budgetCO2from2020Regi(all_regi)                      "regional carbon budget (Gt CO2)"
-!!$ifthen.regiBudget "%cm_iterative_target_adj%" == "4" OR "%cm_iterative_target_adj%" == "44"
-$ifthen.regiBudget "%cm_budgetCO2from2020RegiShare%" == "off" !! (cm_iterative_target_adj == "4") OR (cm_iterative_target_adj == "44")
-pm_budgetCO2from2020RegiShare(all_regi)                 "share of region in global carbon budget" 
-$else.regiBudget
-pm_budgetCO2from2020RegiShare(all_regi)                 "share of region in global carbon budget" /%cm_budgetCO2from2020RegiShare%/
-$endif.regiBudget
-p45_actualbudgetco2Regi(all_regi)                        "regional - actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
-p45_actualbudgetco2Regi_iter(iteration,all_regi)                        "regional - actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
-p45_factorRescale_taxCO2Regi(iteration,all_regi)         "regional - Multiplicative factor for rescaling the CO2 price to reach the target"
-p45_factorRescale_taxCO2Regi_Funneled(iteration, all_regi)  "regional - Multiplicative factor for rescaling the CO2 price to reach the target - Funnelled (static)"
-pm_factorRescale_taxCO2Regi_Funneled2(iteration, all_regi) "regional - Multiplicative factor for rescaling the CO2 price to reach the target - Funnelled (interactive, incl. adjustments based on last iterations)"
-p45_factorRescale_taxCO2Regi_Final(iteration, all_regi)     "regional - Multiplicative factor for rescaling the CO2 price to reach the target - Funnelled, may include up/downward iteration differentiation"
-p45_taxCO2eq_anchorRegi(ttot,all_regi)                   "regional anchor trajectory for regional CO2 price trajectories in T$/GtC = $/kgC"
-p45_taxCO2eq_anchorRegi_iter(ttot, all_regi, iteration)  "regional anchor trajectory for regional CO2 price trajectories in T$/GtC = $/kgC across iterations"
-p45_temp_anchor(ttot,all_regi)                           "regionally shifted anchor for all iterations (helper, may be removed)"
-pm_budgetDeviation(all_regi)                             "deviations from regional targets"  
-p45_budgetDeviation_iter(iteration, all_regi)            "deviations from regional targets across iterations"  
-pm_regionalBudget_absDevTol(all_regi)                    "tolerance of deviation from regional targets in absolute terms"
-
-p45_TaxBudgetSlopeCurrent(all_regi)                      "regional carbon price change/regional carbon budget change - from the last 2 iterations"
-p45_TaxBudgetSlopeCurrent_iter(iteration, all_regi)      "regional carbon price change/regional carbon budget change - from the last 2 iterations, for each iteration. 0 when no carbon price change"
-p45_TaxBudgetSlopeBest(all_regi)                         "last available regional carbon price change/regional carbon budget change that is negative"
-p45_TaxBudgetSlopeBest_iter(iteration, all_regi)         "last available regional carbon price change/regional carbon budget change that is negative for each iteration"
-p45_CarbonPriceSlope(all_regi)                           "when carbon price slope is regionally adjusted: increase of carbon price per year"
-p45_CarbonPriceSlope_iter(iteration,all_regi)            "when carbon price slope is regionally adjusted: increase of carbon price per year for each iteration"
-
-p45_FunnelUpper(iteration)                               "upper bound on regional carbon price funnel (helper, may be removed)"
-p45_FunnelLower(iteration)                               "lower bound on regional carbon price funnel (helper, may be removed)"
-;
 *** Scalars only used in functionForm/postsolve.gms
 scalars
 s45_actualbudgetco2                                     "actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
