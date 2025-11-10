@@ -67,6 +67,7 @@ plot_iterations <- function(runname) {
   sm_tdptwyr2dpgj <- 31.71 # convert [TerraDollar per TWyear] to [Dollar per GJoule]
   GtC_2_MtCO2 <- 44/12 * 1000
   magpieIter <- quitte::read.gdx(gdxName, "magpieIter")
+  magpieIter <- rbind(1, magpieIter) # always plot the first iteration
 
   # ---- Plot: MAgPIE prices for purpose grown bioenergy ----
 
