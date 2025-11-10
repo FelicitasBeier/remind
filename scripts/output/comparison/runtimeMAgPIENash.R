@@ -5,33 +5,36 @@
 # |  REMIND License Exception, version 1.0 (see LICENSE file).
 # |  Contact: remind@pik-potsdam.de
 ############################# LOAD LIBRARIES #############################
-library(dplyr, quietly = TRUE,warn.conflicts =FALSE)
-library(readr, quietly = TRUE,warn.conflicts =FALSE)
+library(dplyr,   quietly = TRUE,warn.conflicts =FALSE)
+library(readr,   quietly = TRUE,warn.conflicts =FALSE)
 library(ggplot2, quietly = TRUE,warn.conflicts =FALSE)
+library(hms,     quietly = TRUE,warn.conflicts =FALSE)
+library(lucode2, quietly = TRUE,warn.conflicts =FALSE)
 
-if(!exists("source_include")) readArgs("outputdirs")
+if(!exists("source_include")) lucode2::readArgs("outputdirs")
 
 # -----------------------------------------------------------------------
 # ----------- Function: Read runtime from NEW coupled runs --------------
 # -----------------------------------------------------------------------
 
-# the automatic date parser from the tibble package used in read_csv get confused, because there are
-# mixed types of date formates in the logfile. The lines written by the R scripts are correctly formatted,
-# the lines written by GAMS are missing leading zeros in hours and minutes. Thus, the parser does not 
+# The automatic date parser from the tibble package used in read_csv gets 
+# confused, because there are mixed types of date formates in the logfile. 
+# The lines written by the R scripts are correctly formatted, the lines
+# written by GAMS are missing leading zeros. Thus, the  parser does not 
 # recognize them and chooses "character" as column type for start.
 
-#gsub("(-| |:)([1-9])(-| |:|$)","\\10\\2\\3","2025-11-01 01:4:3")
-
 # Funtion reading the runtime.log of a single run
+
 readRun <- function(runDir) {
  a <- readr::read_csv(paste0(runDir,"/runtime.log"), 
                  col_names = c("start","phase", "iteration")) |> 
-        mutate(start = gsub(" ([0-9]:)"," 0\\1", start)) |> # insert leading zero for hours   in malformed entries from GAMS 9:8:15 --> 09:8:15 
-        mutate(start = gsub(":([0-9]:)",":0\\1", start)) |> # insert leading zero for minutes in malformed entries from GAMS 9:8:15 --> 9:08:15
-        mutate(start = gsub("-([1-9]) ","-0\\1 ", start)) |> # insert leading zero for days    in malformed entries from GAMS 2025-11-1 --> 2025-11-01
-        mutate(start = gsub("-([1-9])-","-0\\1-", start)) |> # insert leading zero for months  in malformed entries from GAMS 2025-2-1  --> 2025-02-1
-        mutate(start = parse_datetime(start)) |>
-        suppressMessages() |> 
+        mutate(start = gsub(" ([0-9]:)"," 0\\1", start))      |> # insert leading zero for hours   in malformed entries from GAMS 9:8:15    --> 09:8:15 
+        mutate(start = gsub(":([0-9]:)",":0\\1", start))      |> # insert leading zero for minutes in malformed entries from GAMS 9:8:15    --> 9:08:15
+        mutate(start = gsub("-([1-9]) ","-0\\1 ", start))     |> # insert leading zero for days    in malformed entries from GAMS 2025-11-1 --> 2025-11-01
+        mutate(start = gsub("-([1-9])-","-0\\1-", start))     |> # insert leading zero for months  in malformed entries from GAMS 2025-2-1  --> 2025-02-1
+        mutate(start = gsub(" ([0-9]{2}).([0-9]{2}).", " \\1:\\2:", start)) |> # in a few log time from R scripts was malformed 15.04.23 --> 15:04:23
+        mutate(start = parse_datetime(start))                 |>
+        suppressMessages()                                    |> 
         mutate(run = basename(runDir), .before = start)
 }
 
@@ -43,8 +46,6 @@ shapeData <- function(outputdirs) {
     bind_rows() |>
     group_by(run) |> 
     arrange(start) |> 
-    #mutate(end = lead(start), .after = start) |>  
-    #mutate(duration = end - start, .after = end) |>
     ungroup() |>
     mutate(start = start - first(start)) |> # Calculate the start of each step relative to the start of the first step of the first run. 
     group_by(run) |>
@@ -64,16 +65,15 @@ shapeOldData <- function(path_to_runtime_rds) {
     as_tibble() |>
     mutate(iteration = 0) |> # dummy, not used in plot but required since the new runtime also has it
     mutate(phase = paste0(type,"-",section)) |>
-    mutate(phase = gsub("rem-prep", "prepare", phase)) |>
-    mutate(phase = gsub("rem-output", "output", phase)) |>
-    mutate(phase = gsub("rem-GAMS", "GAMS", phase)) |>
-    mutate(phase = gsub("mag-GAMS", "MAgPIE", phase)) |>
-    mutate(run = gsub("-(rem|mag)-[0-9]","",run)) |>
-    
+    mutate(phase = gsub("rem-prep"  , "prepare", phase)) |>
+    mutate(phase = gsub("rem-output", "output" , phase)) |>
+    mutate(phase = gsub("rem-GAMS"  , "GAMS"   , phase)) |>
+    mutate(phase = gsub("mag-GAMS"  , "MAgPIE" , phase)) |>
+    mutate(run   = gsub("-(rem|mag)-[0-9]",""  , run))   |>
     group_by(run) |>
     arrange(start)
 
-  # pick last entry of rem-output and put end to start to have the end point availalbe when calculating the durations below
+  # pick last entry of output and put end to start to have the end point availalbe when calculating the durations below
   end <- old |>
     filter(phase == "output") |> 
     slice_tail() |> 
@@ -94,25 +94,18 @@ shapeOldData <- function(path_to_runtime_rds) {
 # ------------------------ Execute functions ----------------------------
 # -----------------------------------------------------------------------
 
-pathsNewCoupled <- c(
-"output/C_SSP2-NPi2025_2025-10-29_12.27.03",
-"output/C_SSP2-PkBudg1000_2025-10-29_19.48.05",
-"output/C_SSP2-PkBudg650_2025-10-29_19.47.57"
-)
+paths <- paste0("output/", c(
+  "SSP2-NPi2025_2025-11-06_21.49.05", # standalone
+"C_SSP2-NPi2025_2025-11-07_09.31.44", # regular coupled run (nothing to continue)
+"C_SSP2-NPi2025_2025-11-06_22.27.36", # continue iteration: start remind with MAgPIE-Report: REMIND runs first
+"C_SSP2-NPi2025_2025-11-07_10.14.05", # continue iteration: start remind with REMIND report: MAgPIE runs first
+"C_SSP2-NPi2025_2025-11-06_22.40.54", # continue iteration: start remind with REMIND fulldata.gdx: MAgPIE runs first
+"C_SSP2-NPi2025_2025-11-07_12.06.46"  # continue iteration: start remind with REMIND report: MAgPIE runs first (the same as 14.05) AND also use REMIND fulldata.gdx as input.gdx
+))
 
-pathsNewStandalone <- c(
-"output/SSP2-NPi2025_2025-11-03_12.09.38",
-"output/SSP2-PkBudg1000_2025-11-03_14.53.24",
-"output/SSP2-PkBudg650_2025-11-03_14.53.16"
-)
-
-path_to_runtime_rds <- "/p/tmp/dklein/remind-before-remmagNash/runtime.rds"
-
-oldCoupled    <- shapeOldData(path_to_runtime_rds)
-newCoupled    <- shapeData(pathsNewCoupled)
-newStandalone <- shapeData(pathsNewStandalone)
-
-data <- bind_rows(newCoupled, newStandalone, oldCoupled)
+data <- paths |>
+        lapply(shapeData) |>
+        bind_rows()
 
 # -----------------------------------------------------------------------
 # ------------------------------ Plot -----------------------------------
@@ -121,20 +114,17 @@ data <- bind_rows(newCoupled, newStandalone, oldCoupled)
 # Define order for proper ordering in the legend
 #data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","solve","exoGAINS","iterativeEdgeTransport","mag2rem","MAgPIE","output",
 #                                                      "rem-prep","rem-GAMS","rem-output","mag-prep","mag-GAMS","mag-output")))
-data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","solve","exoGAINS","iterativeEdgeTransport","mag2rem","MAgPIE","output",
+data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","convGDX2MIF_REMIND2MAgPIE","getMagpieData","solve","exoGAINS","iterativeEdgeTransport","mag2rem","MAgPIE","output",
                                                       "mag-prep","mag-output")))
 
-datetimepattern <- "_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}"
-data$run <- gsub(datetimepattern, "_new", data$run)
-
-#data$Phase_ordered <- factor(data$Phase,levels=c("SD","DD","CD","PC","CA"))
-#data$Project_ordered <- reorder(data$Project,data$StartDate)
-
-data$run <- factor(data$run, levels = c(
-"SSP2-NPi2025_new", "SSP2-PkBudg1000_new", "SSP2-PkBudg650_new",
-"C_SSP2-NPi2025_new", "C_SSP2-PkBudg1000_new", "C_SSP2-PkBudg650_new",
-"C_SSP2-NPi2025", "C_SSP2-PkBudg1000", "C_SSP2-PkBudg650"
-))
+data$run <- factor(data$run, levels = rev(c(
+  "SSP2-NPi2025_2025-11-06_21.49.05", # standalone
+"C_SSP2-NPi2025_2025-11-07_09.31.44", # regular coupled run (nothing to continue)
+"C_SSP2-NPi2025_2025-11-06_22.27.36", # continue iteration: start remind with MAgPIE-Report: REMIND runs first
+"C_SSP2-NPi2025_2025-11-07_10.14.05", # continue iteration: start remind with REMIND report: MAgPIE runs first
+"C_SSP2-NPi2025_2025-11-06_22.40.54", # continue iteration: start remind with REMIND fulldata.gdx: MAgPIE runs first
+"C_SSP2-NPi2025_2025-11-07_12.06.46"  # continue iteration: start remind with REMIND fulldata.gdx: MAgPIE runs first (the same as 14.05) AND also use REMIND fulldata.gdx as input.gdx
+)))
 
 data <- data |> mutate(run = factor(.data$run, levels = rev(unique(.data$run))))
 
@@ -143,6 +133,8 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
   scale_colour_discrete(guide=guide_legend(override.aes=list(size = 2))) +
   scale_color_manual(values = c("prepare"    = "#84A1E0", # "#4E84C4", # "#F4EDCA",
                                 "GAMS"       = "#435BB5", # "#293352",
+                                "getMagpieData" = "red",
+                                "convGDX2MIF_REMIND2MAgPIE" = "yellow",
                                 "solve"      = "#2D4175", # "#4E84C4",
                                 "exoGAINS"   = "#C4961A",
                                 "iterativeEdgeTransport" = "#D16103",
@@ -155,4 +147,4 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
   ylab("") +
   xlab("")
 
-ggsave("runtime.png", p, width = 16, height = 5)
+ggsave("runtime-continueFromHere.png", p, width = 16, height = 5)
