@@ -385,6 +385,11 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
     if (exists("scenarios_coupled")) {
     
+      # Overwrite magpieIter with values from scenarios_coupled
+      if ("magpieIter" %in% names(scenarios_coupled) && !is.na(scenarios_coupled[scen, "magpieIter"])) {
+        cfg$gms$c_magpieIter <- scenarios_coupled[scen, "magpieIter"]
+      }        
+      
       # If a starting point was provided find out what it is and how to continue
       if ("continueFromHere" %in% names(scenarios_coupled) && !is.na(scenarios_coupled[scen, "continueFromHere"])) {
         # Let magpie.R run in first Nash iteration
