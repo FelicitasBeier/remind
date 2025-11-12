@@ -582,7 +582,7 @@ parameter
 parameter
   cm_taxCO2_regiDiff "switch for choosing the regional carbon price differentiation scheme in 45_carbonprice/functionalForm"
 ;
-  cm_taxCO2_regiDiff = 1; !! def = 1 !! regexp = 0|1|2|3|5|6|7|8|10
+  cm_taxCO2_regiDiff = 6; !! def = 6 !! regexp = 0|1|2|3|5|6|7|8|10
 *' Switch can either be set to a specific scenario (e.g. "ScenarioMIP2070") or to "manual". If specific scenario is chosen, settings can be adjusted via cm_taxCO2_regiDiff_convergence and cm_taxCO2_regiDiff_startyearValue. If set to manual, settings must be provided via cm_taxCO2_regiDiff_convergence and cm_taxCO2_regiDiff_startyearValue. 
 *' * (0): none             - No regional differentiation, i.e. globally uniform carbon pricing
 *' * (1): initialSpread10  - Maximal initial spread of carbon prices in 2030 between OECD regions and poorest region is equal to 10. Initial spread for each region determined based on GDP per capita (PPP) in 2030. By default, carbon prices converge using quadratic phase-in until 2050. Convergence scheme can be adjusted with cm_taxCO2_regiDiff_convergence.
@@ -940,6 +940,11 @@ parameter
 *' *  (2) until year 3000 ("never")
 *'
 parameter
+  cm_NDC_target_DevTol  "allowed NDC emissions target deviation relative to target emissions [45_carbonprice = NDC]"
+;
+  cm_NDC_target_DevTol = 0.01;           !! def = 0.01  
+*' *  value between 0-1 to define the maximum allowed deviation of REMIND emissions and target emissions normalized to target emissions to consider NDC target as reached
+parameter
   cm_gdximport_target       "whether or not the starting value for iteratively adjusted CO2 tax trajectories for all regions (scenarios defined by cm_iterative_target_adj) should be read in from the input.gdx"
 ;
   cm_gdximport_target      = 0;      !! def = 0  !! regexp = 0|1
@@ -947,15 +952,12 @@ parameter
 *' * (1): the values from the gdx are read in (works only if the gdx has a parameter value) ATTENTION: make sure that the values from the gdx have the right structure (e.g. regionally differentiated or not)
 *'
 parameter 
-  c_biopyrEstablished      "Turn the four established industrial biochar production configurations on = 1 or off = 0"
+  c_biopyrOptions      "Turn the three established and one advanced industrial biochar production configurations on or off"
 ; 
-  c_biopyrEstablished = 1; !! def = 1
-*'
-parameter
-  c_biopyrliq             "Turn the advanced industrial biochar production setup that co-produces liquids on  = 1 or off = 0"
-;
-  c_biopyrliq = 0;         !! def = 0
-*'
+  c_biopyrOptions = 1; !! def = 1 !! regexp  = 0|1|2
+*' * (0): biochar technologies are turned off
+*' * (1): three established industrial biochar production configurations
+*' * (2): three established + advanced industrial biochar production setup that co-produces liquids
 parameter
   cm_33DAC                  "choose whether DAC (direct air capture) should be included into the CDR portfolio."
 ;
@@ -1302,6 +1304,12 @@ parameter
   c_edgetReportAfter2010 = 0;   !! def = 0 full reporting  !! regexp = 1|0
 *'
 parameter
+  cm_RenShareTargets         "switch that turn on renewable share targets in the NPi2025 realization of the techpol module"
+;
+*' Note that the switch is only active in the NPi2025 realization of the 40_techpol module.
+  cm_RenShareTargets = 1;      !! def = 1 renewable share targets are on !! regexp = 1|0
+*'
+parameter
   cm_APsource                "data source for air pollution baseyear (2020) emissions"
 ;
   cm_APsource           = 1;      !! def = 1  !! regexp = 1|2
@@ -1333,7 +1341,7 @@ $setglobal cm_rcp_scen  rcp45         !! def = "rcp45"  !! regexp = none|rcp20|r
 *' *  (2023_cond):   all NDCs conditional to international financial support published until December 31, 2023
 *' *  (2023_uncond): all NDCs independent of international financial support published until December 31, 2023
 *' *  Other supported years are 2022, 2021 and 2018, always containing NDCs published until December 31 of that year
-$setglobal cm_NDC_version  2024_cond    !! def = "2024_cond"  !! regexp = 20(18|2[1-4])_(un)?cond
+$setglobal cm_NDC_version  2024_cond    !! def = "2024_cond"  !! regexp = 20(18|2[1-5])_(un)?cond
 
 *' cm_NPi_version            "choose version year of NPi targets for min and max targets in the form of conditional vs. unconditional"
 *' *  (2024_cond):   minimum technology targets are included from NewClimate latest policy modeling protocol in 2025
