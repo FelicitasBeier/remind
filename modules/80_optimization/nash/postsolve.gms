@@ -517,7 +517,7 @@ $endIf.carbonprice
 $ifthen.carbonpriceRegi %carbonprice% == "functionalFormRegi"
         if(sameas(convMessage80, "regiBudget"),
 		      display "#### 7.) A regional budget target has not been reached yet.";
-          display "#### pm_actualbudgetco2Regi. Convergence determined by pm_regionalBudget_absDevTol.";
+          display "#### Convergence determined by pm_regionalBudget_absDevTol.";
           display "#### Also check pm_taxCO2eq_iter (regional CO2 tax paths tracked over iterations [T$/GtC])";
           display p80_regionalBudget_absDev_iter, pm_factorRescale_taxCO2Regi_Funneled2;
         );

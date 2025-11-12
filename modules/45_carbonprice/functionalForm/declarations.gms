@@ -47,6 +47,7 @@ p45_regiDiff_startyearValue(all_regi)       "manually chosen regional carbon pri
 p45_regiDiff_startyearValue_data(ext_regi)  "input data for regional carbon price in start year provided by switch cm_taxCO2_regiDiff_startyearValue"
 / %cm_taxCO2_regiDiff_startyearValue% /
 $endIf.taxCO2regiDiffStartyearValue1
+;
 
 *** Scalars only used in functionForm/postsolve.gms
 scalars
@@ -57,8 +58,6 @@ s45_factorRescale_taxCO2_exponent_from10                "exponent determining se
 s45_peakBudget                                          "peak CO2 budget as calculated as the maximum of cumulative CO2 emissions, used to check adjustment algorithm [GtC/yr]"
 sm_peakBudgYr_check                                     "peak budget year calculated based on maximum of cumulative CO2 emissions, used to check adjustment algorithm  [year]"
 sm_peakbudget_diff                                       "difference in cumulative CO2 emissions between cumulative emissions in cm_peakBudgYr and time step of maximum cumulative CO2 emissions [GtCO2]"
-
-s45_YearBeforeStartYear                                  "! This is the same value as s45_interpolation_startYr but the naming does not make sense for these extended purposes, thus creating a new scalar as preliminary solution"
 ;
 
 *** Parameters only used in functionForm/postsolve.gms
