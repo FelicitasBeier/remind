@@ -416,7 +416,7 @@ $ifthen.carbonpriceRegi %carbonprice% == "functionalFormRegi"
   !! If the deviation is negative, i.e. budget is too low and would require a decrease of the Carbon Price => only "not converged" if the carbon price is not already very low, 
   !! "Very low" is for now <1 USD/t CO2 in 2100, tbd
   else
-    if ((abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_regionalBudgetTolerance_Abs)) 
+    if ((abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_budgetCO2_absDevTol)) 
          AND (pm_taxco2eq("2100",regi) gt (1 * sm_DptCO2_2_TDpGtC)), 
       s80_bool = 0;
       p80_messageShow("regiBudget") = YES;
