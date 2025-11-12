@@ -913,16 +913,23 @@ parameter
 parameter
   cm_taxCO2_Shape             "Only used with [functionalFormRegi], determines whether the carbon price increases until 2100 or is constant as of the exogenously set cm_peakYear"
 ;
-  cm_taxCO2_Shape = 1;
+  cm_taxCO2_Shape = 1;            !! def = 1    !! regexp = 1|2
 *' * (1): EOC -  pm_taxCO2eq increases until 2100 according to cm_taxCO2_functionalForm for regional budget targets
 *' * (2): Peak - pm_taxCO2eq increases until an exogenously set "peak year" (via cm_peakBudgYear). Note: this does not necessarily correspond to the year in which the budget actually peaks.
 *'
 parameter 
   cm_CPslopeAdjustment        "Only used with [functionalFormRegi], determines whether the entire path is shifted up and down or the slope of is adjusted endogenously"
 ;
-  cm_CPslopeAdjustment = 0; !! def = 0 
+  cm_CPslopeAdjustment = 1;         !! def = 1    !! regexp = 0|1
 *' (0): no adjustment of the slope; i.e. carbon price shape chosen from the input-gdx and the curve is shifted up and down from cm_startYear
 *' (1): endogenous adjustment of the slope, i.e. linear increase to the highest carbon price
+*'
+parameter
+  cm_useInputGdxForCarbonPrice     "Only used with [functionalFormRegi], determines whether the carbon price information from the input.gdx is used for the first iteration's carbon price."
+;
+  cm_useInputGdxForCarbonPrice = 0;     !! def = 0   !! regexp = 0|1
+*' (0): Input.gdx information *is not* used in 45_carbonprice/functionalFormRegi/datainput.gms
+*' (1): Input.gdx information *is* used to in 45_carbonprice/functionalFormRegi/datainput.gms
 *'
 parameter
   cm_NDC_divergentScenario  "choose scenario about convergence of CO2eq prices [45_carbonprice = NDC]"
