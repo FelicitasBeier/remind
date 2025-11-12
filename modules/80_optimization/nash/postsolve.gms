@@ -430,7 +430,7 @@ $ifthen.carbonpriceRegi %carbonprice% == "functionalFormRegi"
   !! "Very low" is for now <1 USD/t CO2 in 2100, tbd
   else
     if ((abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_budgetCO2_absDevTol)) 
-         AND (pm_taxco2eq("2100",regi) gt (1 * sm_DptCO2_2_TDpGtC)), 
+         AND (pm_taxCO2eq("2100",regi) gt (1 * sm_DptCO2_2_TDpGtC)), 
       s80_bool = 0;
       p80_messageShow("regiBudget") = YES;
     );
@@ -517,7 +517,7 @@ $endIf.carbonprice
 $ifthen.carbonpriceRegi %carbonprice% == "functionalFormRegi"
         if(sameas(convMessage80, "regiBudget"),
 		      display "#### 7.) A regional budget target has not been reached yet.";
-          display "#### p45_actualbudgetco2Regi. Convergence determined by pm_regionalBudget_absDevTol.";
+          display "#### pm_actualbudgetco2Regi. Convergence determined by pm_regionalBudget_absDevTol.";
           display "#### Also check pm_taxCO2eq_iter (regional CO2 tax paths tracked over iterations [T$/GtC])";
           display p80_regionalBudget_absDev_iter, pm_factorRescale_taxCO2Regi_Funneled2;
         );

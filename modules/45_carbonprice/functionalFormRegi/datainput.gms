@@ -20,8 +20,8 @@ $endif.PriceShapeCombination
 *****************************************************************************************************************************
 *** ---- Miscellaneous datainput calculations
 
-*** Calculation of regional budgets if provided by pm_budgetCO2from2020RegiShare
-pm_budgetCO2from2020Regi(regi) = pm_budgetCO2from2020RegiShare(regi) * cm_budgetCO2from2020;
+*** Calculation of regional budgets if provided by p45_budgetCO2from2020RegiShare
+p45_budgetCO2from2020Regi(regi) = p45_budgetCO2from2020RegiShare(regi) * cm_budgetCO2from2020;
 
 *** Save the absolute budget deviation tolerance level; currently the same for all regions - may need regional specification in the future, thus already with (regi)
 pm_regionalBudget_absDevTol(regi) = cm_budgetCO2_absDevTol;
@@ -146,17 +146,17 @@ else
   abort "please initialize cm_taxCO2_startyear by setting it to a positive value. Note that cm_taxCO2_peakBudgYr must be kept at default value -1 if not used."
 ); 
 
-p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startYear) = p45_taxCO2eq_anchor(ttot);
+p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startyear) = p45_taxCO2eq_anchor(ttot);
 
 ****************************************************************
 !! (B.2) If carbon price is adjusted and the carbon price information from input.gdx should be used: overwrite the previously derived data
 if((cm_CPslopeAdjustment eq 1) and (cm_useInputGdxForCarbonPrice eq 1), 
-p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startYear) = 
+p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startyear) = 
         !! start value
         sum(ttot2$(ttot2.val eq s45_YearBeforeStartYear), p45_taxCO2eq_anchorRegi(ttot2,regi))
-        !!  Yearly regional increase of carbon price in input.gdx in the time step after cm_startYear
+        !!  Yearly regional increase of carbon price in input.gdx in the time step after cm_startyear
         + (sum(ttot3$(ttot3.val eq cm_startyear), p45_taxCO2eq_path_gdx_input(ttot3+1,regi) - p45_taxCO2eq_path_gdx_input(ttot3,regi)) 
-                    / sum(ttot3$(ttot3.val eq cm_startYear), pm_dt(ttot3))) 
+                    / sum(ttot3$(ttot3.val eq cm_startyear), pm_dt(ttot3))) 
             !! times years from last given time step
             * (ttot.val - s45_YearBeforeStartYear) ;
 
@@ -165,10 +165,10 @@ loop(regi,
 if(p45_taxCO2eq_anchorRegi("2100",regi) le 0,
   p45_taxCO2eq_anchorRegi("2100",regi) = 1 * sm_DptCO2_2_TDpGtC;  
  !! start value
-  p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startYear) = 
+  p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startyear) = 
         !! start value
         sum(ttot2$(ttot2.val eq s45_YearBeforeStartYear), p45_taxCO2eq_anchorRegi(ttot2,regi))
-        !!  Yearly regional increase of carbon price in input.gdx in the time step after cm_startYear
+        !!  Yearly regional increase of carbon price in input.gdx in the time step after cm_startyear
         + ((sum(ttot3$(ttot3.val eq 2100), p45_taxCO2eq_anchorRegi(ttot3,regi)) 
             - sum(ttot4$(ttot4.val eq s45_YearBeforeStartYear), p45_taxCO2eq_anchorRegi(ttot4,regi))) 
             / (2100 - s45_YearBeforeStartYear))

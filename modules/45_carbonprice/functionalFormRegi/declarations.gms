@@ -33,10 +33,10 @@ p45_taxCO2eq_path_gdx_input(ttot,all_regi)    "CO2 tax trajectories from path_gd
 p45_taxCO2refYear(all_regi)                      "CO2 tax in reference year for derivation of the carbon price trajectory in the first iteration, can be in last fixed time step, or peak carbon price year depending on the shape"
 
 *** If there is a regional budget, read regional carbon budget from switch and set additionally needed parameters
-pm_budgetCO2from2020Regi(all_regi)                      "regional carbon budget (Gt CO2)"
-pm_budgetCO2from2020RegiShare(all_regi)                 "share of region in global carbon budget" /%cm_budgetCO2from2020RegiShare%/
-p45_actualbudgetco2Regi(all_regi)                        "regional - actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
-p45_actualbudgetco2Regi_iter(iteration,all_regi)                        "regional - actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
+p45_budgetCO2from2020Regi(all_regi)                      "regional carbon budget (Gt CO2)"
+p45_budgetCO2from2020RegiShare(all_regi)                 "share of region in global carbon budget" /%cm_budgetCO2from2020RegiShare%/
+pm_actualbudgetco2Regi(all_regi)                        "regional - actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
+pm_actualbudgetco2Regi_iter(iteration,all_regi)                        "regional - actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
 p45_factorRescale_taxCO2Regi(iteration,all_regi)         "regional - Multiplicative factor for rescaling the CO2 price to reach the target"
 p45_factorRescale_taxCO2Regi_Funneled(iteration, all_regi)  "regional - Multiplicative factor for rescaling the CO2 price to reach the target - Funnelled (static)"
 pm_factorRescale_taxCO2Regi_Funneled2(iteration, all_regi) "regional - Multiplicative factor for rescaling the CO2 price to reach the target - Funnelled (interactive, incl. adjustments based on last iterations)"

@@ -393,7 +393,7 @@ $setglobal emicapregi  none           !! def = none
 *' * (functionalFormRegi): [Under development!] Regional EOC budgets
 *' *    [General carbon price shape]: A global anchor trajectory is used to set the functional form that can be linear/exponential, set via cm_taxCO2_functionalForm, 
 *' *                                The starting conditions are set as for functionalForm (see above), unless path_gdx is provided. Then, information from input.gdx is used for the first iteration.
-*' *                                Linear carbon shapes can be either shifted up and down in cm_startYear or the slope can be endogenously adjusted to meet the target via [cm_CPslopeAdjustment].
+*' *                                Linear carbon shapes can be either shifted up and down in cm_startyear or the slope can be endogenously adjusted to meet the target via [cm_CPslopeAdjustment].
 *' *    [peaking behavior]:         The carbon price path can be chosen to peak in a specified year or in 2100 via [cm_taxCO2_Shape] and [cm_peakBudgYr]. 
 *' *                                When a peaking shape is chosen, the peak year is set for all regions the same, and is not adjusted endogenously, i.e. it differs from the regional and global peak years!
 *' *    [regional carbon budgets]:  Carbon budgets can currently only be determined for 2100. The global [cm_budgetCO2from2020] is multiplied with each region's share in it, given by [cm_budgetCO2from2020RegiShare].
@@ -921,7 +921,7 @@ parameter
   cm_CPslopeAdjustment        "Only used with [functionalFormRegi], determines whether the entire path is shifted up and down or the slope of is adjusted endogenously"
 ;
   cm_CPslopeAdjustment = 1;         !! def = 1    !! regexp = 0|1
-*' (0): no adjustment of the slope; i.e. carbon price shape chosen from the input-gdx and the curve is shifted up and down from cm_startYear
+*' (0): no adjustment of the slope; i.e. carbon price shape chosen from the input-gdx and the curve is shifted up and down from cm_startyear
 *' (1): endogenous adjustment of the slope, i.e. linear increase to the highest carbon price
 *'
 parameter
