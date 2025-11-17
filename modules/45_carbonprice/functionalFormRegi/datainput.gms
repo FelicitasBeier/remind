@@ -17,7 +17,7 @@ $ifthen.PriceShapeCombination "%cm_taxCO2_functionalForm%" == "exponential"
   );
 $endif.PriceShapeCombination
 
-*****************************************************************************************************************************
+***----------------------------------------------------------------------------------
 *** ---- Miscellaneous datainput calculations
 
 *** Calculation of regional budgets if provided by p45_budgetCO2from2020RegiShare
@@ -35,8 +35,8 @@ p45_FunnelUpper(iteration) = 2 * EXP(-0.15 * iteration.val) + 1.005;
 s45_YearBeforeStartYear = smax(ttot$( ttot.val lt cm_startyear ), ttot.val); !! Timestep before startyear
 
 
-*****************************************************************************************************************************
-**** ---- Derive the starting co2 price path and shape
+***----------------------------------------------------------------------------------
+*** ---- Derive the starting co2 price path and shape
 *** Check that cm_iterative_target_adj is equal to 0, 5, 7, or 9
 if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9)),
   abort "The realization 45_carbonprice/functionalForm is only compatible with cm_iterative_target_adj = 0, 5, 7 or 9. Please adjust config file accordingly"
@@ -52,12 +52,12 @@ display p45_taxCO2eq_path_gdx_ref;
 s45_taxCO2_startyear = cm_taxCO2_startyear * sm_DptCO2_2_TDpGtC; 
 s45_taxCO2_peakBudgYr = cm_taxCO2_peakBudgYr * sm_DptCO2_2_TDpGtC; 
 
-**** 
+*** --- 
 * Part I (General Shape):
 !! always set the carbon price equal to the reference runs' carbon price prior to start year
 p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val le s45_YearBeforeStartYear) = p45_taxCO2eq_path_gdx_ref(ttot,regi);
 
-!! (A) Exponential CO2 price *******************************************************************************************
+!! (A) Exponential CO2 price ----------------------------------------------------------------------------------
 $ifThen.taxCO2GeneralShape "%cm_taxCO2_functionalForm%" == "exponential"
 !! (A.a) no input gdx specified in config.csv => the carbon price increases exponentially, starting from the input_ref's carbon prices for the last fixed year in each region
 if(cm_useInputGdxForCarbonPrice eq 0,
@@ -80,10 +80,10 @@ else
   );  !! EOC or Peak
 ); !! use input.gdx information or not
 
-!! (B) Linear CO2 price *******************************************************************************************
+!! (B) Linear CO2 price ----------------------------------------------------------------------------------
 $elseIf.taxCO2GeneralShape "%cm_taxCO2_functionalForm%" == "linear"
 
-****************************************************************
+***----------------------------------------------------------------------------------
 !! (B.1) For setting a global carbon price slope, for the case that the slope is not adjusted  OR if the carbon price information from input.gdx is not used => analogous to functionalForm
 
 *** Step I.1: Determine the point (s45_taxCO2_historicalYr, s45_taxCO2_historical)
@@ -148,7 +148,7 @@ else
 
 p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startyear) = p45_taxCO2eq_anchor(ttot);
 
-****************************************************************
+***----------------------------------------------------------------------------------
 !! (B.2) If carbon price is adjusted and the carbon price information from input.gdx should be used: overwrite the previously derived data
 if((cm_CPslopeAdjustment eq 1) and (cm_useInputGdxForCarbonPrice eq 1), 
 p45_taxCO2eq_anchorRegi(ttot,regi)$(ttot.val ge cm_startyear) = 
