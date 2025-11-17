@@ -37,10 +37,6 @@ s45_YearBeforeStartYear = smax(ttot$( ttot.val lt cm_startyear ), ttot.val); !! 
 
 ***----------------------------------------------------------------------------------
 *** ---- Derive the starting co2 price path and shape
-*** Check that cm_iterative_target_adj is equal to 0, 5, 7, or 9
-if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9)),
-  abort "The realization 45_carbonprice/functionalForm is only compatible with cm_iterative_target_adj = 0, 5, 7 or 9. Please adjust config file accordingly"
-);
 
 *** Read pm_taxCO2eq from the input_ref and the specified input file
 Execute_Loadpoint 'input_ref' p45_taxCO2eq_path_gdx_ref = pm_taxCO2eq;
