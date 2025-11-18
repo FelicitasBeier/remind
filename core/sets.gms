@@ -474,10 +474,7 @@ all_enty             "all types of quantities"
     fegai        "industry use of gaseous energy carriers"
     fehei        "industry use of district heat"
     feeli        "industry use of electricity"
-*** dummy entries to allow inclusion of some output variables into f04_IO_output.cs4r - can be removed once the structuremappings are fixed/improved
-    x_seliq
-    x_feho
-    x_fedie
+    
 /
 
 all_esty "energy services"
@@ -495,24 +492,6 @@ all_esty "energy services"
     esh2t_frgt_sm
     esgat_frgt_sm
 
-*** Buildings module: Energy services (useful energy)
-    ueshheb  "buildings space heating district heat"
-    ueshhob  "buildings space heating liquids"
-    ueshsob  "buildings space heating solids"
-    ueshstb  "buildings space heating traditional solids"
-    ueshgab  "buildings space heating district heat"
-    ueshh2b  "buildings space heating hydrogen"
-    ueshelb  "buildings space heating electricity resistance"
-    ueshhpb  "buildings space heating electricity heat pump"
-
-    uecwhob  "buildings cooking and water heating liquids"
-    uecwsob  "buildings cooking and water heating solids"
-    uecwstb  "buildings cooking and water heating traditional solids"
-    uecwgab  "buildings cooking and water heating gas"
-    uecwheb  "buildings cooking and water heating district heat"
-    uecwh2b  "buildings cooking and water heating hydrogen"
-    uecwelb  "buildings cooking and water heating electricity"
-    uecwhpb  "buildings cooking and water heating heat pump"
 /
 
 all_sectorEmi "all sectors with emissions"
@@ -565,36 +544,6 @@ all_in   "all inputs and outputs of the CES function"
     enhi                    "industry heat energy use"
     enhgai                  "industry heat gaseous energy use (fegab and feh2b)"
 
-    fehcsob                 "buildings heating and cooking solids final energy"
-    fehcelb                 "buildings heating and cooking electricity final energy"
-    fehcheb                 "buildings heating and cooking district heat final energy"
-    fehcgab                 "buildings heating and cooking gas final energy"
-    fehchob                 "buildings heating and cooking liquids final energy"
-    fealelb                 "buildings appliances and light electricity final energy"
-    fecwsob                 "buildings cooking and water heating solids final energy"
-    fecwelb                 "buildings cooking and water heating electricity final energy"
-    fecwhpb                 "buildings cooking and water heating electricity heat pump final energy"
-    fecwheb                 "buildings cooking and water heating district heat final energy"
-    fecwgab                 "buildings cooking and water heating gas final energy"
-    fecwhob                 "buildings cooking and water heating liquids final energy"
-    fescelb                 "buildings space cooling electricity final energy"
-    feshsob                 "buildings space heating solids final energy"
-    feshelb                 "buildings space heating electricity final energy"
-    feshheb                 "buildings space heating district heat final energy"
-    feshgab                 "buildings space heating gas final energy"
-    feshhob                 "buildings space heating liquids final energy"
-    feshhpb                 "buildings space heating electricity heat pump final energy"
-
-    esswb                   "buildings weatherization energy service"
-    uehcb                   "buildings heating and cooking useful energy"
-    uecwb                   "buildings cooking and water heating useful energy"
-    uescb                   "buildings space cooling useful energy"
-    ueshb                   "buildings space heating useful energy"
-    uealb                   "buildings appliances and light, useful energy"
-    ueswb                   "buildings weatherization"
-    feshh2b                 "buildings space heating hydrogen"
-    fecwb                   "buildings cooking and water heating FE"
-    fecwh2b                 "buildings cooking and water heating hydrogen"
 *** FIXME this should be reworked with Robert when revising the transport module
     entrp                   "transport energy use"
     fetf                    "transport fuel use"
@@ -1029,7 +978,8 @@ sets
     2021_cond, 2021_uncond,
     2022_cond, 2022_uncond,
     2023_cond, 2023_uncond,
-    2024_cond, 2024_uncond
+    2024_cond, 2024_uncond,
+    2025_cond, 2025_uncond
   /
   NPi_version "NPi data version for NPi realizations of 40_techpol and 45_carbonprice"
   /
