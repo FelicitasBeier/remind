@@ -405,11 +405,15 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
           # If its not a report.mif but a mif assume it is a REMIND_generic_*.mif 
           # -> continue with MAgPIE without producing a REMIND report
           cfg$continueFromHere <- c("runMAgPIE" = scenarios_coupled[scen, "continueFromHere"])
+          # Take gdx of the run that is to be continued as start gdx
+          cfg$files2export$start["input.gdx"] <- file.path(dirname(scenarios_coupled[scen, "continueFromHere"]), "fulldata.gdx")
           message("   Continuing MAgPIE coupling from REMIND report ", scenarios_coupled[scen, "continueFromHere"])
         } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "fulldata.gdx")) {
           # If its a fulldata.gdx assume it is from REMIND
           # -> continue with MAgPIE and and produce a REMIND report (= run the full magpie.R)
           cfg$continueFromHere <- c("full" = scenarios_coupled[scen, "continueFromHere"])
+          # Take gdx of the run that is to be continued as start gdx
+          cfg$files2export$start["input.gdx"] <- scenarios_coupled[scen, "continueFromHere"]
           message("   Continuing MAgPIE coupling from REMIND gdx ", scenarios_coupled[scen, "continueFromHere"])
         } else {
           message(red, "Error", NC, ": Could not find what is given in 'scenarios_coupled[scen, continueFromHere]': ", scenarios_coupled[scen, "continueFromHere"])
