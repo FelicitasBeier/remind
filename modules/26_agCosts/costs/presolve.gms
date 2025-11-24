@@ -46,8 +46,8 @@ pm_totLUcosts_excl_costFuBio(ttot,regi) =  p26_totLUcosts_withMAC(ttot,regi)
 *' @stop
 
 *** Save values for tracking across Nash iterations
-o_p26_totLUcosts_withMAC(iteration,ttot,regi) = p26_totLUcosts_withMAC(ttot,regi);
-o_pm_totLUcosts(iteration,ttot,regi)          = pm_totLUcosts(ttot,regi);
-o_p26_macCostLu(iteration,ttot,regi)          = p26_macCostLu(ttot,regi);
+o_p26_totLUcosts_withMAC(iteration,ttot,regi)       = p26_totLUcosts_withMAC(ttot,regi);
+o_pm_totLUcosts_excl_costFuBio(iteration,ttot,regi) = pm_totLUcosts(ttot,regi);
+o_p26_macCostLu(iteration,ttot,regi)                = p26_macCostLu(ttot,regi);
 
 *** EOF ./modules/26_agCosts/costs/presolve.gms
