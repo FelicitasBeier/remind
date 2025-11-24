@@ -13,8 +13,7 @@ if( (ord(iteration) le 25 and ord(iteration) ge cm_startIter_EDGET and (mod(ord(
 *** Track runtime
     putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",iterativeEdgeTransport," iteration.val:0;
 
-    Execute "Rscript -e 'edgeTransport::iterativeEdgeTransport()'";
-
+    Execute "Rscript -e 'library(edgeTransport); edgeTransport::iterativeEdgeTransport()'";
 *** Track runtime
     putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",GAMS," iteration.val:0;
 
