@@ -12,6 +12,8 @@ s30_switch_shiftcalc    "Switch to activate equation for shift calculation befor
 ;
 
 parameter
+pm_pedem_res(ttot,all_regi,all_te)              "Demand for pebiolc residues, needed for enhancement of residue potential [TWa]"
+pm_secBioShare(ttot,all_regi,all_enty,emi_sectors) "Share of biomass per carrier for each sector [share]"
 p30_datapebio(all_regi,all_enty,rlf,charPeRe,ttot) "Global bioenergy potential for lignocellulosic residues and 1st generation crops [TWa]"
 p30_max_pebiolc_path(all_regi,tall)             "Time path of regional maximal pebiolc production [TWa]"
 p30_max_pebiolc_path_glob(tall)                 "Time path of global maximal pebiolc production [TWa]"
@@ -26,7 +28,7 @@ p30_bioprod_regi_lim(ext_regi)   "limit of total biomass production per region o
 $ENDIF.bioprod_regi_lim
 
 *** Shift factor calculation
-p30_pebiolc_costs_emu_preloop(ttot,all_regi)    "Bioenergy costs calculated with emulator using MAgPIE demand. For shift factor calculation [T$US]"
+pm_pebiolc_costs_emu_preloop(ttot,all_regi)    "Bioenergy costs calculated with emulator using MAgPIE demand. For shift factor calculation [T$US]"
 p30_pebiolc_price_emu_preloop(ttot,all_regi)    "Bioenergy price calculated with emulator using MAgPIE demand. For shift factor calculation [T$US/TWa]"
 p30_pebiolc_price_emu_preloop_shifted(ttot,all_regi) "Bioenergy price calculated with emulator using MAgPIE demand after shift factor calculation [T$US/TWa]"
 p30_pebiolc_pricshift(ttot,all_regi)            "Regional translation factor that shifts emulator prices to better fit actual MAgPIE prices [-]"
@@ -48,11 +50,13 @@ o_p30_pebiolc_pricmult(iteration,ttot,all_regi)                  "track p30_pebi
 o_p30_pebiolc_pricemag(iteration,ttot,all_regi)                  "track o_p30_pebiolc_pricemag across Nash iterations"
 o_p30_pebiolc_price_emu_preloop(iteration,ttot,all_regi)         "track p30_pebiolc_price_emu_preloop across Nash iterations"
 o_p30_pebiolc_price_emu_preloop_shifted(iteration,ttot,all_regi) "track p30_pebiolc_price_emu_preloop_shifted across Nash iterations"
-o_p30_pebiolc_costs_emu_preloop(iteration,ttot,all_regi)         "track p30_pebiolc_costs_emu_preloop across Nash iterations"
+o_pm_pebiolc_costs_emu_preloop(iteration,ttot,all_regi)          "track p30_pebiolc_costs_emu_preloop across Nash iterations"
 o_v30_pebiolc_costs(iteration,ttot,all_regi)                     "track v30_pebiolc_costs across Nash iterations"
 ;
 
 variables
+vm_costFuBio(ttot,all_regi)        "fuel costs from bioenergy production [T$US]"
+vm_pebiolc_price(ttot,all_regi)    "bioenergy price based on MAgPIE supply curves [T$/TWa]"
 v30_pebiolc_costs(ttot,all_regi)   "Bioenergy costs according to MAgPIE supply curves [T$US]"
 v30_shift_r2                       "Least square to minimize during shift calculation"
 ;
@@ -76,5 +80,6 @@ q30_limitXpBio(ttot,all_regi)      "Only purpose grown bioenergy may be exported
 q30_costAdj(ttot,all_regi)         "Improve convergence penalizing deviations from last coupling iteration"
 q30_limitTeBio(ttot,all_regi)      "Limit BECCS in policy runs relative to reference scenario"
 q30_BioPEProdTotal(ttot,all_regi)  "Calculate total domestic PE biomass production"
+q30_limitBiotrmod(ttot,all_regi)   "limit the total amount of modern biomass use for solids to the amount of coal use for solids"
 ;
 *** EOF ./modules/30_biomass/magpie/declarations.gms

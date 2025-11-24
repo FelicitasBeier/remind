@@ -110,9 +110,9 @@ if (execError > 0,
 
 solve model_biopresolve_c using cns; !!! nothing has to be optimized here, just pure calculation
 
-p30_pebiolc_costs_emu_preloop(t,regi) = v30_pebiolc_costs.l(t,regi);
+pm_pebiolc_costs_emu_preloop(t,regi) = v30_pebiolc_costs.l(t,regi);
 
-display p30_pebiolc_costs_emu_preloop;
+display pm_pebiolc_costs_emu_preloop;
 
 ***------------ Step 4: Release bounds on fuelex -------------
 *** AFTER presolve calculations: prepare for main solve, therefore release bounds on fuelex
@@ -157,6 +157,6 @@ o_p30_pebiolc_pricmult(iteration,ttot,regi)                  = p30_pebiolc_pricm
 o_p30_pebiolc_pricemag(iteration,ttot,regi)                  = p30_pebiolc_pricemag(ttot,regi);
 o_p30_pebiolc_price_emu_preloop(iteration,ttot,regi)         = p30_pebiolc_price_emu_preloop(ttot,regi);
 o_p30_pebiolc_price_emu_preloop_shifted(iteration,ttot,regi) = p30_pebiolc_price_emu_preloop_shifted(ttot,regi);
-o_p30_pebiolc_costs_emu_preloop(iteration,ttot,regi)         = p30_pebiolc_costs_emu_preloop(ttot,regi);
+o_pm_pebiolc_costs_emu_preloop(iteration,ttot,regi)          = pm_pebiolc_costs_emu_preloop(ttot,regi);
 
 *** EOF ./modules/30_biomass/magpie/presolve.gms
