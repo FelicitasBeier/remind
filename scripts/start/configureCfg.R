@@ -132,7 +132,6 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
     if(nrow(icfg$RunsUsingTHISgdxAsInput) > 0 & icfg$gms$cm_MAgPIE_Nash > 0) {
       selection <- !is.na(icfg$RunsUsingTHISgdxAsInput)
       icfg$RunsUsingTHISgdxAsInput[selection] <- paste0("C_", icfg$RunsUsingTHISgdxAsInput[selection])
-      print(icfg$RunsUsingTHISgdxAsInput)
       rownames(icfg$RunsUsingTHISgdxAsInput) <- paste0("C_", rownames(icfg$RunsUsingTHISgdxAsInput))
     }
 
