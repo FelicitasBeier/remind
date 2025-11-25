@@ -21,6 +21,7 @@
 *' ####### Power Sector
 
 $ifThen.tech_bounds_2025 "%cm_tech_bounds_2025%" == "on"
+*' Set bounds for renewable power capacity in 2025 based on recent and historic growth rates
 *' This limits wind and solar PV capacity additions for 2025 in light of recent slow developments as of 2023.
 *' Upper bound is double the historic maximum capacity addition in 2011-2020.
 *' In addition: Limit solar PV capacity to 120 GW in 2025 (2023-2027 average) given that we are at only 76 GW PV in 2023
@@ -35,7 +36,7 @@ loop(regi$(sameAs(regi,"DEU")),
 );
 $endIf.tech_bounds_2025
 
-*' renewable power and heat pump growth scenarios for Germany between 2025 and 2030
+*' make assumptions on minimum renewable power and heat pump growth for Germany between 2025 and 2030 and distinguish two different scenarios ("Current Policies" and "Optimistic")
 $ifthen.cm_VREminCap_Ger "%cm_VREminCap_Ger%" == "CurrPol"
     vm_deltaCap.lo("2030",regi,"windon","1")$(sameAs(regi,"DEU")) = 6/1000;
     vm_deltaCap.lo("2030",regi,"windoff","1")$(sameAs(regi,"DEU")) = 2/1000;
