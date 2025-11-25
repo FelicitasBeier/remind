@@ -20,9 +20,7 @@ createREMINDReporting <- function(gdx) {
   message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
   if(!file.exists(gdx)) stop("The MAgPIE coupling script 'mag2rem.R' could not find a REMIND fulldata.gdx file:", gdx)
   scenario <- lucode2::getScenNames(".")
-  # path to extra data to be used in reporting
-  extra_data_path <- file.path(cfg$results_folder, "reporting")
-  remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = "REMIND_rem2mag.mif", scenario = scenario, extraData = extra_data_path)
+  remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = "REMIND_rem2mag.mif", scenario = scenario, extraData = "reporting")
   message("\nFinished reporting - ", round(Sys.time()))
   return(file.path(cfg$remind_folder, cfg$results_folder, "REMIND_rem2mag.mif"))
 }
@@ -274,6 +272,9 @@ if (is.null(cfg$continueFromHere) || NashIteration > 1) {
   message("Continuing with getMagpieData using ", cfg$continueFromHere)
   pathToMagpieReport <- cfg$continueFromHere
 }
+
+# Write pathToMagpieReport to cfg, so reporting.R can find the MAgPIE report and append it to the REMIND reporting
+cfg$pathToMagpieReport <- pathToMagpieReport
 
 # In any case transfer MAgPIE data from report to magpieData.gdx
 getMagpieData(path_to_report = pathToMagpieReport, var_luc = cfg$var_luc)
