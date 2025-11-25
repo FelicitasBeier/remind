@@ -21,6 +21,7 @@ model_biopresolve_c /q30_pebiolc_costs/
 *** If REMIND runs coupled to MAgPIE they get updated in presolve.gms
 v30_priceshift.fx(ttot,regi) = 0;
 v30_pricemult.fx(ttot,regi)  = 1;
+vm_pebiolc_price.l(ttot,regi)$(ttot.val ge 2005) = 0;
 *** Also save it to p30_pebiolc_pricmult so that it can be tracked before MAgPIE runs for the first time
 p30_pebiolc_pricmult(ttot,regi)$(v30_pricemult.l(ttot,regi) gt 0) = v30_pricemult.l(ttot,regi);
 
@@ -44,9 +45,9 @@ if (execError > 0,
 
 solve model_biopresolve_c using cns; !!! nothing has to be optimized here, just pure calculation
 
-p30_pebiolc_costs_emu_preloop(t,regi) = v30_pebiolc_costs.l(t,regi);
+pm_pebiolc_costs_emu_preloop(t,regi) = v30_pebiolc_costs.l(t,regi);
 
-display p30_pebiolc_costs_emu_preloop;
+display pm_pebiolc_costs_emu_preloop;
 
 ***------------ Step 4: Release bounds on fuelex -------------
 *** AFTER calculations: prepare for main solve, therefore release bounds on fuelex.
