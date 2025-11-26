@@ -1438,6 +1438,8 @@ $setglobal c_ccsinjecrateRegi  off  !! def = "off"
 $setglobal c_SSP_forcing_adjust  forcing_SSP2   !! def = forcing_SSP2  !! regexp = forcing_SSP(1|2|3|5)
 *** cm_regiExoPrice "set exogenous co2 tax path for specific regions using a switch, require regipol module to be set to regiCarbonPrice (e.g. GLO.(2025 38,2030 49,2035 63,2040 80,2045 102,2050 130,2055 166,2060 212,2070 346,2080 563,2090 917,2100 1494,2110 1494,2130 1494,2150 1494) )"
 $setGlobal cm_regiExoPrice  off    !! def = off
+*** cm_regiExoPrice_fromFile "set exogenous co2 tax path for specific regions from another run, require regipol module to be set to regiCarbonPrice (e.g. "PathToGDX.gdx")"
+$setGlobal cm_regiExoPrice_fromFile  off    !! def = off
 *** cm_emiMktTarget "set a budget or year emission target, for all (all) or specific emission markets (ETS, ESD or other), and specific regions (e.g. DEU) or region groups (e.g. EU27)"
 ***   Example on how to use:
 ***     cm_emiMktTarget = '2020.2050.EU27_regi.all.budget.netGHG_noBunkers 72, 2020.2050.DEU.all.year.netGHG_noBunkers 0.1'
@@ -1983,6 +1985,12 @@ $setglobal cm_subsec_model_steel  processes  !! def = processes  !! regexp = pro
 *** (off) no bounds for 2025
 *** (on) some generous bounds for 2025 assuming that certain developments are not possible anymore even for fast growing technologies given 2023 data
 $setglobal cm_tech_bounds_2025  on  !! def = on  !! regexp = on|off
+*** cm_VREminCap_Ger
+*** activate bounds lower bounds for capacities of VRE technologies in Germany by 2030 based on different trend assessment of the current project pipeline
+*** (off) no bounds for 2030
+*** (CurrPol) moderate growth assumptions on renewable power and centralized heat pumps for Germany between 2025 and 2030
+*** (Opt) optimistic growth assumptions on renewable power and centralized heat pumps for Germany between 2025 and 2030
+$setglobal cm_VREminCap_Ger  CurrPol  !! def = CurrPol  
 *** set conopt version. Warning: conopt4 is in beta
 $setGlobal cm_conoptv  conopt3    !! def = conopt3
 *' c_empty_model  "Short-circuit the model, just use the input as solution"
