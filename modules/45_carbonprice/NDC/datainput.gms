@@ -78,21 +78,19 @@ p45_BAU_reg_emi_wo_LU_wo_bunkers(ttot,regi) = p45_BAU_reg_emi_wo_LU_wo_bunkers(t
 *** --------------------------------------------------------------------------
 
 *** parameters for selecting NDC years
-Scalar p45_ignoreNDCbefore          "NDC targets before this years are ignored, for example to exclude 2030 targets [year]" /2024/;
-p45_ignoreNDCbefore = max(p45_ignoreNDCbefore, cm_startyear)
-Scalar p45_ignoreNDCafter           "NDC targets after  this years are ignored, for example to exclude 2050 net zero targets [year]" /2030/;
-Scalar p45_minRatioOfCoverageToMax  "only targets whose coverage is this times p45_bestNDCcoverage are considered. Use 1 for only best [0..1]" /1.0/;
-Scalar p45_useSingleYearCloseTo     "if 0: use all. If > 0: use only one single NDC target per country closest to this year (use 2030.4 to prefer 2030 over 2035 over 2025) [year]" /2030.4/;
+Set t_NDC_targetYear(ttot)                          "Years for which NDC emissions targets can be applied [0 or 1]" / %cm_NDC_targetYear% /;
+Scalar p45_minRatioOfCoverageToMax                  "only targets whose coverage is this times p45_bestNDCcoverage are considered. Use 1 for only best [0..1]" /1.0/;
+Scalar p45_useSingleYearCloseTo                     "if 0: use all. If > 0: use only one single NDC target per country closest to this year (use 2030.4 to prefer 2030 over 2035 over 2025) [year]" /2030.4/;
+Set p45_NDCyearSet(ttot,all_regi)                   "YES for years whose NDC targets is used";
+Parameter p45_bestNDCcoverage(all_regi)             "highest coverage of NDC targets within region [0..1]";
+Parameter p45_distanceToOptyear(ttot,all_regi)      "distance to p45_useSingleYearCloseTo to favor years in case of multiple equally good targets [year]";
+Parameter p45_minDistanceToOptyear(all_regi)        "minimal distance to p45_useSingleYearCloseTo per region [year]";
 
-Set p45_NDCyearSet(ttot,all_regi)                 "YES for years whose NDC targets is used";
-Parameter p45_bestNDCcoverage(all_regi)        "highest coverage of NDC targets within region [0..1]";
-Parameter p45_distanceToOptyear(ttot,all_regi)    "distance to p45_useSingleYearCloseTo to favor years in case of multiple equally good targets [year]";
-Parameter p45_minDistanceToOptyear(all_regi)   "minimal distance to p45_useSingleYearCloseTo per region [year]";
 
-p45_bestNDCcoverage(regi) = smax(t$(t.val <= p45_ignoreNDCafter AND t.val >= p45_ignoreNDCbefore), p45_2015shareTarget(t,regi));
+p45_bestNDCcoverage(regi) = smax(t$(t_NDC_targetYear(t)), p45_2015shareTarget(t,regi));
 display p45_bestNDCcoverage;
 
-p45_NDCyearSet(t,regi)$(t.val <= p45_ignoreNDCafter AND t.val >= p45_ignoreNDCbefore) = p45_2015shareTarget(t,regi) >= p45_minRatioOfCoverageToMax * p45_bestNDCcoverage(regi);
+p45_NDCyearSet(t,regi)$(t_NDC_targetYear(t)) = p45_2015shareTarget(t,regi) >= p45_minRatioOfCoverageToMax * p45_bestNDCcoverage(regi);
 
 if(p45_useSingleYearCloseTo > 0,
   p45_distanceToOptyear(p45_NDCyearSet(t,regi)) = abs(t.val - p45_useSingleYearCloseTo);
