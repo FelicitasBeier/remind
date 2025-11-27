@@ -49,7 +49,7 @@ shapeData <- function(outputdirs) {
     ungroup() |>
     mutate(start = start - first(start)) |> # Calculate the start of each step relative to the start of the first step of the first run. 
     group_by(run) |>
-    mutate(end = lead(start)) |>
+    mutate(end = lead(start)) |> # make the start of n+1 ('lead(start') the end of n (end)
     mutate(start = hms::as_hms(start), end = hms::as_hms(end)) |>
     na.omit() # remove the last entry that has no "end" entry
 }
