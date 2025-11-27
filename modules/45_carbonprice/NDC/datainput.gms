@@ -117,6 +117,7 @@ display p45_NDCyearSet,p45_firstNDCyear,p45_lastNDCyear;
 
 if (not sameas("%cm_NDC_version%","2018_uncond"),
     p45_factorTargetyear(t,regi)$(sameas(regi,"LAM") AND sameas(t,"2030")) = p45_factorTargetyear(t,regi) + 0.2;
+    p45_factorTargetyear(t,regi)$(sameas(regi,"LAM") AND sameas(t,"2035")) = p45_factorTargetyear(t,regi) + 0.2;
 );
 
 *** switch off MAC abatement of land emissions, scenario should only have Magpie baseline emissions
