@@ -174,7 +174,8 @@ if(p45_taxCO2eq_anchorRegi("2100",regi) le 0,
 );
 ); !! If carbon price information from input.gdx should be used
 
-$endif.taxCO2GeneralShape !! exponential and linear shape specification
+$endif.taxCO2GeneralShape 
+!! exponential and linear shape specification
 
 ***-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *** Part II (Post-peak behaviour): The global anchor trajectory can be adjusted after reaching the peak of global CO2 emissions in cm_peakBudgYr.
