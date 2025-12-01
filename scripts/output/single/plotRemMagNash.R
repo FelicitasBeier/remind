@@ -14,7 +14,7 @@ library(ggplot2,  quietly = TRUE, warn.conflicts = FALSE)
 
 ############################# BASIC CONFIGURATION #############################
 
-if (!exists("source_include") | !exists("runs") | !exists("folder")) {
+if (!exists("source_include")) {
   message("Script started from command line.")
   message("ls(): ", paste(ls(), collapse = ", "))
   outputFolder <- "./output"
@@ -223,7 +223,10 @@ readDataFromGdx <- function(runfolder, allIter = TRUE) {
   
   if(!allIter) {
     magpieIter <- quitte::read.gdx(gdxName, "magpieIter")
-    magpieIter <- rbind(1, magpieIter) # always plot the first iteration
+    #magpieIter <- rbind(1,                                   # always plot the first iteration 
+    magpieIter <- rbind(magpieIter,                        
+                        data |> pull(iteration) |> max()) |> # and last iteration (to see what Nash does after last MAgPIE iteration)
+                  distinct()                                 # remove duplicates (if last iteration is also last MAgPIE iteration)
     data <- data |> semi_join(magpieIter, by = join_by(iteration))
   }
   
@@ -236,6 +239,7 @@ withr::with_dir(outputFolder, {
   allRuns <- 
     outputDirs                     |> 
     sapply(readDataFromGdx,           # read gdx files for all outputDirs
+       allIter = FALSE,               # decide whether to plot all Nash iterations or only Nash iterations in which MAgPIE runs
        simplify = FALSE,              # store as list
        USE.NAMES = TRUE)           |> # use outputDirs as names for list elements
     bind_rows(.id = "outputDirs")  |> # bind outputDir lists elements together and identify by outputDir
