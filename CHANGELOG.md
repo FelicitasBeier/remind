@@ -22,7 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
     [#2249](https://github.com/remindmodel/remind/pull/2249)
 - **scripts** Add new coupling scriptexecuted between the Nash iterations to transfer data between REMIND and MAgPIE and run MAgPIE
     [#2249](https://github.com/remindmodel/remind/pull/2249)
-    
+- **mapping** Add csv mapping MAgPIE to REMIND variables used by the coupling script
+    [#2249](https://github.com/remindmodel/remind/pull/2249)
 
 ### removed
 - **21_tax** remove input files with upper bounds on subsidies for final energy, as it is directly applied as part of input data generation
