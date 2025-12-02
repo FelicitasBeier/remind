@@ -11,7 +11,7 @@ library(ggplot2, quietly = TRUE,warn.conflicts =FALSE)
 library(hms,     quietly = TRUE,warn.conflicts =FALSE)
 library(lucode2, quietly = TRUE,warn.conflicts =FALSE)
 
-if(!exists("source_include")) lucode2::readArgs("outputdirs")
+if(!exists("source_include")) lucode2::readArgs("outputdirs") 
 
 # -----------------------------------------------------------------------
 # ----------- Function: Read runtime from NEW coupled runs --------------
@@ -94,18 +94,35 @@ shapeOldData <- function(path_to_runtime_rds) {
 # ------------------------ Execute functions ----------------------------
 # -----------------------------------------------------------------------
 
-paths <- paste0("output/", c(
-  "SSP2-NPi2025_2025-11-06_21.49.05", # standalone
-"C_SSP2-NPi2025_2025-11-07_09.31.44", # regular coupled run (nothing to continue)
-"C_SSP2-NPi2025_2025-11-06_22.27.36", # continue iteration: start remind with MAgPIE-Report: REMIND runs first
-"C_SSP2-NPi2025_2025-11-07_10.14.05", # continue iteration: start remind with REMIND report: MAgPIE runs first
-"C_SSP2-NPi2025_2025-11-06_22.40.54", # continue iteration: start remind with REMIND fulldata.gdx: MAgPIE runs first
-"C_SSP2-NPi2025_2025-11-07_12.06.46"  # continue iteration: start remind with REMIND report: MAgPIE runs first (the same as 14.05) AND also use REMIND fulldata.gdx as input.gdx
-))
+# Use this to let all runs start at minute 0, independent of their real sequence
+#data <- outputdirs |>
+#        lapply(shapeData) |>
+#        bind_rows()
 
-data <- paths |>
-        lapply(shapeData) |>
-        bind_rows()
+# Use this to keep the sequence of runs in time
+data <- shapeData(outputdirs)
+
+# Use this code to compare runtime to old coupled mode
+#
+# pathsNewCoupled <- c(
+# "output/C_SSP2-NPi2025_2025-11-27_21.03.53",
+# "output/C_SSP2-PkBudg1000_2025-11-28_08.08.09",
+# "output/C_SSP2-PkBudg650_2025-11-28_21.27.26"
+# )
+# 
+# pathsNewStandalone <- c(
+# "output/SSP2-NPi2025_2025-11-27_21.02.51",
+# "output/SSP2-PkBudg1000_2025-11-28_00.41.58",
+# "output/SSP2-PkBudg650_2025-11-28_00.41.51"
+# )
+# 
+# path_to_runtime_rds <- "/p/tmp/dklein/remMagNash-Comp/remind-before/runtime.rds"
+# 
+# oldCoupled    <- shapeOldData(path_to_runtime_rds)
+# newCoupled    <- shapeData(pathsNewCoupled)
+# newStandalone <- shapeData(pathsNewStandalone)
+# 
+# data <- bind_rows(newCoupled, newStandalone, oldCoupled)
 
 # -----------------------------------------------------------------------
 # ------------------------------ Plot -----------------------------------
@@ -114,17 +131,32 @@ data <- paths |>
 # Define order for proper ordering in the legend
 #data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","solve","exoGAINS","iterativeEdgeTransport","mag2rem","MAgPIE","output",
 #                                                      "rem-prep","rem-GAMS","rem-output","mag-prep","mag-GAMS","mag-output")))
-data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","convGDX2MIF_REMIND2MAgPIE","getMagpieData","solve","exoGAINS","iterativeEdgeTransport","mag2rem","MAgPIE","output",
-                                                      "mag-prep","mag-output")))
 
-data$run <- factor(data$run, levels = rev(c(
-  "SSP2-NPi2025_2025-11-06_21.49.05", # standalone
-"C_SSP2-NPi2025_2025-11-07_09.31.44", # regular coupled run (nothing to continue)
-"C_SSP2-NPi2025_2025-11-06_22.27.36", # continue iteration: start remind with MAgPIE-Report: REMIND runs first
-"C_SSP2-NPi2025_2025-11-07_10.14.05", # continue iteration: start remind with REMIND report: MAgPIE runs first
-"C_SSP2-NPi2025_2025-11-06_22.40.54", # continue iteration: start remind with REMIND fulldata.gdx: MAgPIE runs first
-"C_SSP2-NPi2025_2025-11-07_12.06.46"  # continue iteration: start remind with REMIND fulldata.gdx: MAgPIE runs first (the same as 14.05) AND also use REMIND fulldata.gdx as input.gdx
-)))
+data <- data |> mutate(phase = factor(phase, levels = c("prepare",
+                                                        "GAMS",
+                                                        "convGDX2MIF_REMIND2MAgPIE",
+                                                        "MAgPIE",
+                                                        "getMagpieData",
+                                                        "solve",
+                                                        "exoGAINS",
+                                                        "iterativeEdgeTransport",
+                                                        "output",
+                                                        "mag-prep",     # old coupling only
+                                                        "mag-output"))) # old coupling only
+
+# Remove timestamp from scenario name
+#datetimepattern <- "_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}"
+#data$run <- gsub(datetimepattern, "_new", data$run)
+
+#data$Phase_ordered <- factor(data$Phase,levels=c("SD","DD","CD","PC","CA"))
+#data$Project_ordered <- reorder(data$Project,data$StartDate)
+
+data$run <- factor(data$run, levels = rev(gsub("output/", "", outputdirs)))
+#c(
+#"SSP2-NPi2025_new", "SSP2-PkBudg1000_new", "SSP2-PkBudg650_new",
+#"C_SSP2-NPi2025_new", "C_SSP2-PkBudg1000_new", "C_SSP2-PkBudg650_new",
+#"C_SSP2-NPi2025", "C_SSP2-PkBudg1000", "C_SSP2-PkBudg650"
+#))
 
 data <- data |> mutate(run = factor(.data$run, levels = rev(unique(.data$run))))
 
@@ -138,7 +170,7 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
                                 "solve"      = "#2D4175", # "#4E84C4",
                                 "exoGAINS"   = "#C4961A",
                                 "iterativeEdgeTransport" = "#D16103",
-                                "mag2rem"    = "#FFDB6D",
+                                #"mag2rem"    = "#FFDB6D",
                                 "output"     = "#84A1E0",
                                 "MAgPIE"     = "#52854C",
                                 "mag-prep"   = "#C3D7A4",
@@ -147,4 +179,4 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
   ylab("") +
   xlab("")
 
-ggsave("runtime-continueFromHere.png", p, width = 16, height = 5)
+ggsave("runtime.png", p, width = 16, height = 5)
