@@ -9,9 +9,8 @@ library(dplyr,   quietly = TRUE,warn.conflicts =FALSE)
 library(readr,   quietly = TRUE,warn.conflicts =FALSE)
 library(ggplot2, quietly = TRUE,warn.conflicts =FALSE)
 library(hms,     quietly = TRUE,warn.conflicts =FALSE)
-library(lucode2, quietly = TRUE,warn.conflicts =FALSE)
 
-if(!exists("source_include")) lucode2::readArgs("outputdirs") 
+if (!exists("source_include")) lucode2::readArgs("outputdirs")
 
 # -----------------------------------------------------------------------
 # ----------- Function: Read runtime from NEW coupled runs --------------
@@ -20,7 +19,7 @@ if(!exists("source_include")) lucode2::readArgs("outputdirs")
 # The automatic date parser from the tibble package used in read_csv gets 
 # confused, because there are mixed types of date formates in the logfile. 
 # The lines written by the R scripts are correctly formatted, the lines
-# written by GAMS are missing leading zeros. Thus, the  parser does not 
+# written by GAMS are missing leading zeros. Thus, the parser does not 
 # recognize them and chooses "character" as column type for start.
 
 # Funtion reading the runtime.log of a single run
@@ -151,12 +150,7 @@ data <- data |> mutate(phase = factor(phase, levels = c("prepare",
 #data$Phase_ordered <- factor(data$Phase,levels=c("SD","DD","CD","PC","CA"))
 #data$Project_ordered <- reorder(data$Project,data$StartDate)
 
-data$run <- factor(data$run, levels = rev(gsub("output/", "", outputdirs)))
-#c(
-#"SSP2-NPi2025_new", "SSP2-PkBudg1000_new", "SSP2-PkBudg650_new",
-#"C_SSP2-NPi2025_new", "C_SSP2-PkBudg1000_new", "C_SSP2-PkBudg650_new",
-#"C_SSP2-NPi2025", "C_SSP2-PkBudg1000", "C_SSP2-PkBudg650"
-#))
+data$run <- factor(data$run, levels = rev(basename(outputdirs)))
 
 data <- data |> mutate(run = factor(.data$run, levels = rev(unique(.data$run))))
 
@@ -179,4 +173,4 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
   ylab("") +
   xlab("")
 
-ggsave("runtime.png", p, width = 16, height = 5)
+ggsave("output/runtime.png"), p, width = 16, height = 5)
