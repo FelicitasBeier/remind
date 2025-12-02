@@ -173,4 +173,4 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
   ylab("") +
   xlab("")
 
-ggsave("output/runtime.png"), p, width = 16, height = 5)
+ggsave("output/runtime.png", p, width = 16, height = 5)
