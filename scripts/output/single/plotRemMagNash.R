@@ -14,17 +14,9 @@ library(ggplot2,  quietly = TRUE, warn.conflicts = FALSE)
 
 ############################# BASIC CONFIGURATION #############################
 
-if (!exists("source_include")) {
-  message("Script started from command line.")
-  message("ls(): ", paste(ls(), collapse = ", "))
-  outputFolder <- "./output"
-  lucode2::readArgs("outputdir", "outputFolder")
-  outputDirs <- basename(outputdir)
-} else {
-  message("Script was sourced.")
-  message("outputDirs  : ", paste(outputDirs, collapse = ", "))
-  message("outputFolder: ", paste(outputFolder, collapse = ", "))
-}
+if (!exists("source_include")) lucode2::readArgs("outputdir")
+
+outputdirs <- outputdir
 
 ############################# DEFINE FUNCTIONS ###########################
 
@@ -32,7 +24,7 @@ if (!exists("source_include")) {
 myplot <- function(dat, parName, runName, type = "line", xaxis = "ttot", color = "iteration", scales = "free_y", ylab = NULL, title = "auto") {
   
   # Find last (continuous) iteration per outputDir
-  if("outputDirs" %in% names(dat)) last <- dat |> group_by(outputDirs) |> summarise(iteration = max(iteration))
+  if("outputdirs" %in% names(dat)) last <- dat |> group_by(outputdirs) |> summarise(iteration = max(iteration))
   
   # Zero values are not stored in the gdx and are thus missing in dat.
   # Add '0' for the missing combinations of iteration, ttot, all_regi.
@@ -41,7 +33,7 @@ myplot <- function(dat, parName, runName, type = "line", xaxis = "ttot", color =
   
   # Generate auto title if wanted
   if(!is.null(title) && title == "auto") {
-    title <- paste(paste(unique(runName$outputDirs), collapse = "\n"), 
+    title <- paste(paste(unique(runName$outputdirs), collapse = "\n"), 
                    dat |> first() |> pull(var), # obtain var name corresponding to par
                    parName,
                    sep = "\n")
@@ -72,7 +64,7 @@ myplot <- function(dat, parName, runName, type = "line", xaxis = "ttot", color =
     #theme_bw()
   
   # If there is more than one run, plot vertical line to separate runs
-    if("outputDirs" %in% names(dat) & xaxis == "iteration")  {
+    if("outputdirs" %in% names(dat) & xaxis == "iteration")  {
     p <- p + geom_vline(xintercept = last$iteration)  
   }
   return(p)
@@ -83,11 +75,13 @@ plot_iterations <- function(dat, runname) {
   
   # ---- Plot: MAgPIE prices for purpose grown bioenergy ----
   
-  p_price_mag <- myplot(dat, "o_p30_pebiolc_pricemag", runname, ylab = "$/GJ")
-  
+  p_price_mag    <- myplot(dat, "o_p30_pebiolc_pricemag", runname, ylab = "$/GJ")
+  p_price_mag_it <- myplot(dat, "o_p30_pebiolc_pricemag", runname, xaxis = "iteration", color = "ttot", ylab = "$/GJ")
+
   # ---- Plot: MAgPIE co2luc ----
   
-  p_emi_mag <- myplot(dat, "o_vm_emiMacSector_co2luc", runname, ylab = "Mt CO2/yr")
+  p_emi_mag    <- myplot(dat, "o_vm_emiMacSector_co2luc", runname, ylab = "Mt CO2/yr")
+  p_emi_mag_it <- myplot(dat, "o_vm_emiMacSector_co2luc", xaxis = "iteration", color = "ttot", runname, ylab = "Mt CO2/yr")
   
   
   # ---- Plot: REMIND Production of purpose grown bioenergy ----
@@ -123,21 +117,23 @@ plot_iterations <- function(dat, runname) {
   out <- lusweave::swopen(template = "david")
   
   lusweave::swfigure(out, print, p_price_mag,         sw_option = "height=9,width=16")
+  lusweave::swfigure(out, print, p_price_mag_it,      sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_fuelex,            sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_fuelex_it,         sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_fuelex_it_fix,     sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_fuelex_it_2060,    sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_demPE_it,          sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_emi_mag,           sw_option = "height=9,width=16")
+  lusweave::swfigure(out, print, p_emi_mag_it,        sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_mult,              sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_mult_it,           sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_price_carbon,      sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_price_carbon_it_1, sw_option = "height=9,width=16")
   lusweave::swfigure(out, print, p_price_carbon_it_2, sw_option = "height=9,width=16")
   
-  filename <- paste0(gsub("/","",tail(runname$outputDirs, n=1)), ifelse(nrow(runname)>1, "-continued", ""))
+  filename <- paste0("output/", tail(runname$outputdirs, n=1), ifelse(nrow(runname)>1, "-continued", ""))
   lusweave::swclose(out, outfile = filename, clean_output = TRUE, save_stream = FALSE)
-  file.remove(paste0(filename,c(".log",".out")))
+  file.remove(paste0(filename,c(".log")))
   # out files have "." replaced with "-_-_-" in their names
   #file.remove(paste0(gsub("\\.","-_-_-",filename),".out"))
   
@@ -234,48 +230,47 @@ readDataFromGdx <- function(runfolder, allIter = TRUE) {
 }
 
 # Read data for all runs and put into on data frame
-withr::with_dir(outputFolder, {
+allRuns <- 
+  outputdirs                     |> 
+  sapply(readDataFromGdx,           # read gdx files for all outputdirs
+     allIter = FALSE,               # decide whether to plot all Nash iterations or only Nash iterations in which MAgPIE runs
+     simplify = FALSE,              # store as list
+     USE.NAMES = TRUE)           |> # use outputdirs as names for list elements
+  bind_rows(.id = "outputdirs")  |> # bind outputDir lists elements together and identify by outputDir
+  mutate(outputdirs = basename(outputdirs)) |> # remove 'output/' from scenario names
+  group_by(outputdirs)           #|> 
+  #group_walk(~ plot_iterations(     # apply plot_iterations to all rows in a group
+  #   .x,                            # .x refers to the subset of all rows in a group
+  #   .y))                           # .y refers to their key (here: outputdirs)
 
-  allRuns <- 
-    outputDirs                     |> 
-    sapply(readDataFromGdx,           # read gdx files for all outputDirs
-       allIter = FALSE,               # decide whether to plot all Nash iterations or only Nash iterations in which MAgPIE runs
-       simplify = FALSE,              # store as list
-       USE.NAMES = TRUE)           |> # use outputDirs as names for list elements
-    bind_rows(.id = "outputDirs")  |> # bind outputDir lists elements together and identify by outputDir
-    group_by(outputDirs)           #|> 
-    #group_walk(~ plot_iterations(     # apply plot_iterations to all rows in a group
-    #   .x,                            # .x refers to the subset of all rows in a group
-    #   .y))                           # .y refers to their key (here: outputDirs)
-})
 
 # If a run continues a previous coupled REMIND-MAgPIE runs, produce a pdf that
 # concatenates the iterations of all runs and plots all iterations on one axis
 
 # Continue iteration count for runs that continue other runs
 
-# Define order of runs in the order they are listed in outputDirs
-allRuns$outputDirs <- factor(allRuns$outputDirs, levels = outputDirs)
+# Define order of runs in the order they are listed in outputdirs
+allRuns$outputdirs <- factor(allRuns$outputdirs, levels = basename(outputdirs))
 
 # Find last iteration per outputDir
-last <- allRuns |> group_by(outputDirs) |> summarise(iteration = max(iteration))
+last <- allRuns |> group_by(outputdirs) |> summarise(iteration = max(iteration))
 
 # # A tibble: 2 × 2
-#   outputDirs         last
+#   outputdirs         last
 #    <fct>             <dbl>
 # 1 randomFolderName1    37
 # 2 randomFolderName2    34
 
 # Create data frame that maps single iterations to continuous iterations
-mapIterations <- last |> group_by(outputDirs) |> 
+mapIterations <- last |> group_by(outputdirs) |> 
   group_modify( ~ add_row(.x, iteration = 1:max(.x))) |> # per group add iterations 1:last
-  arrange(outputDirs, iteration) |> 
+  arrange(outputdirs, iteration) |> 
   distinct() |> # remove duplicated last iteration
   ungroup() |> 
   mutate(continuous = 1:n()) # add column that continues iteration count across runs
 
 # A tibble: 71 × 3
-#    outputDirs     iteration continuous
+#    outputdirs     iteration continuous
 #    <fct>              <dbl>      <int>
 #  1 randomFolderName1      1          1
 #  2 randomFolderName1      2          2
@@ -291,14 +286,12 @@ mapIterations <- last |> group_by(outputDirs) |>
 
 # Add column with continuous iteration numbers to allRuns
 allRunsContinued <- allRuns |> 
-  left_join(mapIterations, by = join_by(outputDirs, iteration)) |> 
+  left_join(mapIterations, by = join_by(outputdirs, iteration)) |> 
   rename(single = iteration) |> 
   rename(iteration = continuous)
 
 # Plot all runs into one plot
-withr::with_dir(outputFolder, {
-
-  allRunsContinued |> 
+allRunsContinued |> 
   ungroup() |> 
-  plot_iterations(runname = select(allRunsContinued, outputDirs) |> distinct() )
-})
+  plot_iterations(runname = select(allRunsContinued, outputdirs) |> distinct() )
+
