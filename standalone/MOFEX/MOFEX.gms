@@ -77,7 +77,7 @@ $setGlobal agCosts  costs               !! def = costs
 ***---------------------    29_CES_parameters    --------------------------------
 $setglobal CES_parameters  load       !! def = load
 ***---------------------    30_biomass    ---------------------------------------
-$setGlobal biomass  magpie_40 !! def = magpie_40
+$setGlobal biomass  magpie !! def = magpie
 ***---------------------    31_fossil    ----------------------------------------
 $setGlobal fossil  timeDepGrades        !! def = MOFEX
 ***---------------------    32_power    ----------------------------------------

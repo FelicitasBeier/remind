@@ -109,18 +109,6 @@ prepare <- function() {
     create_input_for_50_damage_exogenous(as.character(cfg$files2export$start["input_damage.gdx"]))
   }
 
-  # If a path to a MAgPIE report is supplied use it as REMIND input (used for REMIND-MAgPIE coupling)
-  # ATTENTION: modifying gms files
-  if (!is.null(cfg$pathToMagpieReport)) {
-    stop("Somehow the old MAgPIE coupling script 'getReportData' was called in 'prepare.R'. Stopping, because this should not happen.")
-    getReportData(
-      path_to_report = cfg$pathToMagpieReport,
-      inputpath_mag  = cfg$gms$biomass,
-      inputpath_acc  = cfg$gms$agCosts,
-      var_luc        = cfg$var_luc
-    )
-  }
-
   # Update module paths in GAMS code
   update_modules_embedding()
 

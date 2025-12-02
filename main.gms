@@ -310,8 +310,8 @@ $setglobal agCosts  costs       !! def = costs
 $setglobal CES_parameters  load   !! def = load
 *'---------------------    30_biomass    ----------------------------------------
 *'
-*' * (magpie_40): using supply curves derived from MAgpIE 4.0
-$setglobal biomass  magpie     !! def = magpie_40
+*' * (magpie): using biomass supply curves derived from MAgpIE
+$setglobal biomass  magpie     !! def = magpie
 *'---------------------    31_fossil    ----------------------------------------
 *'
 *' * (timeDepGrades): time-dependent grade structure of fossil resources (oil & gas only)
@@ -755,7 +755,7 @@ parameter
   cm_phaseoutBiolc          "Switch that allows for a full phaseout of all bioenergy technologies globally"
 ;
   cm_phaseoutBiolc    = 0;         !! def = 0  !! regexp = 0|1
-***  Only working with magpie_40 realization of 30_biomass module.
+***  Only working with magpie realization of 30_biomass module.
 ***  (0): (default) No phaseout
 ***  (1): Phaseout capacities of all bioenergy technologies using pebiolc, as far
 ***       as historical bounds on bioenergy technologies allow it. This covers
