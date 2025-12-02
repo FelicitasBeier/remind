@@ -13,7 +13,7 @@ if(cm_iterative_target_adj eq 5,
 *** 1. Get the relevant information from this iteration
   !! Update the actual budget by region and save across iterations for debugging
   p45_actualbudgetco2Regi_2100(regi) = sum(t$(t.val eq 2100), pm_actualbudgetco2Regi(t,regi)); 
-  p45_actualbudgetco2Regi_2100_iter(iteration, regi) = pm_actualbudgetco2Regi(regi);
+  p45_actualbudgetco2Regi_2100_iter(iteration, regi) = p45_actualbudgetco2Regi_2100(regi);
 
   !! Save pm_taxCO2eq over iterations
   pm_taxCO2eq_iter(iteration,ttot,regi) = pm_taxCO2eq(ttot,regi);
