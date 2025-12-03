@@ -1345,7 +1345,7 @@ $setglobal cm_rcp_scen  rcp45         !! def = "rcp45"  !! regexp = none|rcp20|r
 *' *  (2023_cond):                all NDCs conditional to international financial support published until December 31, 2023
 *' *  (2023_uncond):              all NDCs independent of international financial support published until December 31, 2023
 *' *  Other supported years are 2022, 2021 and 2018, always containing NDCs published until December 31 of that year
-$setglobal cm_NDC_version  2024_cond    !! def = "2024_cond"  !!
+$setglobal cm_NDC_version  2024_cond    !! def = "2024_cond" !! regexp = 20(18|2[1-5])_(un)?cond(_extrapol)?$
 *' cm_NDC_targetYear            "choose years for which NDC emissions targets can be applied" [requires 45_carbonprice = NDC]
 *' * Examples on how to use:
 *' *  "2030" means that only 2030 target are included
