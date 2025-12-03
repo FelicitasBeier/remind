@@ -425,6 +425,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       cfg$output <- c(setdiff(cfg$output, "plotRemMagNash"), "plotRemMagNash") # plot convergence
       cfg$path_magpie <- path_magpie
       cfg$magpie_empty <- isTRUE(scenarios_coupled[scen, "magpie_empty"]) # if magpie should be replaced by an empty model
+      cfg$slurmConfig <- combine_slurmConfig(cfg$slurmConfig, "--comment=REMIND-MAgPIE")
       
       magpieEnv <- new.env()
       source(file.path(path_magpie, "config", "default.cfg"), local = magpieEnv) # retrieve MAgPIE settings
