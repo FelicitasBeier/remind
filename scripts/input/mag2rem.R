@@ -20,9 +20,9 @@ createREMINDReporting <- function(gdx) {
   message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
   if(!file.exists(gdx)) stop("The MAgPIE coupling script 'mag2rem.R' could not find a REMIND fulldata.gdx file:", gdx)
   scenario <- lucode2::getScenNames(".")
-  remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = paste0("REMIND_rem2mag-", i," .mif"), scenario = scenario, extraData = "reporting")
+  remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = paste0("REMIND_rem2mag-", i,".mif"), scenario = scenario, extraData = "reporting")
   message("\nFinished reporting - ", round(Sys.time()))
-  return(file.path(cfg$remind_folder, cfg$results_folder, "REMIND_rem2mag-", i, ".mif"))
+  return(file.path(cfg$remind_folder, cfg$results_folder, paste0("REMIND_rem2mag-", i,".mif")))
 }
 
 runMAgPIE <- function(pathToRemindReport) {
@@ -77,6 +77,9 @@ runMAgPIE <- function(pathToRemindReport) {
       gdxlist <- paste0("output/", runname, "-mag-", i-1, "/magpie_y", seq(cfg$gms$cm_startyear,2150,5), ".gdx")
       cfg$cfg_mag$files2export$start <- .setgdxcopy(".gdx",cfg$cfg_mag$files2export$start,gdxlist)
     }
+    
+    # Save the same (potentially updated) elements that were loaded to make MAgPIE paths accessible for getRunStatus
+    save(list = elementsLoaded, file = file.path(cfg$remind_folder, cfg$results_folder, "config.Rdata"))
 
     # Start MAgPIE
     message("### COUPLING ", i, " ### Starting MAgPIE - ", round(Sys.time()), "\nwith  Report = ", pathToRemindReport, "\n      Folder = ", cfg$cfg_mag$results_folder)
