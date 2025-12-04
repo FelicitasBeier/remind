@@ -75,7 +75,7 @@ pm_vintage_in(regi,"6",te) = pm_vintage_in(regi,"6",te) * max(((pm_histfegrowth(
 );
 
 
-*** XXX DK: moved code concerning pm_macBaseMagpie to core/presolve.gms
+*** Moved code concerning pm_macBaseMagpie to core/presolve.gms
 
 $IFTHEN.out "%cm_debug_preloop%" == "on" 
 option limrow = 70;

@@ -145,7 +145,7 @@ display p_efFossilFuelExtr;
 pm_macSwitch(ttot,regi,"co2cement_process") =0 ;
 p_macCostSwitch(enty)=pm_macSwitch("2050","USA",enty);
 
-*** DK: xxx code moved here from core/preloop.gms
+*** Code moved here from core/preloop.gms
 *** The N2O emissions generated during biomass production in agriculture (in MAgPIE)
 *** are represented in REMIND by applying the n2obio emission factor (zero in coupled runs)
 *** in q_macBase. In standaolne runs the resulting emissions need to be subtracted (see below)

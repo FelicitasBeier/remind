@@ -249,7 +249,7 @@ $offdelim
 ;
 
 
-*** DK xxx Moved calculation of p47_LULUCFEmi_GrassiShift to 47_regipol/regiCarbonPrice/presolve.gms
+*** Moved calculation of p47_LULUCFEmi_GrassiShift to 47_regipol/regiCarbonPrice/presolve.gms
 
 *** -------------------------Primary Energy Tax--------------------------
 
