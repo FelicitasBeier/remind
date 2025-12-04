@@ -103,15 +103,15 @@ else
 
 *** Run MAgPIE
 if (sm_updateMagpieData eq 1,
-*** Track runtime: done in mag2rem.R
+*** Track runtime: done in magpie.R
 *** Temporarily change numeric round format (nr) and number of decimals (nd) of the
-*** outpt of the put_utility such that the arguments passed to mag2rem.R have integer format
+*** outpt of the put_utility such that the arguments passed to magpie.R have integer format
   sm_tmp  = logfile.nr;
   sm_tmp2 = logfile.nd;
   logfile.nr = 1;
   logfile.nd = 0;
   sm_magpieIter = sm_magpieIter + 1;
-  put_utility  "exec.checkErrorLevel" / "Rscript mag2rem.R " sm_magpieIter " " ord(iteration);
+  put_utility  "exec.checkErrorLevel" / "Rscript magpie.R " sm_magpieIter " " ord(iteration);
   logfile.nr = sm_tmp;
   logfile.nd = sm_tmp2;
 *** Track runtime

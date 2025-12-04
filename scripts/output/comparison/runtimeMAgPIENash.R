@@ -128,7 +128,7 @@ data <- shapeData(outputdirs)
 # -----------------------------------------------------------------------
   
 # Define order for proper ordering in the legend
-#data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","solve","exoGAINS","iterativeEdgeTransport","mag2rem","MAgPIE","output",
+#data <- data |> mutate(phase = factor(phase, levels=c("prepare","GAMS","solve","exoGAINS","iterativeEdgeTransport","MAgPIE","output",
 #                                                      "rem-prep","rem-GAMS","rem-output","mag-prep","mag-GAMS","mag-output")))
 
 data <- data |> mutate(phase = factor(phase, levels = c("prepare",
@@ -164,7 +164,6 @@ p <- ggplot(data,aes(x=start, y=run, color=phase)) +
                                 "solve"      = "#2D4175", # "#4E84C4",
                                 "exoGAINS"   = "#C4961A",
                                 "iterativeEdgeTransport" = "#D16103",
-                                #"mag2rem"    = "#FFDB6D",
                                 "output"     = "#84A1E0",
                                 "MAgPIE"     = "#52854C",
                                 "mag-prep"   = "#C3D7A4",

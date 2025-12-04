@@ -18,7 +18,7 @@ createREMINDReporting <- function(gdx) {
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "convGDX2MIF_REMIND2MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   # Create reduced REMIND reporting
   message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
-  if(!file.exists(gdx)) stop("The MAgPIE coupling script 'mag2rem.R' could not find a REMIND fulldata.gdx file:", gdx)
+  if(!file.exists(gdx)) stop("The MAgPIE coupling script 'magpie.R' could not find a REMIND fulldata.gdx file:", gdx)
   scenario <- lucode2::getScenNames(".")
   remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = paste0("REMIND_rem2mag-", i,".mif"), scenario = scenario, extraData = "reporting")
   message("\nFinished reporting - ", round(Sys.time()))
