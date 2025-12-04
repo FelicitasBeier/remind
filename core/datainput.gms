@@ -994,7 +994,7 @@ $if %cm_LU_emi_scen% == "SSP3"   p_efFossilFuelExtr(regi,"pebiolc","n2obio") = 0
 $if %cm_LU_emi_scen% == "SSP5"   p_efFossilFuelExtr(regi,"pebiolc","n2obio") = 0.0066/sm_EJ_2_TWa;
 $if %cm_LU_emi_scen% == "SDP"    p_efFossilFuelExtr(regi,"pebiolc","n2obio") = 0.0047/sm_EJ_2_TWa;
 
-*DK* In case REMIND is coupled to MAgPIE emissions are obtained from the MAgPIE reporting. 
+*** In case REMIND is coupled to MAgPIE emissions are obtained from the MAgPIE reporting. 
 *** Thus, emission factors are set to zero in core/presolve.gms after MAgPIE has run at least one.
 
 *** capacity factors (nur) are 1 by default

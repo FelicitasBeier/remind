@@ -18,11 +18,11 @@ if(sm_updateMagpieData gt 0,
 *** Update biomass prices and biomass production with MAgPIE's results
 *** The landuse emissions are updated in the core/presolve.gms
 
-*DK* Read prices and costs for 2nd gen. purpose grown bioenergy from MAgPIE (calculated with demnad from previous Remind run)
+*** Read prices and costs for 2nd gen. purpose grown bioenergy from MAgPIE (calculated with demnad from previous Remind run)
 Execute_Loadpoint 'magpieData.gdx' p30_pebiolc_pricemag;
 
-*DK* In coupled runs overwrite pebiolc production from look-up table with actual MAgPIE values.
-*DK* Read production of 2nd gen. purpose grown bioenergy from MAgPIE (given to MAgPIE from previous Remind run)
+*** In coupled runs overwrite pebiolc production from look-up table with actual MAgPIE values.
+*** Read production of 2nd gen. purpose grown bioenergy from MAgPIE (given to MAgPIE from previous Remind run)
 *** Moved to core/presolve.gms because it is needed there for calcualtions
 
 ***=============================================================

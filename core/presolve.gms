@@ -129,7 +129,7 @@ if (sm_magpieIter gt 0,
   pm_macBaseMagpie(ttot,regi,emiMacMagpie(enty))$(ttot.val ge 2005) = f_macBaseMagpie_coupling(ttot,regi,emiMacMagpie);
 *** Biomass emission factor is set to zero after MAgPIE has run at least one, since biomass emissions are included in the emissions imported above. 
   p_efFossilFuelExtr(regi,"pebiolc","n2obio") = 0.0;
-*DK* In coupling mode LU emissions are abated in MAgPIE (moved here from core/datainput.gms)
+*** In coupling mode LU emissions are abated in MAgPIE (moved here from core/datainput.gms)
   pm_macSwitch(ttot,regi,enty)$emiMacMagpie(enty) = 0;
 else 
 *** MAgPIE has not run (and might never run): the start values for pm_macBaseMagpie come from input data file
@@ -138,7 +138,7 @@ else
 
 display p_efFossilFuelExtr;
 
-*** DK: moved here from core/datainput.gms, because pm_macSwitch is changed above after first MAgPIE iteration
+*** Moved here from core/datainput.gms, because pm_macSwitch is changed above after first MAgPIE iteration
 *** An alternative to the approach below could be to introduce a new value for c_macswitch that only deactivates the LU MACs
 *** GA: Use long term (2050) pm_macSwitch to set p_macCostSwitch, as some MACCs
 *** are turned off in the short term 
