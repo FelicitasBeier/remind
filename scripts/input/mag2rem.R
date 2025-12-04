@@ -168,7 +168,7 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
     select(regi, ttot, enty, parameter, value)               # keep only columns required for import to REMIND
 
   
-  # ---- Create gdx ----
+  # ---- Start creating objects that will be written to gdx ----
   
   # ---- Define SETS ----
   
