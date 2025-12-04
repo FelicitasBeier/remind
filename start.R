@@ -143,9 +143,6 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
   # choose results folder from list
   searchforfile <- if ("--reprepare" %in% flags) "config.Rdata" else "full.gms"
   possibledirs <- basename(dirname(Sys.glob(file.path("output", "*", searchforfile))))
-  # DK: The following outcommented lines are specially made for listing results of coupled runs
-  # runs <- lucode2::findCoupledruns("./output/")
-  # possibledirs <- sub("./output/", "", lucode2::findIterations(runs, modelpath = "./output", latest = TRUE))
   outputdirs <- gms::chooseFromList(sort(unique(possibledirs)), returnBoolean = FALSE,
                            type = paste0("runs to be re", ifelse("--reprepare" %in% flags, "prepared", "started")))
   if ("--gamscompile" %in% flags) {

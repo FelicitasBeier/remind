@@ -1336,11 +1336,6 @@ parameter
 *'
 $setglobal c_magpieIter  20,24,28,32     !! def = "20,24,28,32"  !! This regular expression works in manual test but not in checkFixCfg [0-9]{1,2}(,[0-9]{1,2})*
 
-*' cm_MAgPIE_coupling    "switch on OLD coupling mode with MAgPIE. OLD means MAgPIE does not run between the Nash iterations but after REMIND completed. CURRENTLY NOT SUPPORTED!"
-*'
-*' *  (off): off = REMIND expects to be run standalone (emission factors are used, shiftfactors are set to zero)
-*' *  (on): on  = REMIND expects to be run based on a MAgPIE reporting file (emission factors are set to zero because emissions are retrieved from the MAgPIE reporting, shift factors for supply curves are calculated)
-$setglobal cm_MAgPIE_coupling  off     !! def = "off"  !! regexp = off|on
 *' cm_rcp_scen       "chooses RCP scenario"
 *'
 *' *  (none): no RCP scenario, standard setting

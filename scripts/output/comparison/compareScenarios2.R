@@ -25,7 +25,7 @@ if (!exists("outputdirs")) {
 determineDefaultProfiles <- function(outputDir) {
   env <- new.env()
   load(file.path(outputDir, "config.Rdata"), envir = env)
-  if (tolower(env$cfg$gms$cm_MAgPIE_coupling) == "on") return("REMIND-MAgPIE")
+  if ("cfg_mag" %in% names(env$cfg)) return("REMIND-MAgPIE")
   regionMappingFile <- basename(env$cfg$regionmapping)
   defaults <- switch(
     regionMappingFile,
