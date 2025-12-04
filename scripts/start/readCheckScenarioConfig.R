@@ -16,7 +16,7 @@
 #' @author Oliver Richters
 #' @return list with scenario config content
 readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE, fillWithDefault = FALSE) {
-  coupling <- if (grepl("scenario_config_coupled", filename)) "MAgPIE" else FALSE
+  coupling <- if (grepl("scenario_config_magpie", filename)) "MAgPIE" else FALSE
   if (testmode) {
     cfg <- suppressWarnings(gms::readDefaultConfig(remindPath))
   } else {

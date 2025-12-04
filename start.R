@@ -220,7 +220,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
   if (is.null(config.file) & "--interactive" %in% flags) {
     possiblecsv <- Sys.glob(c(file.path("./config/scenario_config*.csv"), file.path("./config","*","scenario_config*.csv")))
-    possiblecsv <- possiblecsv[! grepl(".*scenario_config_coupled.*csv$", possiblecsv)]
+    possiblecsv <- possiblecsv[! grepl(".*scenario_config_magpie.*csv$", possiblecsv)]
     config.file <- gms::chooseFromList(possiblecsv, type = "one config file", returnBoolean = FALSE, multiple = FALSE)
   }
   if (all(c("--testOneRegi", "--interactive") %in% flags)) testOneRegi_region <- selectTestOneRegiRegion()
@@ -231,14 +231,14 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
   if (! length(config.file) == 0) {
     
-    # MAgPIE coupling: if a file containing "_coupled" is passed to this script, it activates the coupled mode.
-    # Read scenario_config_coupled.csv before reading the scenario_config.csv
-    if (grepl("_coupled", config.file)) {
-      message("\nStarting REMIND in coupled mode with MAgPIE,\n as you have provided a scenario_config_coupled.csv.\nReading ", config.file)
-      settings_coupled <- readCheckScenarioConfig(config.file, ".")
-      scenarios_coupled <- selectScenarios(settings = settings_coupled, interactive = "--interactive" %in% flags, startgroup = startgroup)
+    # MAgPIE coupling: if a file containing "_magpie" is passed to this script, it activates the coupled mode.
+    # Read scenario_config_magpie.csv before reading the scenario_config.csv
+    if (grepl("_magpie", config.file)) {
+      message("\nStarting REMIND in coupled mode with MAgPIE,\n as you have provided a scenario_config_magpie.csv.\nReading ", config.file)
+      settings_magpie <- readCheckScenarioConfig(config.file, ".")
+      scenarios_magpie <- selectScenarios(settings = settings_magpie, interactive = "--interactive" %in% flags, startgroup = startgroup)
       config.coupled <- config.file
-      config.file <- gsub("_coupled", "", config.file)
+      config.file <- gsub("_magpie", "", config.file)
     }
 
     message("Reading config file ", config.file)
@@ -246,19 +246,19 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
     # Read-in the switches table, use first column as row names
     settings <- readCheckScenarioConfig(config.file, ".")
 
-    if(!exists("scenarios_coupled")) {
+    if(!exists("scenarios_magpie")) {
       # If REMIND runs standalone (not coupled to MAgPIE) select scenarios from standalone config
       scenarios <- selectScenarios(settings = settings, interactive = "--interactive" %in% flags, startgroup = startgroup)
     } else {
       # =================== MAgPIE coupling ===================
 
       # If REMIND runs coupled to MAgPIE select those scenarios from standalone config that were activated in coupled config
-      missing <- setdiff(rownames(scenarios_coupled),rownames(settings))
+      missing <- setdiff(rownames(scenarios_magpie),rownames(settings))
       if (!identical(missing, character(0))) {
         message("The following scenarios are given in '",config.coupled ,"' but could not be found in '", config.file, "':")
         message("  ", paste(missing, collapse = ", "), "\n")
       }
-      common <- intersect(rownames(settings), rownames(scenarios_coupled))
+      common <- intersect(rownames(settings), rownames(scenarios_magpie))
       if (! identical(common, character(0))) {
         message("\n################################\n")
         message("The following ", length(common), " scenarios will be started:")
@@ -341,7 +341,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
     # configure cfg according to settings from csv if provided
     if (! length(config.file) == 0) {
-      if (exists("scenarios_coupled")) cfg$gms$cm_MAgPIE_Nash <- 1 # activate MAgPIE coupling, used in configureCfg below
+      if (exists("scenarios_magpie")) cfg$gms$cm_MAgPIE_Nash <- 1 # activate MAgPIE coupling, used in configureCfg below
       cfg <- configureCfg(cfg, scen, scenarios,
                           verboseGamsCompile = ! "--gamscompile" %in% flags || "--interactive" %in% flags)
       errorsfound <- sum(errorsfound, cfg$errorsfoundInConfigureCfg)
@@ -380,40 +380,40 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
 
     # =================== MAgPIE coupling ===================
 
-    if (exists("scenarios_coupled")) {
+    if (exists("scenarios_magpie")) {
     
-      # Overwrite magpieIter with values from scenarios_coupled
-      if ("magpieIter" %in% names(scenarios_coupled) && !is.na(scenarios_coupled[scen, "magpieIter"])) {
-        cfg$gms$c_magpieIter <- scenarios_coupled[scen, "magpieIter"]
+      # Overwrite magpieIter with values from scenarios_magpie
+      if ("magpieIter" %in% names(scenarios_magpie) && !is.na(scenarios_magpie[scen, "magpieIter"])) {
+        cfg$gms$c_magpieIter <- scenarios_magpie[scen, "magpieIter"]
       }        
       
       # If a starting point was provided find out what it is and how to continue
-      if ("continueFromHere" %in% names(scenarios_coupled) && !is.na(scenarios_coupled[scen, "continueFromHere"])) {
+      if ("continueFromHere" %in% names(scenarios_magpie) && !is.na(scenarios_magpie[scen, "continueFromHere"])) {
         # Let magpie.R run in first Nash iteration
         cfg$gms$c_magpieIter <- paste0("1,", cfg$gms$c_magpieIter) 
 
         # Find out what is in continueFromHere
-        if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "report.mif")) {
+        if (.isFileAndAvailable(scenarios_magpie[scen, "continueFromHere"], "report.mif")) {
           # Is a MAgPIE report 
           # -> continue with REMIND: dont run MAgPIE, only run getMagpieData()
-          cfg$continueFromHere <- c("getMagpieData" = scenarios_coupled[scen, "continueFromHere"])
-          message("   Continuing MAgPIE coupling from MAgPIE report ", scenarios_coupled[scen, "continueFromHere"])
-        } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], ".mif")) {
+          cfg$continueFromHere <- c("getMagpieData" = scenarios_magpie[scen, "continueFromHere"])
+          message("   Continuing MAgPIE coupling from MAgPIE report ", scenarios_magpie[scen, "continueFromHere"])
+        } else if (.isFileAndAvailable(scenarios_magpie[scen, "continueFromHere"], ".mif")) {
           # If its not a report.mif but a mif assume it is a REMIND_generic_*.mif 
           # -> continue with MAgPIE without producing a REMIND report
-          cfg$continueFromHere <- c("runMAgPIE" = scenarios_coupled[scen, "continueFromHere"])
+          cfg$continueFromHere <- c("runMAgPIE" = scenarios_magpie[scen, "continueFromHere"])
           # Take gdx of the run that is to be continued as start gdx
-          cfg$files2export$start["input.gdx"] <- file.path(dirname(scenarios_coupled[scen, "continueFromHere"]), "fulldata.gdx")
-          message("   Continuing MAgPIE coupling from REMIND report ", scenarios_coupled[scen, "continueFromHere"])
-        } else if (.isFileAndAvailable(scenarios_coupled[scen, "continueFromHere"], "fulldata.gdx")) {
+          cfg$files2export$start["input.gdx"] <- file.path(dirname(scenarios_magpie[scen, "continueFromHere"]), "fulldata.gdx")
+          message("   Continuing MAgPIE coupling from REMIND report ", scenarios_magpie[scen, "continueFromHere"])
+        } else if (.isFileAndAvailable(scenarios_magpie[scen, "continueFromHere"], "fulldata.gdx")) {
           # If its a fulldata.gdx assume it is from REMIND
           # -> continue with MAgPIE and and produce a REMIND report (= run the full magpie.R)
-          cfg$continueFromHere <- c("full" = scenarios_coupled[scen, "continueFromHere"])
+          cfg$continueFromHere <- c("full" = scenarios_magpie[scen, "continueFromHere"])
           # Take gdx of the run that is to be continued as start gdx
-          cfg$files2export$start["input.gdx"] <- scenarios_coupled[scen, "continueFromHere"]
-          message("   Continuing MAgPIE coupling from REMIND gdx ", scenarios_coupled[scen, "continueFromHere"])
+          cfg$files2export$start["input.gdx"] <- scenarios_magpie[scen, "continueFromHere"]
+          message("   Continuing MAgPIE coupling from REMIND gdx ", scenarios_magpie[scen, "continueFromHere"])
         } else {
-          message(red, "Error", NC, ": Could not find what is given in 'scenarios_coupled[scen, continueFromHere]': ", scenarios_coupled[scen, "continueFromHere"])
+          message(red, "Error", NC, ": Could not find what is given in 'scenarios_magpie[scen, continueFromHere]': ", scenarios_magpie[scen, "continueFromHere"])
           errorsfound <- errorsfound + 1
         }
       }
@@ -421,7 +421,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       cfg$title <- paste0("C_", cfg$title) # add prefix indicating a coupled run
       cfg$output <- c(setdiff(cfg$output, "plotRemMagNash"), "plotRemMagNash") # plot convergence
       cfg$path_magpie <- path_magpie
-      cfg$magpie_empty <- isTRUE(scenarios_coupled[scen, "magpie_empty"]) # if magpie should be replaced by an empty model
+      cfg$magpie_empty <- isTRUE(scenarios_magpie[scen, "magpie_empty"]) # if magpie should be replaced by an empty model
       cfg$slurmConfig <- combine_slurmConfig(cfg$slurmConfig, "--comment=REMIND-MAgPIE")
       
       magpieEnv <- new.env()
@@ -434,7 +434,7 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # extract columns from coupled config that define magpie scenarios
       # the column must be named 'magpie_scen' (then the default config/scenario_config.csv will be loaded)
       # or they have to have the path to a scenario_config*.csv as their name
-      magpieScenarios <- scenarios_coupled[scen, grepl("scenario_config|magpie_scen", colnames(scenarios_coupled)), drop = FALSE]
+      magpieScenarios <- scenarios_magpie[scen, grepl("scenario_config|magpie_scen", colnames(scenarios_magpie)), drop = FALSE]
 
       # configure MAgPIE using the scenarios extracted above
       message("Configuring MAgPIE")
@@ -455,9 +455,9 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       cfg_mag <- gms::setScenario(cfg_mag, "coupling", scenario_config = file.path(path_magpie, "config", "scenario_config.csv"))
 
       # extract magpie switches from coupled config, replace NA otherwise setScenario complains
-      magpieSwitches <- scenarios_coupled %>% select(contains("cfg_mag")) %>% t() %>% as.data.frame() %>% replace(is.na(.), "")
+      magpieSwitches <- scenarios_magpie %>% select(contains("cfg_mag")) %>% t() %>% as.data.frame() %>% replace(is.na(.), "")
 
-      # configure MAgPIE according to individual switches provided in scenario_config_coupled*.csv
+      # configure MAgPIE according to individual switches provided in scenario_config_magpie*.csv
       if (nrow(magpieSwitches) > 0) {
         # remove prefix "cfg_mag$" from switch names to yield original MAgPIE names
         row.names(magpieSwitches) <- gsub("cfg_mag\\$", "", row.names(magpieSwitches))
@@ -468,38 +468,38 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
                               modulepath = file.path(path_magpie, "modules"))
 
       # GHG prices will be set to zero (in MAgPIE) until and including the year specified here
-      cfg_mag$gms$c56_mute_ghgprices_until <- scenarios_coupled[scen, "no_ghgprices_land_until"]
+      cfg_mag$gms$c56_mute_ghgprices_until <- scenarios_magpie[scen, "no_ghgprices_land_until"]
 
       # Write choice of land-use change variable to config. Use raw variable
       # if not specified otherwise in coupled config, i.e. if the column is missing
       # completely or if the row entry is empty.
-      if (! "var_luc" %in% names(scenarios_coupled) || is.na(scenarios_coupled[scen, "var_luc"])) {
+      if (! "var_luc" %in% names(scenarios_magpie) || is.na(scenarios_magpie[scen, "var_luc"])) {
         cfg$var_luc <- "raw"
-      } else if (scenarios_coupled[scen, "var_luc"] %in% c("smooth", "raw")) {
-        cfg$var_luc <- scenarios_coupled[scen, "var_luc"]
+      } else if (scenarios_magpie[scen, "var_luc"] %in% c("smooth", "raw")) {
+        cfg$var_luc <- scenarios_magpie[scen, "var_luc"]
       } else {
-        message(red, "Error", NC, ": Unkown setting in coupled config file for 'var_luc': `", scenarios_coupled[scen, "var_luc"], "`. Please chose either `smooth` or `raw`")
+        message(red, "Error", NC, ": Unkown setting in coupled config file for 'var_luc': `", scenarios_magpie[scen, "var_luc"], "`. Please chose either `smooth` or `raw`")
         errorsfound <- errorsfound + 1
       }
 
       # if provided use ghg prices for land (MAgPIE) from a different REMIND run than the one MAgPIE runs coupled to
       path_mif_ghgprice_land <- NULL
-      if ("path_mif_ghgprice_land" %in% names(scenarios_coupled)) {
-        if (! is.na(scenarios_coupled[scen, "path_mif_ghgprice_land"])) {
-          if (.isFileAndAvailable(scenarios_coupled[scen, "path_mif_ghgprice_land"], ".mif")) {
+      if ("path_mif_ghgprice_land" %in% names(scenarios_magpie)) {
+        if (! is.na(scenarios_magpie[scen, "path_mif_ghgprice_land"])) {
+          if (.isFileAndAvailable(scenarios_magpie[scen, "path_mif_ghgprice_land"], ".mif")) {
               # if real file is given (has ".mif" at the end) take it for path_mif_ghgprice_land
-              path_mif_ghgprice_land <- normalizePath(scenarios_coupled[scen, "path_mif_ghgprice_land"])
-          } else if (scenarios_coupled[scen, "path_mif_ghgprice_land"] %in% common) {
+              path_mif_ghgprice_land <- normalizePath(scenarios_magpie[scen, "path_mif_ghgprice_land"])
+          } else if (scenarios_magpie[scen, "path_mif_ghgprice_land"] %in% common) {
               # if no real file is given but a reference to another scenario (that has to run first) create path to the reference scenario
-              #ghgprice_remindrun <- paste0(prefix_runname, scenarios_coupled[scen, "path_mif_ghgprice_land"], "-rem-", i)
+              #ghgprice_remindrun <- paste0(prefix_runname, scenarios_magpie[scen, "path_mif_ghgprice_land"], "-rem-", i)
               #path_mif_ghgprice_land <- file.path(path_remind, "output", ghgprice_remindrun, paste0("REMIND_generic_", ghgprice_remindrun, ".mif"))
               message(red, "Error", NC, ": path_mif_ghgprice_land must be a path to an existing file and cannot reference another scenario by name currently: ",
-                      scenarios_coupled[scen, "path_mif_ghgprice_land"])
+                      scenarios_magpie[scen, "path_mif_ghgprice_land"])
               errorsfound <- errorsfound + 1
               path_mif_ghgprice_land <- FALSE
           } else {
             message(red, "Error", NC, ": path_mif_ghgprice_land neither an existing file nor a scenario that will be started: ",
-                    scenarios_coupled[scen, "path_mif_ghgprice_land"])
+                    scenarios_magpie[scen, "path_mif_ghgprice_land"])
             errorsfound <- errorsfound + 1
             path_mif_ghgprice_land <- FALSE
           }
