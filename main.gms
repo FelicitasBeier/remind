@@ -105,7 +105,7 @@
 *'
 *' These prefixes are extended in some cases by a second letter:
 *'
-*' * "?m_" to designate objects used in the core and in at least one module.
+*' * "?m_" to designate objects used in the core and in at least one module. Declare it where it is calculated.
 *' * "?00_" to designate objects used in a single module, exclusively, with the 2-digit number corresponding
 *'          to the module number.
 *'
@@ -310,8 +310,8 @@ $setglobal agCosts  costs       !! def = costs
 $setglobal CES_parameters  load   !! def = load
 *'---------------------    30_biomass    ----------------------------------------
 *'
-*' * (magpie_40): using supply curves derived from MAgpIE 4.0
-$setglobal biomass  magpie_40     !! def = magpie_40
+*' * (magpie): using biomass supply curves derived from MAgpIE
+$setglobal biomass  magpie     !! def = magpie
 *'---------------------    31_fossil    ----------------------------------------
 *'
 *' * (timeDepGrades): time-dependent grade structure of fossil resources (oil & gas only)
@@ -516,6 +516,14 @@ parameter
 *' * (2): run until solution is sufficiently converged  - fine tolerances, for production runs.
 *' * (3): run until solution is sufficiently converged using very relaxed targets  - very coarse tolerances, two times higher than option 1. ! do not use in production runs !
 *'
+
+parameter
+  cm_MAgPIE_Nash      "run MAgPIE between Nash iterations"
+;
+  cm_MAgPIE_Nash   = 0;     !! def = 0  !! regexp = [0-1]
+*' * (0): REMIND runs standalone (emission factors are used, shiftfactors are set to zero)
+*' * (1): MAgPIE runs between certain Nash iterations (emission factors are set to zero because emissions are retrieved from the MAgPIE reporting, shift factors for supply curves are calculated)
+
 parameter
   cm_emiscen                "policy scenario choice"
 ;
@@ -747,7 +755,7 @@ parameter
   cm_phaseoutBiolc          "Switch that allows for a full phaseout of all bioenergy technologies globally"
 ;
   cm_phaseoutBiolc    = 0;         !! def = 0  !! regexp = 0|1
-***  Only working with magpie_40 realization of 30_biomass module.
+***  Only working with magpie realization of 30_biomass module.
 ***  (0): (default) No phaseout
 ***  (1): Phaseout capacities of all bioenergy technologies using pebiolc, as far
 ***       as historical bounds on bioenergy technologies allow it. This covers
@@ -1320,11 +1328,14 @@ parameter
 ***-----------------------------------------------------------------------------
 *' ####                     FLAGS
 ***-----------------------------------------------------------------------------
-*' cm_MAgPIE_coupling    "switch on coupling mode with MAgPIE"
+
+*' c_magpieIter      "Nash iterations in which MAgPIE runs in core/presolve"
 *'
-*' *  (off): off = REMIND expects to be run standalone (emission factors are used, shiftfactors are set to zero)
-*' *  (on): on  = REMIND expects to be run based on a MAgPIE reporting file (emission factors are set to zero because emissions are retrieved from the MAgPIE reporting, shift factors for supply curves are calculated)
-$setglobal cm_MAgPIE_coupling  off     !! def = "off"  !! regexp = off|on
+*' The content of this setgloabal is only used once to write it to the 'magpieIter' set in core/set.gms. 
+*' It is only a setglobal so that it is possible to deviate from the default by overwriting it from outside (prepare.R).
+*'
+$setglobal c_magpieIter  20,24,28,32     !! def = "20,24,28,32"  !! This regular expression works in manual test but not in checkFixCfg [0-9]{1,2}(,[0-9]{1,2})*
+
 *' cm_rcp_scen       "chooses RCP scenario"
 *'
 *' *  (none): no RCP scenario, standard setting
@@ -2039,6 +2050,15 @@ $setglobal cm_repeatNonOpt off      !! def = off  !! regexp = off|on
 *' @stop
 
 *-------------------------------------------------------------------------------------
+*** Track runtime
+File runtime /runtime.log /;
+***runtime.pc = 5;
+runtime.nd = 0;
+runtime.ap = 1;
+putclose runtime gyear(jnow):0:0 "-" gmonth(jnow):0:0 "-" gday(jnow):0:0 " " ghour(jnow):0:0 ":" gminute(jnow):0:0 ":" gsecond(jnow):0:0 ",GAMS," 0:0;
+
+*-------------------------------------------------------------------------------------
+
 *** automated checks and settings
 *ag* set conopt version
 option nlp = %cm_conoptv%;

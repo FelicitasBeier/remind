@@ -4,7 +4,7 @@
 *** |  AGPL-3.0, you are granted additional permissions described in the
 *** |  REMIND License Exception, version 1.0 (see LICENSE file).
 *** |  Contact: remind@pik-potsdam.de
-*** SOF ./modules/30_biomass/magpie_40/bounds.gms
+*** SOF ./modules/30_biomass/magpie/bounds.gms
 
 *' @code{extrapage: "00_model_assumptions"}
 *** -------------------------------------------------------------
@@ -183,4 +183,4 @@ loop( ext_regi$(p30_bioprod_regi_lim(ext_regi)),
 );
 $ENDIF.bioprod_regi_lim
 
-*** EOF ./modules/30_biomass/magpie_40/bounds.gms
+*** EOF ./modules/30_biomass/magpie/bounds.gms
