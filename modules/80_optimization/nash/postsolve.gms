@@ -400,7 +400,6 @@ if ( abs(p80_globalBudget_absDev_iter(iteration)) gt cm_budgetCO2_absDevTol , !!
   p80_messageShow("globalbudget") = YES;
 );
 
-
 $ifthen.carbonprice %carbonprice% == "functionalForm"
 *** check whether cm_peakBudgYr corresponds to year of maximum cumulative CO2 emissions
 if (  (     cm_iterative_target_adj eq 9
@@ -416,6 +415,28 @@ if (  (   cm_iterative_target_adj eq 9
   p80_messageShow("peakbudget") = YES;
 );
 $endIf.carbonprice
+
+$ifthen.carbonpriceRegi %carbonprice% == "functionalFormRegi"
+*** check regional budget target, must be within tolerance level of target value
+  p80_regionalBudget_absDev_iter(iteration,regi) = pm_budgetDeviation(regi);
+  loop(regi,
+  !! If the deviation is positive, i.e. budget is too high and requires an increase in Carbon Price => always throw an error
+  if(p80_regionalBudget_absDev_iter(iteration,regi) ge 0,
+    if (abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt pm_regionalBudget_absDevTol(regi), !! If the deviation is 
+      s80_bool = 0;
+      p80_messageShow("regiBudget") = YES;
+    );
+  !! If the deviation is negative, i.e. budget is too low and would require a decrease of the Carbon Price => only "not converged" if the carbon price is not already very low, 
+  !! "Very low" is for now <1 USD/t CO2 in 2100, tbd
+  else
+    if ((abs(p80_regionalBudget_absDev_iter(iteration,regi)) gt abs(cm_budgetCO2_absDevTol)) 
+         AND (pm_taxCO2eq("2100",regi) gt (1 * sm_DptCO2_2_TDpGtC)), 
+      s80_bool = 0;
+      p80_messageShow("regiBudget") = YES;
+    );
+  );
+  );  
+$endIf.carbonpriceRegi
 
 
 *** additional criterion: if damage internalization is on, is damage iteration converged?
@@ -493,12 +514,20 @@ $ifthen.carbonprice %carbonprice% == "functionalForm"
           display sm_peakbudget_diff;
 	      );
 $endIf.carbonprice
+$ifthen.carbonpriceRegi %carbonprice% == "functionalFormRegi"
+        if(sameas(convMessage80, "regiBudget"),
+		      display "#### 7.) A regional budget target has not been reached yet.";
+          display "#### Convergence determined by pm_regionalBudget_absDevTol.";
+          display "#### Also check pm_taxCO2eq_iter (regional CO2 tax paths tracked over iterations [T$/GtC])";
+          display p80_regionalBudget_absDev_iter, pm_factorRescale_taxCO2Regi_Funneled2;
+        );
+$endIf.carbonpriceRegi
         if(sameas(convMessage80, "IterationNumber"),
           display "#### 0.) REMIND did not run sufficient iterations (currently set at 18, to allow for at least 4 iterations with EDGE-T)";
         );
 $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"       
         if(sameas(convMessage80, "regiTarget"),
-		      display "#### 7) A regional climate target has not been reached yet.";
+		      display "#### 7.) A regional climate target has not been reached yet.";
           display "#### Check out the pm_emiMktTarget_dev parameter of 47_regipol module.";
           display "#### For budget targets, the parameter gives the percentage deviation of current emissions in relation to the target value.";
           display "#### For yearly targets, the parameter gives the current emissions minus the target value in relative terms to the 2005 emissions.";
