@@ -16,7 +16,7 @@
 #' @author Oliver Richters
 #' @return list with scenario config content
 readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE, fillWithDefault = FALSE) {
-  coupling <- if (grepl("scenario_config_coupled", filename)) "MAgPIE" else FALSE
+  coupling <- if (grepl("scenario_config_magpie", filename)) "MAgPIE" else FALSE
   if (testmode) {
     cfg <- suppressWarnings(gms::readDefaultConfig(remindPath))
   } else {
@@ -147,9 +147,9 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
   # check column names
   knownColumnNames <- c(names(path_gdx_list), "start", "model", "copyConfigFrom")
   if (coupling %in% "MAgPIE") {
-    knownColumnNames <- c(knownColumnNames, "cm_nash_autoconverge_lastrun", "oldrun", "path_report", "magpie_scen",
-                          "no_ghgprices_land_until", "qos", "sbatch", "path_mif_ghgprice_land", "max_iterations",
-                          "magpie_empty", "var_luc")
+    knownColumnNames <- c(knownColumnNames, "magpie_scen",
+                          "no_ghgprices_land_until", "sbatch", "path_mif_ghgprice_land", "max_iterations",
+                          "magpie_empty", "continueFromHere", "magpieIter")
     # identify MAgPIE switches by "cfg_mag" and "scenario_config"
     knownColumnNames <- c(knownColumnNames, grep("cfg_mag|scenario_config", names(scenConf), value = TRUE))
   } else { # not a coupling config
