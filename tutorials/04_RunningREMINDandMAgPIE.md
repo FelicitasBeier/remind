@@ -2,6 +2,27 @@ Running REMIND and MAgPIE in coupled mode
 ================
 David Klein (<dklein@pik-potsdam.de>)
 
+## Summary of new MAgPIE-Nash coupling
+
+The previous coupling, in which REMIND and MAgPIE run sequentially, has been replaced with shifting the MAgPIE runs between the Nash iterations. `start_bundle_coupled.R` and `start_coupled.R` have been removed. Use `start.R` together with a `scenario_config_magpie*.csv` file (formerly known as `scenario_config_coupled.csv`) to activate the MAgPIE coupling, e.g.
+```
+Rscript start.R config/scenario_config_magpie.R
+```
+The new coupling is mainly perforemd in `core/presolve.gms`, by calling the R script `scripts/input/magpie.R`, that transfers the data of the latest Nash solution to MAgPIE, runs MAgPIE, and transfers the MAgPIE data to a `magpieData.gdx`. Then REMIND GAMS continues, reads the `magpieData.gdx` and continues the Nash iterations.
+
+If you need to continue runs to yield a better convergence, paste the path to a previous REMIND or MAgPIE report into the column `continueFromHere`  in the `scenario_config_magpie.csv` and start the respective scenario. 
+
+Create convergence plots for individual runs with
+```
+Rscript output.R -> single -> plotRemMagNash.R
+```
+and for continued runs with
+```
+Rscript output.R -> comparison -> plotRemMagNash.R
+```
+
+# Table of contents
+
 - [Running REMIND and MAgPIE in coupled mode](#running-remind-and-magpie-in-coupled-mode)
 - [How to start coupled runs](#how-to-start-coupled-runs)
     + [Clone the models](#clone-the-models)
