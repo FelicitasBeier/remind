@@ -26,7 +26,7 @@
 *' Eventually the lower bound is set to (almost) the upper bound to enforce
 *' matching the historical feedstock quantities. Please note that the link
 *' between capacity additions `vm_deltaCap` and the feedstock quantities
-*' basically follows what happens in the equations `qm_fuel2pe`, `q_balPe`, 
+*' basically follows what happens in the equations `qm_fuel2pe`, `q_balPe`,
 *' `q_transPe2se`, `q_limitCapSe` and `q_cap`. It is a bit simplified here,
 *' assuming that there is a one to one mapping between PE (pebios, pebioil) and
 *' the respective conversion technologies (bioeths, biodiesel, respectively),
@@ -38,10 +38,10 @@
 vm_fuExtr.up(t, regi, "pebios", "5")$(t.val ge 2010 AND t.val ge cm_startyear) = 1.01 * max(
   !! Use original bounds based on (mainly) FAO inpout data.
   p30_datapebio(regi,"pebios","5","maxprod",t),
-  
+
   !! If historic capacities in 2005 from IEA input require a larger feedstock
   !! supply, relax bound in 2005 and in all following time steps.
-    1 / pm_eta_conv(t,regi,"bioeths") * pm_cf(t,regi,"bioeths") * pm_dataren(regi,"nur","1","bioeths") 
+    1 / pm_eta_conv(t,regi,"bioeths") * pm_cf(t,regi,"bioeths") * pm_dataren(regi,"nur","1","bioeths")
   * sum(ttot$(ttot.val eq 2005),
       sum(opTimeYr2te("bioeths",opTimeYr) $ (tsu2opTimeYr(ttot,opTimeYr) AND (opTimeYr.val ge 1)),
           pm_ts(ttot - (pm_tsu2opTimeYr(ttot,opTimeYr) - 1))
@@ -57,10 +57,10 @@ vm_fuExtr.lo(t, regi, "pebios", "5")$(t.val ge 2010 AND t.val ge cm_startyear) =
 vm_fuExtr.up(t, regi, "pebioil", "5")$(t.val ge 2010 AND t.val ge cm_startyear) = 1.01 * max(
   !! Use original bounds based on (mainly) FAO inpout data.
   p30_datapebio(regi,"pebioil","5","maxprod",t),
-  
+
   !! If historic capacities in 2005 from IEA input require a larger feedstock
   !! supply, relax bound in 2005 and in all following time steps.
-    1 / pm_eta_conv(t,regi,"biodiesel") * pm_cf(t,regi,"biodiesel") * pm_dataren(regi,"nur","1","biodiesel") 
+    1 / pm_eta_conv(t,regi,"biodiesel") * pm_cf(t,regi,"biodiesel") * pm_dataren(regi,"nur","1","biodiesel")
   * sum(ttot$(ttot.val eq 2005),
       sum(opTimeYr2te("biodiesel",opTimeYr) $ (tsu2opTimeYr(ttot,opTimeYr) AND (opTimeYr.val ge 1)),
           pm_ts(ttot - (pm_tsu2opTimeYr(ttot,opTimeYr) - 1))
