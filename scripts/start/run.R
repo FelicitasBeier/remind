@@ -272,14 +272,14 @@ run <- function() {
   write(paste(Sys.time(), "end", 0, sep = ","), file = paste0(cfg$results_folder, "/runtime.log"), append = TRUE)
   
   # Add the runtime.log to runstatistics.rda
-  runtime <- readr::read_csv(paste0(cfg$results_folder, "/runtime.log"), col_names = c("time","phase", "iteration")) |> suppressMessages()
+  runtimeLog <- readr::read_csv(paste0(cfg$results_folder, "/runtime.log"), col_names = c("time","phase", "iteration")) |> suppressMessages()
 
   # Save run statistics to local file
   cat("\nSaving timeOutputStart and timeOutputEnd to runstatistics.rda\n")
   lucode2::runstatistics(file          = paste0(cfg$results_folder, "/runstatistics.rda"),
                        timeOutputStart = timeOutputStart,
                        timeOutputEnd   = timeOutputEnd,
-                       runtime         = runtime)
+                       runtimeLog      = runtimeLog)
 
   return(cfg$results_folder)
   # on.exit sets working directory back to results folder
