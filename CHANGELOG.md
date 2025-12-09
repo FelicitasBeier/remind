@@ -20,7 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
     [[#2222](https://github.com/remindmodel/remind/pull/2222)]
 - **30_biomass** Replace realization magpie_40 with new coupling realization magpie that runs MAgPIE between the Nash iterations
     [#2249](https://github.com/remindmodel/remind/pull/2249)
-- **scripts** Add new coupling scriptexecuted between the Nash iterations to transfer data between REMIND and MAgPIE and run MAgPIE
+- **scripts** Add new coupling script executed between the Nash iterations to transfer data between REMIND and MAgPIE and run MAgPIE
     [#2249](https://github.com/remindmodel/remind/pull/2249)
 - **mapping** Add csv mapping MAgPIE to REMIND variables used by the coupling script
     [#2249](https://github.com/remindmodel/remind/pull/2249)
@@ -36,6 +36,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
     [#2249](https://github.com/remindmodel/remind/pull/2249)
 - **scripts** Remove of coupling scripts
     [#2249](https://github.com/remindmodel/remind/pull/2249)
+- **scripts** The distinction between 'raw' and 'smoothed' land use CO2 emissions is no longer supported, as the MAgPIE reporting only includes raw emissions
+    [#2255](https://github.com/remindmodel/remind/pull/2255)
 
 
     
