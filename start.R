@@ -470,15 +470,12 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # GHG prices will be set to zero (in MAgPIE) until and including the year specified here
       cfg_mag$gms$c56_mute_ghgprices_until <- scenarios_magpie[scen, "no_ghgprices_land_until"]
 
-      # Write choice of land-use change variable to config. Use raw variable
-      # if not specified otherwise in coupled config, i.e. if the column is missing
-      # completely or if the row entry is empty.
-      if (! "var_luc" %in% names(scenarios_magpie) || is.na(scenarios_magpie[scen, "var_luc"])) {
-        cfg$var_luc <- "raw"
-      } else if (scenarios_magpie[scen, "var_luc"] %in% c("smooth", "raw")) {
-        cfg$var_luc <- scenarios_magpie[scen, "var_luc"]
-      } else {
-        message(red, "Error", NC, ": Unkown setting in coupled config file for 'var_luc': `", scenarios_magpie[scen, "var_luc"], "`. Please chose either `smooth` or `raw`")
+
+      # The distinction between 'raw' and 'smoothed' land use CO2 emissions is no longer supported,
+      # as the MAgPIE reporting now only includes raw and no longer includes smoothed. Accordingly,
+      # 'raw' has been removed from MAgPIE's variable names.
+      if ("var_luc" %in% names(scenarios_magpie)) {
+        message(red, "Error", NC, ": Unkown column 'var_luc' in coupled config file. Land-use CO2 emissions are always RAW now")
         errorsfound <- errorsfound + 1
       }
 
