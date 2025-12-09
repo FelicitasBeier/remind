@@ -202,6 +202,7 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
        "cm_POPscen" = "Use cm_GDPpopScen instead, see https://github.com/remindmodel/remind/pull/1973",
        "cm_DiscRateScen" = "Deleted, not used anymore, see https://github.com/remindmodel/remind/pull/2001",
        "cm_transpGDPscale" = "Deleted, not used anymore, see https://github.com/remindmodel/remind/pull/2092",
+       "var_luc" = "Deleted, not used anymore. Land-use CO2 emissions are always RAW now. See https://github.com/remindmodel/remind/pull/2255",
      NULL)
     for (i in intersect(names(forbiddenColumnNames), unknownColumnNames)) {
       msg <- paste0("Column name ", i, " in remind settings is outdated. ", forbiddenColumnNames[i])

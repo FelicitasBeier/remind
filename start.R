@@ -470,15 +470,6 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # GHG prices will be set to zero (in MAgPIE) until and including the year specified here
       cfg_mag$gms$c56_mute_ghgprices_until <- scenarios_magpie[scen, "no_ghgprices_land_until"]
 
-
-      # The distinction between 'raw' and 'smoothed' land use CO2 emissions is no longer supported,
-      # as the MAgPIE reporting now only includes raw and no longer includes smoothed. Accordingly,
-      # 'raw' has been removed from MAgPIE's variable names.
-      if ("var_luc" %in% names(scenarios_magpie)) {
-        message(red, "Error", NC, ": Unkown column 'var_luc' in coupled config file. Land-use CO2 emissions are always RAW now")
-        errorsfound <- errorsfound + 1
-      }
-
       # if provided use ghg prices for land (MAgPIE) from a different REMIND run than the one MAgPIE runs coupled to
       path_mif_ghgprice_land <- NULL
       if ("path_mif_ghgprice_land" %in% names(scenarios_magpie)) {
