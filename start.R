@@ -470,18 +470,6 @@ if (any(c("--reprepare", "--restart") %in% flags)) {
       # GHG prices will be set to zero (in MAgPIE) until and including the year specified here
       cfg_mag$gms$c56_mute_ghgprices_until <- scenarios_magpie[scen, "no_ghgprices_land_until"]
 
-      # Write choice of land-use change variable to config. Use raw variable
-      # if not specified otherwise in coupled config, i.e. if the column is missing
-      # completely or if the row entry is empty.
-      if (! "var_luc" %in% names(scenarios_magpie) || is.na(scenarios_magpie[scen, "var_luc"])) {
-        cfg$var_luc <- "raw"
-      } else if (scenarios_magpie[scen, "var_luc"] %in% c("smooth", "raw")) {
-        cfg$var_luc <- scenarios_magpie[scen, "var_luc"]
-      } else {
-        message(red, "Error", NC, ": Unkown setting in coupled config file for 'var_luc': `", scenarios_magpie[scen, "var_luc"], "`. Please chose either `smooth` or `raw`")
-        errorsfound <- errorsfound + 1
-      }
-
       # if provided use ghg prices for land (MAgPIE) from a different REMIND run than the one MAgPIE runs coupled to
       path_mif_ghgprice_land <- NULL
       if ("path_mif_ghgprice_land" %in% names(scenarios_magpie)) {

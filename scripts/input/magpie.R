@@ -107,7 +107,7 @@ runMAgPIE <- function(pathToRemindReport) {
 }
 
 # Transfer coupling variables from MAgPIE report to magpieData.gdx read by REMIND between the Nash iterations
-getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPIE2REMIND.csv", var_luc = "raw") {
+getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPIE2REMIND.csv") {
   
   require(gamstransfer, quietly = TRUE, warn.conflicts = FALSE)
   require(quitte,       quietly = TRUE, warn.conflicts = FALSE)
@@ -137,15 +137,6 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
   # ---- Read and prepare MAgPIE data ----
   
   mag <- quitte::read.quitte(path_to_report, check.duplicates = FALSE)
-  
-  if (var_luc == "smooth") {
-    # do nothing and use variable names as defined above
-  } else if (var_luc == "raw") {
-    # add RAW to variable names
-    mapping$mag <- gsub("Emissions|CO2|Land","Emissions|CO2|Land RAW", mapping$mag, fixed = TRUE)
-  } else {
-    stop(paste0("Unkown setting for 'var_luc': `", var_luc, "`. Only `smooth` or `raw` are allowed."))
-  }
   
   # Stop if variables are missing
   variablesMissing <- ! mapping$mag %in% mag$variable
@@ -280,7 +271,7 @@ if (is.null(cfg$continueFromHere) || NashIteration > 1) {
 cfg$pathToMagpieReport <- pathToMagpieReport
 
 # In any case transfer MAgPIE data from report to magpieData.gdx
-getMagpieData(path_to_report = pathToMagpieReport, var_luc = cfg$var_luc)
+getMagpieData(path_to_report = pathToMagpieReport)
 
 # Save the same elements that were loaded (they may have been updated in the meantime)
 save(list = elementsLoaded, file = "config.Rdata")
