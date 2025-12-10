@@ -1,4 +1,44 @@
 
+# Define mapping of MAgPIE variables to REMIND variables
+mag2rem <- tibble::tribble(
+    ~mag                                                                             ,   ~enty                        ,   ~factorMag2Rem  ,   ~parameter                ,
+    'Demand|Bioenergy|2nd generation|++|Bioenergy crops'                             ,   NA                           ,   1/31.536        ,   'pm_pebiolc_demandmag'    ,
+    'Costs Accounting|Costs without incentives'                                      ,   NA                           ,   1/1000/1000     ,   'p26_totLUcost_coupling'  ,
+    'Prices|Bioenergy'                                                               ,   NA                           ,   0.0315576       ,   'p30_pebiolc_pricemag'    ,
+    'Emissions|CO2|Land|+|Land-use Change'                                           ,   'co2luc'                     ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|+|Deforestation'                             ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|+|Forest degradation'                        ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|+|Other land conversion'                     ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|+|Wood Harvest'                              ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Peatland|+|Positive'                         ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Peatland|+|Negative'                         ,   'co2lucNegIntentPeat'        ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR'                     ,   'co2lucNegIntentAR'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Regrowth|+|NPI_NDC AR'                       ,   'co2lucNegIntentAR'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Regrowth|+|Cropland Tree Cover'              ,   'co2lucNegIntentAgroforestry',   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land'                       ,   'co2lucNegUnintent'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Regrowth|+|Secondary Forest'                 ,   'co2lucNegUnintent'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Regrowth|+|Timber Plantations'               ,   'co2lucNegUnintent'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Residual|+|Positive'                         ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Residual|+|Negative'                         ,   'co2lucNegUnintent'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Soil|++|Emissions'                           ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Withdrawals'      ,   'co2lucNegUnintent'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Soil|Land Conversion|+|Withdrawals'          ,   'co2lucNegUnintent'          ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Soil|Soil Carbon Management|+|Withdrawals'   ,   'co2lucNegIntentSCM'         ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Timber|+|Storage in HWP'                     ,   'co2lucNegIntentTimber'      ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|CO2|Land|Land-use Change|Timber|+|Release from HWP'                   ,   'co2lucPos'                  ,   1/1000*12/44    ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|Agriculture|+|Animal Waste Management'                       ,   'n2oanwstm'                  ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Inorganic Fertilizers'      ,   'n2ofertin'                  ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Manure applied to Croplands',   'n2oanwstc'                  ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Decay of Crop Residues'     ,   'n2ofertcr'                  ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Soil Organic Matter Loss'   ,   'n2ofertsom'                 ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Pasture'                    ,   'n2oanwstp'                  ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|N2O|Land|+|Peatland'                                                  ,   'n2opeatland'                ,   28/44           ,   'f_macBaseMagpie_coupling',
+    'Emissions|CH4|Land|Agriculture|+|Rice'                                          ,   'ch4rice'                    ,   1               ,   'f_macBaseMagpie_coupling',
+    'Emissions|CH4|Land|Agriculture|+|Animal waste management'                       ,   'ch4anmlwst'                 ,   1               ,   'f_macBaseMagpie_coupling',
+    'Emissions|CH4|Land|Agriculture|+|Enteric fermentation'                          ,   'ch4animals'                 ,   1               ,   'f_macBaseMagpie_coupling',
+    'Emissions|CH4|Land|+|Peatland'                                                  ,   'ch4peatland'                ,   1               ,   'f_macBaseMagpie_coupling')
+
+
 # Delete entries in stack that contain needle and append new
 .setgdxcopy <- function(needle,stack,new){
   matches <- grepl(needle,stack)
@@ -107,32 +147,17 @@ runMAgPIE <- function(pathToRemindReport) {
 }
 
 # Transfer coupling variables from MAgPIE report to magpieData.gdx read by REMIND between the Nash iterations
-getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPIE2REMIND.csv") {
+getMagpieData <- function(path_to_report = "report.mif", mapping) {
   
   require(gamstransfer, quietly = TRUE, warn.conflicts = FALSE)
   require(quitte,       quietly = TRUE, warn.conflicts = FALSE)
   require(dplyr,        quietly = TRUE, warn.conflicts = FALSE)
   require(readr,        quietly = TRUE, warn.conflicts = FALSE)  
   
-  # ---- Define functions ----
-  
-  # apply eval(parse() to each element of x. 
-  # Example: converts the string "1/1000*12/44" to the number 0.0002727273
-  calcFromString <- function(x){
-    sapply(x, function(i){
-      eval(parse(text = i))
-    })
-  }
-  
   # ---- Record runtime when the data transfer from MAgPIE to REMIND starts in runtime.log ----
 
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "getMagpieData", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
-  message("### COUPLING ", i, " ### Transferring data from MAgPIE ", pathToMagpieReport, " to REMIND magpieData.gdx - ", round(Sys.time()))
-
-  # ---- Read mapping of MAgPIE variables to REMIND variables ----
-  
-  mapping <- readr::read_csv2(mapping, col_types = cols(), show_col_types = FALSE) |> suppressMessages()
-  #mapping$magName <- gsub(" \\(.*\\)$","",mapping$magName) # remove unit
+  message("### COUPLING ", i, " ### Transferring data from MAgPIE ", path_to_report, " to REMIND magpieData.gdx - ", round(Sys.time()))
   
   # ---- Read and prepare MAgPIE data ----
   
@@ -149,7 +174,6 @@ getMagpieData <- function(path_to_report = "report.mif", mapping = "mappingMAgPI
     inner_join(mapping, by = c("variable" = "mag"),          # combine tables keeping relevant variables only
                relationship = "many-to-one",                 # each row in x (mag) matches at most 1 row in y (mapping)
                unmatched = c("drop", "error"))            |> # drop rows from x that are not in y, error: all rows in y must be in x
-    mutate(factorMag2Rem = calcFromString(factorMag2Rem)) |> # calculate the conversion factor given as string
     mutate(value = value * factorMag2Rem)                 |> # apply unit conversion
     group_by(period, region, enty, parameter)             |> # define groups for summation
     summarise(value = sum(value))                         |> # sum MAgPIE emissions (variable) that have the same enty in remind
@@ -271,7 +295,7 @@ if (is.null(cfg$continueFromHere) || NashIteration > 1) {
 cfg$pathToMagpieReport <- pathToMagpieReport
 
 # In any case transfer MAgPIE data from report to magpieData.gdx
-getMagpieData(path_to_report = pathToMagpieReport)
+getMagpieData(path_to_report = pathToMagpieReport, mapping = mag2rem)
 
 # Save the same elements that were loaded (they may have been updated in the meantime)
 save(list = elementsLoaded, file = "config.Rdata")
