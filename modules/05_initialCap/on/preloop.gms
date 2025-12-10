@@ -413,11 +413,11 @@ pm_eta_conv(ttot,regi,"elh2") = pm_dataeta(ttot,regi,"elh2");
 
 *** Replace 1st gen biomass conversion efficiencies with global values for all
 *** regions. The regionalized calibration to historical input and output values
-*** does not work for these technologies, because the data that is currently
-*** being used does not give information on feedstock inputs, such that
-*** technically input and output are equal, which leads to a (wrong) conversion
-*** efficiency of 1 in all regions that historically already deploy 1st gen
-*** biomass.
+*** created via mrremind::calcIO does not work for these technologies, because
+*** the data that is currently being used does not give information on
+*** feedstock inputs, such that technically input and output are equal, which
+*** leads to a (wrong) conversion efficiency of 1 in all regions that
+*** historically already deploy 1st gen biomass.
 pm_eta_conv(ttot,regi,"bioeths")   = fm_dataglob("eta","bioeths");
 pm_eta_conv(ttot,regi,"biodiesel") = fm_dataglob("eta","biodiesel");
 

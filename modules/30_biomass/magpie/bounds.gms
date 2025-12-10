@@ -19,19 +19,19 @@
 *' respective conversion technologies in 2005 from the IEA. Thus, the bound on
 *' vm_fuExtr is only applied from 2010 on (in 2005 feedstock quantities are
 *' fully determined via `p05_cap0`). However, in some cases the capacities that
-*' were build in 2005 or before require a feedstock supply that is are higher
+*' were build in 2005 or before require a feedstock supply that is higher
 *' than what the FAO-based bound on `vm_fuExtr` would allow for, i.e., FAO and
 *' IEA data do not match. In that case we relax the upper bound for all time
-*' steps such that the 2005 capacity constraint can still be matched.
-*' Eventually the lower bound is set to (almost) the upper bound to enforce
-*' matching the historical feedstock quantities. Please note that the link
-*' between capacity additions `vm_deltaCap` and the feedstock quantities
-*' basically follows what happens in the equations `qm_fuel2pe`, `q_balPe`,
-*' `q_transPe2se`, `q_limitCapSe` and `q_cap`. It is a bit simplified here,
-*' assuming that there is a one to one mapping between PE (pebios, pebioil) and
-*' the respective conversion technologies (bioeths, biodiesel, respectively),
-*' which is currently the case. If this changes in the future (which is
-*' unlikely), this part needs to be adapted.
+*' steps such that the 2005 capacity constraint implcitly derived from IEA can
+*' still be matched. Eventually the lower bound is set to (almost) the upper
+*' bound to enforce matching the historical feedstock quantities. Please note
+*' that the link between capacity additions `vm_deltaCap` and the feedstock
+*' quantities basically follows what happens in the equations `qm_fuel2pe`,
+*' `q_balPe`, `q_transPe2se`, `q_limitCapSe` and `q_cap`. It is a bit
+*' simplified here, assuming that there is a one to one mapping between PE
+*' (pebios, pebioil) and the respective conversion technologies (bioeths,
+*' biodiesel, respectively), which is currently the case. If this changes in
+*' the future (which is unlikely), this part needs to be adapted.
 
 *** Set exogenous trajectory for sugar/starch crop feedstocks, using a corridor
 *** for lower and upper bounds of 0.99 to 1.01 for numerical flexibility
@@ -39,8 +39,11 @@ vm_fuExtr.up(t, regi, "pebios", "5")$(t.val ge 2010 AND t.val ge cm_startyear) =
   !! Use original bounds based on (mainly) FAO inpout data.
   p30_datapebio(regi,"pebios","5","maxprod",t),
 
-  !! If historic capacities in 2005 from IEA input require a larger feedstock
-  !! supply, relax bound in 2005 and in all following time steps.
+  !! If historic capacities from IEA input require a larger feedstock supply,
+  !! relax the bound in 2010 and in all following time steps. We assume that
+  !! the bound should never fall below the feedstock supply in 2005. For that
+  !! we convert the sum of all (depreciated) historic capacity additions
+  !! `vm_deltaCap` in 2005 to feedstock supply quantities.
     1 / pm_eta_conv(t,regi,"bioeths") * pm_cf(t,regi,"bioeths") * pm_dataren(regi,"nur","1","bioeths")
   * sum(ttot$(ttot.val eq 2005),
       sum(opTimeYr2te("bioeths",opTimeYr) $ (tsu2opTimeYr(ttot,opTimeYr) AND (opTimeYr.val ge 1)),
@@ -58,8 +61,11 @@ vm_fuExtr.up(t, regi, "pebioil", "5")$(t.val ge 2010 AND t.val ge cm_startyear) 
   !! Use original bounds based on (mainly) FAO inpout data.
   p30_datapebio(regi,"pebioil","5","maxprod",t),
 
-  !! If historic capacities in 2005 from IEA input require a larger feedstock
-  !! supply, relax bound in 2005 and in all following time steps.
+  !! If historic capacities from IEA input require a larger feedstock supply,
+  !! relax the bound in 2010 and in all following time steps. We assume that
+  !! the bound should never fall below the feedstock supply in 2005. For that
+  !! we convert the sum of all (depreciated) historic capacity additions
+  !! `vm_deltaCap` in 2005 to feedstock supply quantities.
     1 / pm_eta_conv(t,regi,"biodiesel") * pm_cf(t,regi,"biodiesel") * pm_dataren(regi,"nur","1","biodiesel")
   * sum(ttot$(ttot.val eq 2005),
       sum(opTimeYr2te("biodiesel",opTimeYr) $ (tsu2opTimeYr(ttot,opTimeYr) AND (opTimeYr.val ge 1)),
