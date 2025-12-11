@@ -58,11 +58,11 @@ createREMINDReporting <- function(gdx) {
   # Record the time when the preparation for MAgPIE starts in runtime.log
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "convGDX2MIF_REMIND2MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   # Create reduced REMIND reporting
-  message("\n", round(Sys.time()), " ### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE")
+  message(round(Sys.time()), " Generating reduced REMIND reporting for MAgPIE")
   if(!file.exists(gdx)) stop("The MAgPIE coupling script 'magpie.R' could not find a REMIND fulldata.gdx file:", gdx)
   scenario <- lucode2::getScenNames(".")
   remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = paste0("REMIND_rem2mag-", i,".mif"), scenario = scenario, extraData = "reporting")
-  message("\n", round(Sys.time()), " Finished reporting")
+  message(round(Sys.time()), " Finished reporting")
   return(file.path(cfg$remind_folder, cfg$results_folder, paste0("REMIND_rem2mag-", i,".mif")))
 }
 
@@ -71,9 +71,9 @@ runMAgPIE <- function(pathToRemindReport) {
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   
   # Switch to MAgPIE main folder
-  message(round(Sys.time()), " ### COUPLING ", i, " ### Preparing MAgPIE")
-  message("Switching from REMIND ", getwd())
-  message("            to MAgPIE ", cfg$path_magpie, "\n")
+  message(round(Sys.time()), " Preparing MAgPIE")
+  message("                    Switching from REMIND ", getwd())
+  message("                                to MAgPIE ", cfg$path_magpie)
   withr::with_dir(cfg$path_magpie,{
     source("scripts/start_functions.R")
 
@@ -106,7 +106,7 @@ runMAgPIE <- function(pathToRemindReport) {
 
     # ----------------------------------------------------------------
     if (!is.null(renv::project())) {
-      message("Using REMIND's renv.lock for MAgPIE")
+      message("                    Using REMIND's renv.lock for MAgPIE")
       cfg$cfg_mag$renv_lock <- normalizePath(file.path(cfg$remind_folder, cfg$results_folder, "renv.lock"))
     }
 
@@ -114,7 +114,7 @@ runMAgPIE <- function(pathToRemindReport) {
     # For years prior to cfg$gms$cm_startyear MAgPIE output has to be identical across iterations.
     # Because gdxes might slightly lead to a different solution exclude gdxes for the fixing years.
     if (i > 1) {
-      message("### COUPLING ", i, " ### Copying MAgPIE gdx files from previous iteration")
+      message("                    Copying MAgPIE gdx files from previous iteration")
       gdxlist <- paste0("output/", runname, "-mag-", i-1, "/magpie_y", seq(cfg$gms$cm_startyear,2150,5), ".gdx")
       cfg$cfg_mag$files2export$start <- .setgdxcopy(".gdx",cfg$cfg_mag$files2export$start,gdxlist)
     }
@@ -123,10 +123,10 @@ runMAgPIE <- function(pathToRemindReport) {
     save(list = elementsLoaded, file = file.path(cfg$remind_folder, cfg$results_folder, "config.Rdata"))
 
     # Start MAgPIE
-    message(round(Sys.time()), " ### COUPLING ", i, " ### Starting MAgPIE\nwith  Report = ", pathToRemindReport, "\n      Folder = ", cfg$cfg_mag$results_folder)
-    outfolder_mag <- start_run(cfg$cfg_mag, codeCheck = FALSE)
+    message(round(Sys.time()), " Starting MAgPIE\n                    with  Report = ", pathToRemindReport, "\n                          Folder = ", cfg$cfg_mag$results_folder)
+    outfolder_mag <- cfg$cfg_mag$results_folder # start_run(cfg$cfg_mag, codeCheck = FALSE)
     pathToMagpieReport <- file.path(cfg$path_magpie, outfolder_mag, "report.mif")
-    message(round(Sys.time()), " ### COUPLING ", i, " ### MAgPIE finished in ", outfolder_mag)
+    message(round(Sys.time()), " MAgPIE finished")
 
     # Checking whether MAgPIE is optimal in all years
     file_modstat <- file.path(outfolder_mag, "glo.magpie_modelstat.csv")
@@ -140,9 +140,8 @@ runMAgPIE <- function(pathToRemindReport) {
       stop("Iteration stopped! MAgPIE modelstat is not 2 or 7 for all years.\n")
 
     # Switch back to REMIND run folder
-    message("### COUPLING ", i, " ### MAgPIE finished")
-    message("Switching from MAgPIE ", getwd())
-    message("       back to REMIND ", file.path(cfg$remind_folder, cfg$results_folder), "\n")
+    message("                    Switching from MAgPIE ", getwd())
+    message("                           back to REMIND ", file.path(cfg$remind_folder, cfg$results_folder), "\n")
     return(pathToMagpieReport)
   })
 }
@@ -158,7 +157,9 @@ getMagpieData <- function(path_to_report = "report.mif", mapping) {
   # ---- Record runtime when the data transfer from MAgPIE to REMIND starts in runtime.log ----
 
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "getMagpieData", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
-  message(round(Sys.time()), " ### COUPLING ", i, " ### Transferring data from MAgPIE ", path_to_report, " to REMIND magpieData.gdx")
+  message(round(Sys.time()), " Transferring MAgPIE data")
+  message("                    from ", path_to_report)
+  message("                      to ./magpieData.gdx")
   
   # ---- Read and prepare MAgPIE data ----
   
@@ -177,8 +178,7 @@ getMagpieData <- function(path_to_report = "report.mif", mapping) {
                unmatched = c("drop", "error"))            |> # drop rows from x that are not in y, error: all rows in y must be in x
     mutate(value = value * factorMag2Rem)                 |> # apply unit conversion
     group_by(period, region, enty, parameter)             |> # define groups for summation
-    summarise(value = sum(value))                         |> # sum MAgPIE emissions (variable) that have the same enty in remind
-    ungroup()                                             |> # Groups are maintained in dplyr. You can't select off grouping variables (but we need to further down, so we need to ungroup)
+    summarise(value = sum(value), .groups = "drop")       |> # sum MAgPIE emissions (variable) that have the same enty in remind
     rename(ttot = period, regi = region)                  |> # use REMIND set names 
     filter(, regi != "World", between(ttot, 2005, 2150))  |> # keep REMIND time horizon and remove World region
     select(regi, ttot, enty, parameter, value)               # keep only columns required for import to REMIND
@@ -260,6 +260,10 @@ args <- commandArgs(trailingOnly = TRUE)
 i <- as.numeric(args[1])
 NashIteration <- as.numeric(args[2])
 
+message("\n", round(Sys.time()), " ### MAgPIE-COUPLING ###")
+message("                    MAgPIE iteration ", i)
+message("                    Nash   iteration ", NashIteration)
+
 # Rename gdx from previous MAgPIE iteration so that REMIND can only continue if a new one could be successfully created
 if(file.exists("magpieData.gdx")) file.rename("magpieData.gdx", paste0("magpieData-", i-1,".gdx")) 
 
@@ -274,21 +278,21 @@ if (is.null(cfg$continueFromHere) || NashIteration > 1) {
 } else if (names(cfg$continueFromHere) %in% "full") {
   # No regular magpie iteration
   # Continue from an external REMIND fulldata.gdx
-  message("Continuing with createREMINDReporting using ", cfg$continueFromHere)
+  message(round(Sys.time()), " Continuing with createREMINDReporting using ", cfg$continueFromHere)
   pathToRemindReport <- createREMINDReporting(gdx = cfg$continueFromHere)
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
 
 } else if (names(cfg$continueFromHere) %in% "runMAgPIE") {
   # No regular magpie iteration 
   # Continue from an external REMIND mif
-  message("Continuing with runMAgPIE using ", cfg$continueFromHere)
+  message(round(Sys.time()), " Continuing with runMAgPIE using ", cfg$continueFromHere)
   pathToRemindReport <- cfg$continueFromHere
   pathToMagpieReport <- runMAgPIE(pathToRemindReport)
 
 } else if (names(cfg$continueFromHere) %in% "getMagpieData") {
   # No regular magpie iteration
   # Continue from an external MAgPIE mif
-  message("Continuing with getMagpieData using ", cfg$continueFromHere)
+  message(round(Sys.time()), " Continuing with getMagpieData using ", cfg$continueFromHere)
   pathToMagpieReport <- cfg$continueFromHere
 }
 
@@ -301,4 +305,4 @@ getMagpieData(path_to_report = pathToMagpieReport, mapping = mag2rem)
 # Save the same elements that were loaded (they may have been updated in the meantime)
 save(list = elementsLoaded, file = "config.Rdata")
 
-message("\n", round(Sys.time()), " ### COUPLING ", i, " ### Continuing with REMIND Nash iteration")
+message("\n", round(Sys.time()), " Continuing with REMIND Nash iteration")
