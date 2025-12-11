@@ -1,5 +1,6 @@
 
-# Define mapping of MAgPIE variables to REMIND variables
+# Mapping of MAgPIE variables to REMIND variables
+# If you change the mapping, check whether the structure of the gdx object in “getMagpieData” (see below) needs to be adjusted.
 mag2rem <- tibble::tribble(
     ~mag                                                                             ,   ~enty                        ,   ~factorMag2Rem  ,   ~parameter                ,
     'Demand|Bioenergy|2nd generation|++|Bioenergy crops'                             ,   NA                           ,   1/31.536        ,   'pm_pebiolc_demandmag'    ,
@@ -57,11 +58,11 @@ createREMINDReporting <- function(gdx) {
   # Record the time when the preparation for MAgPIE starts in runtime.log
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "convGDX2MIF_REMIND2MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   # Create reduced REMIND reporting
-  message("\n### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE - ", round(Sys.time()))
+  message("\n", round(Sys.time()), " ### COUPLING ", i, " ", NashIteration, " ### Generating reduced REMIND reporting for MAgPIE")
   if(!file.exists(gdx)) stop("The MAgPIE coupling script 'magpie.R' could not find a REMIND fulldata.gdx file:", gdx)
   scenario <- lucode2::getScenNames(".")
   remind2::convGDX2MIF_REMIND2MAgPIE(gdx = gdx, file = paste0("REMIND_rem2mag-", i,".mif"), scenario = scenario, extraData = "reporting")
-  message("\nFinished reporting - ", round(Sys.time()))
+  message("\n", round(Sys.time()), " Finished reporting")
   return(file.path(cfg$remind_folder, cfg$results_folder, paste0("REMIND_rem2mag-", i,".mif")))
 }
 
@@ -70,7 +71,7 @@ runMAgPIE <- function(pathToRemindReport) {
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "MAgPIE", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
   
   # Switch to MAgPIE main folder
-  message("### COUPLING ", i, " ### Preparing MAgPIE - ", round(Sys.time()))
+  message(round(Sys.time()), " ### COUPLING ", i, " ### Preparing MAgPIE")
   message("Switching from REMIND ", getwd())
   message("            to MAgPIE ", cfg$path_magpie, "\n")
   withr::with_dir(cfg$path_magpie,{
@@ -122,10 +123,10 @@ runMAgPIE <- function(pathToRemindReport) {
     save(list = elementsLoaded, file = file.path(cfg$remind_folder, cfg$results_folder, "config.Rdata"))
 
     # Start MAgPIE
-    message("### COUPLING ", i, " ### Starting MAgPIE - ", round(Sys.time()), "\nwith  Report = ", pathToRemindReport, "\n      Folder = ", cfg$cfg_mag$results_folder)
+    message(round(Sys.time()), " ### COUPLING ", i, " ### Starting MAgPIE\nwith  Report = ", pathToRemindReport, "\n      Folder = ", cfg$cfg_mag$results_folder)
     outfolder_mag <- start_run(cfg$cfg_mag, codeCheck = FALSE)
     pathToMagpieReport <- file.path(cfg$path_magpie, outfolder_mag, "report.mif")
-    message("### COUPLING ", i, " ### MAgPIE finished in ", outfolder_mag, " - ", round(Sys.time()))
+    message(round(Sys.time()), " ### COUPLING ", i, " ### MAgPIE finished in ", outfolder_mag)
 
     # Checking whether MAgPIE is optimal in all years
     file_modstat <- file.path(outfolder_mag, "glo.magpie_modelstat.csv")
@@ -157,7 +158,7 @@ getMagpieData <- function(path_to_report = "report.mif", mapping) {
   # ---- Record runtime when the data transfer from MAgPIE to REMIND starts in runtime.log ----
 
   write(paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "getMagpieData", NashIteration, sep = ","), file = paste0("runtime.log"), append = TRUE)
-  message("### COUPLING ", i, " ### Transferring data from MAgPIE ", path_to_report, " to REMIND magpieData.gdx - ", round(Sys.time()))
+  message(round(Sys.time()), " ### COUPLING ", i, " ### Transferring data from MAgPIE ", path_to_report, " to REMIND magpieData.gdx")
   
   # ---- Read and prepare MAgPIE data ----
   
@@ -300,4 +301,4 @@ getMagpieData(path_to_report = pathToMagpieReport, mapping = mag2rem)
 # Save the same elements that were loaded (they may have been updated in the meantime)
 save(list = elementsLoaded, file = "config.Rdata")
 
-message("\n### COUPLING ", i, " ### Continuing with REMIND Nash iteration - ", round(Sys.time()))
+message("\n", round(Sys.time()), " ### COUPLING ", i, " ### Continuing with REMIND Nash iteration")
