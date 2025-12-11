@@ -4,7 +4,7 @@
 *** |  AGPL-3.0, you are granted additional permissions described in the
 *** |  REMIND License Exception, version 1.0 (see LICENSE file).
 *** |  Contact: remind@pik-potsdam.de
-*** SOF ./modules/30_biomass/magpie_40/bounds.gms
+*** SOF ./modules/30_biomass/magpie/bounds.gms
 
 *' @code{extrapage: "00_model_assumptions"}
 *** -------------------------------------------------------------
@@ -127,7 +127,7 @@ if (cm_phaseoutBiolc eq 1,
 $IFTHEN.bioprod_regi_lim not "%cm_bioprod_regi_lim%" == "off"
 loop( ext_regi$(p30_bioprod_regi_lim(ext_regi)),
   loop(regi$regi_groupExt(ext_regi,regi),
-    v30_BioPEProdTotal.up(t,regi)$(t.val ge 2035)= p30_bioprod_regi_lim(ext_regi)*sm_EJ_2_TWa
+    v30_BioPEProdTotal.up(t,regi)$(t.val ge max(2010, cm_startyear))= p30_bioprod_regi_lim(ext_regi)*sm_EJ_2_TWa
 *** distribute across regions in a region group by share in 2005 biomass production as the model is initialized in 2005 with fixed historic production
                                                     * v30_BioPEProdTotal.l("2005",regi) 
                                                     / sum(regi2$regi_groupExt(ext_regi,regi2), 
@@ -136,4 +136,4 @@ loop( ext_regi$(p30_bioprod_regi_lim(ext_regi)),
 );
 $ENDIF.bioprod_regi_lim
 
-*** EOF ./modules/30_biomass/magpie_40/bounds.gms
+*** EOF ./modules/30_biomass/magpie/bounds.gms
