@@ -42,7 +42,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
     
 ### fixed
--
+- **30_biomass** fix pathways of historic 1st generation bioenergy deployment
+    [#2253](https://github.com/remindmodel/remind/pull/2253)
 
 
 ## [3.5.2] - 2025-09-26
