@@ -1347,13 +1347,23 @@ $setglobal c_magpieIter  20,24,28,32     !! def = "20,24,28,32"  !! This regular
 *' *  (rcp85): RCP8.5 [currently not operational: test and verify before using it!]
 $setglobal cm_rcp_scen  rcp45         !! def = "rcp45"  !! regexp = none|rcp20|rcp26|rcp37|rcp45|rcp60|rcp85
 *' cm_NDC_version            "choose version year of NDC targets as well as conditional vs. unconditional targets"
-*' *  (2024_cond):   all NDCs conditional to international financial support published until August 31, 2024
-*' *  (2024_uncond): all NDCs independent of international financial support published until August 31, 2024
-*' *  (2023_cond):   all NDCs conditional to international financial support published until December 31, 2023
-*' *  (2023_uncond): all NDCs independent of international financial support published until December 31, 2023
+*' *  (2025_cond_extrapol):       all NDCs conditional to international financial support published until September 2025 with extrapolation of 2030 targets to 2035 targets for conutries without 2035 target
+*' *  (2025_uncond_extrapol):     all NDCs independent of international financial support published until September 2025 with extrapolation of 2030 targets to 2035 targets for conutries without 2035 target
+*' *  (2025_cond):                all NDCs conditional to international financial support published until September 2025
+*' *  (2025_uncond):              all NDCs independent of international financial support published until September 2025
+*' *  (2024_cond):                all NDCs conditional to international financial support published until August 31, 2024
+*' *  (2024_uncond):              all NDCs independent of international financial support published until August 31, 2024
+*' *  (2023_cond):                all NDCs conditional to international financial support published until December 31, 2023
+*' *  (2023_uncond):              all NDCs independent of international financial support published until December 31, 2023
 *' *  Other supported years are 2022, 2021 and 2018, always containing NDCs published until December 31 of that year
-$setglobal cm_NDC_version  2024_cond    !! def = "2024_cond"  !! regexp = 20(18|2[1-5])_(un)?cond
-
+$setglobal cm_NDC_version  2024_cond    !! def = "2024_cond" !! regexp = 20(18|2[1-5])_(un)?cond(_extrapol)?$
+*' cm_NDC_targetYear            "choose years for which NDC emissions targets can be applied" [requires 45_carbonprice = NDC]
+*' * Examples on how to use:
+*' *  "2030" means that only 2030 target are included
+*' *  "2030, 2035, 2050" means that 2030, 2035 and 2050 targets are included
+*' * Note: including target years here does not mean they are automcatically considered in the carbonprice NDC realization. 
+*' * Depending on the p45_minRatioOfCoverageToMax parameter, each region receives the target year with the highest share of emissions covered under NDCs.
+$setglobal cm_NDC_targetYear  "2030"    !! def = "2030"
 *' cm_NPi_version            "choose version year of NPi targets for min and max targets in the form of conditional vs. unconditional"
 *' *  (2024_cond):   minimum technology targets are included from NewClimate latest policy modeling protocol in 2025
 *' *  (2024_uncond): maximal technology targets are included from NewClimate latest policy modeling protocol in 2025
