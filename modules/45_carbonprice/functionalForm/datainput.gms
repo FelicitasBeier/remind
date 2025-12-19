@@ -7,7 +7,7 @@
 *** SOF ./modules/45_carbonprice/functionalForm/datainput.gms
 
 *** Check that cm_iterative_target_adj is equal to 0, 5, 7, or 9
-if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9) ),
+if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9)),
   abort "The realization 45_carbonprice/functionalForm is only compatible with cm_iterative_target_adj = 0, 5, 7 or 9. Please adjust config file accordingly"
 );
 
@@ -17,7 +17,6 @@ display p45_taxCO2eq_path_gdx_ref;
 
 *** -------- initial declaration of parameters for iterative target adjustment
 o45_reached_until2150pricepath(iteration) = 0;
-
 
 ***-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *** Part I (Global anchor trajectory): The functional form (linear/exponential) of the global anchor trajectory is chosen via cm_taxCO2_functionalForm. 
