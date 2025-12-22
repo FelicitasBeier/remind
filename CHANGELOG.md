@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### changed
 - **45_carbonprice** Use ScenarioMIP settings as new default for regional carbon price differentiation in 45_carbonprice/functionalForm 
     [[#2229](https://github.com/remindmodel/remind/pull/2229)]
+- **11_aerosols** Move calculation of air pollutant emissions from REMIND module 11_aerosols to remind2.
+    [[#2231](https://github.com/remindmodel/remind/pull/2231)]
 
 ### added
 - **40_techpol** implement renewable energy share targets for NPi2025 realization based on NewClimate policy protocol
