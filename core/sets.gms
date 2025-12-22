@@ -962,7 +962,8 @@ sets
     2022_cond, 2022_uncond,
     2023_cond, 2023_uncond,
     2024_cond, 2024_uncond,
-    2025_cond, 2025_uncond
+    2025_cond, 2025_uncond,
+    2025_cond_extrapol, 2025_uncond_extrapol
   /
   NPi_version "NPi data version for NPi realizations of 40_techpol and 45_carbonprice"
   /
@@ -2276,6 +2277,11 @@ iteration     "iterator for main (Negishi/Nash) iterations"
 steps         "iterator for MAC steps"
 /
     1*801
+/
+
+magpieIter(iteration) "Nash iterations in which MAgPIE runs in core/presolve"
+/
+    %c_magpieIter%
 /
 ;
 
