@@ -11,11 +11,11 @@ vm_costpollution(tall,all_regi)                                               "c
 ;
 
 parameter
-p11_emiFacAP(tall,all_regi,all_enty,all_enty,all_te,sectorEndoEmi,all_enty)   "air pollutant emission factors [Gt(species)/TWa]"
-p11_share_sector(tall,all_enty,all_enty,all_te,sectorEndoEmi,all_regi)        "share of technology that goes into industry, residential, and transport sectorEndoEmi [1]"
-p11_costpollution(all_te,all_enty,sectorEndoEmi)                              "pollutant abatement costs in [$/t]"
+p11_emiFacAP(tall,all_regi,all_enty,all_enty,all_te,sectorEndoEmi_11,all_enty)   "air pollutant emission factors [Gt(species)/TWa]"
+p11_share_sector(tall,all_enty,all_enty,all_te,sectorEndoEmi_11,all_regi)        "share of technology that goes into industry, residential, and transport sectorEndoEmi_11 [1]"
+p11_costpollution(all_te,all_enty,sectorEndoEmi_11)                              "pollutant abatement costs in [$/t]"
 
-p11_EF_uncontr(all_enty,all_enty,all_te,all_regi,all_enty,sectorEndoEmi)      "regional uncontrolled pollutant emission factor"
+p11_EF_uncontr(all_enty,all_enty,all_te,all_regi,all_enty,sectorEndoEmi_11)      "regional uncontrolled pollutant emission factor"
 p11_EF_mean(all_enty,all_enty,all_te,all_enty)                                "global mean pollutant emission factor in 2005"
 p11_cesIO(tall,all_regi,all_in)                                               "cesIO parameter specific for the module"
 

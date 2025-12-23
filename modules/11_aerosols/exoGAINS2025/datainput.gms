@@ -46,25 +46,25 @@ p11_share_trans("2130",regi) = 0.865;
 p11_share_trans("2150",regi) = 0.872;
 
 *** GAINS2025 emission factors --------------------------------------------------------------------------
-parameter f11_emifacs_sectREMIND_sourceCEDS(tall,all_regi,all_enty,all_enty,all_te,all_sectorEmi,emisForEmiFac,all_APscen,all_APssp)     "GAINS2025 emission factors weighted by CEDS emissions"
+parameter f11_emifacs_sectREMIND_sourceCEDS(tall,all_regi,all_enty,all_enty,all_te,all_sectorEmi_11,emisForEmiFac_11,all_APscen,all_APssp)     "GAINS2025 emission factors weighted by CEDS emissions"
 /
 $ondelim
 $include "./modules/11_aerosols/exoGAINS2025/input/f11_emifacs_sectREMIND_sourceCEDS.cs4r"
 $offdelim
 /
 ;
-parameter f11_emifacs_sectREMIND_sourceGAINS(tall,all_regi,all_enty,all_enty,all_te,all_sectorEmi,emisForEmiFac,all_APscen,all_APssp)     "GAINS2025 emission factors weighted by GAINS emissions"
+parameter f11_emifacs_sectREMIND_sourceGAINS(tall,all_regi,all_enty,all_enty,all_te,all_sectorEmi_11,emisForEmiFac_11,all_APscen,all_APssp)     "GAINS2025 emission factors weighted by GAINS emissions"
 /
 $ondelim
 $include "./modules/11_aerosols/exoGAINS2025/input/f11_emifacs_sectREMIND_sourceGAINS.cs4r"
 $offdelim
 /
 ;
-p11_emiFacAP(ttot,regi,enty,enty2,te,sectorEndoEmi,emisForEmiFac)$(ttot.val ge 2005) = 0.0;
+p11_emiFacAP(ttot,regi,enty,enty2,te,sectorEndoEmi_11,emisForEmiFac_11)$(ttot.val ge 2005) = 0.0;
 if (cm_APsource eq 1,  !! CEDS
-  p11_emiFacAP(ttot,regi,enty,enty2,te,sectorEndoEmi,emisForEmiFac)$(ttot.val ge 2005) = f11_emifacs_sectREMIND_sourceCEDS(ttot,regi,enty,enty2,te,sectorEndoEmi,emisForEmiFac,"%cm_APscen%","%cm_APssp%");
+  p11_emiFacAP(ttot,regi,enty,enty2,te,sectorEndoEmi_11,emisForEmiFac_11)$(ttot.val ge 2005) = f11_emifacs_sectREMIND_sourceCEDS(ttot,regi,enty,enty2,te,sectorEndoEmi_11,emisForEmiFac_11,"%cm_APscen%","%cm_APssp%");
 elseIf cm_APsource  eq 2,  !! GAINS
-  p11_emiFacAP(ttot,regi,enty,enty2,te,sectorEndoEmi,emisForEmiFac)$(ttot.val ge 2005) = f11_emifacs_sectREMIND_sourceGAINS(ttot,regi,enty,enty2,te,sectorEndoEmi,emisForEmiFac,"%cm_APscen%","%cm_APssp%");
+  p11_emiFacAP(ttot,regi,enty,enty2,te,sectorEndoEmi_11,emisForEmiFac_11)$(ttot.val ge 2005) = f11_emifacs_sectREMIND_sourceGAINS(ttot,regi,enty,enty2,te,sectorEndoEmi_11,emisForEmiFac_11,"%cm_APscen%","%cm_APssp%");
 else 
   abort "cm_APsource must be either CEDS or GAINS"
 );
@@ -85,7 +85,7 @@ else
 );
 
 *** Initialise sector shares to 1
-p11_share_sector(ttot,sectorEndoEmi2te(enty,enty2,te,sectorEndoEmi),regi) = 1.0;
+p11_share_sector(ttot,sectorEndoEmi2te_11(enty,enty2,te,sectorEndoEmi_11),regi) = 1.0;
 
 *** Compute sector shares
 loop ((t,regi)$( t.val ge 2005 ),
@@ -214,8 +214,8 @@ p11_costpollution("tdfoshos",   "BC", "res")   = 110;
 p11_costpollution("tdfosdie",   "BC", "trans") = 40000;
 p11_costpollution("tdfospet",   "BC", "trans") = 40000;
 
-p11_EF_uncontr(enty,enty2,te,regi,"SO2",sectorEndoEmi)$(sectorEndoEmi2te(enty,enty2,te,sectorEndoEmi)) = pm_emifac("2005",regi,enty,enty2,te,"SO2") + 0.0001;
-p11_EF_uncontr(enty,enty2,te,regi,"BC",sectorEndoEmi)$(sectorEndoEmi2te(enty,enty2,te,sectorEndoEmi))  = pm_emifac("2005",regi,enty,enty2,te,"BC")  + 0.0001;
-p11_EF_uncontr(enty,enty2,te,regi,"OC",sectorEndoEmi)$(sectorEndoEmi2te(enty,enty2,te,sectorEndoEmi))  = pm_emifac("2005",regi,enty,enty2,te,"OC")  + 0.0001;
+p11_EF_uncontr(enty,enty2,te,regi,"SO2",sectorEndoEmi_11)$(sectorEndoEmi2te_11(enty,enty2,te,sectorEndoEmi_11)) = pm_emifac("2005",regi,enty,enty2,te,"SO2") + 0.0001;
+p11_EF_uncontr(enty,enty2,te,regi,"BC",sectorEndoEmi_11)$(sectorEndoEmi2te_11(enty,enty2,te,sectorEndoEmi_11))  = pm_emifac("2005",regi,enty,enty2,te,"BC")  + 0.0001;
+p11_EF_uncontr(enty,enty2,te,regi,"OC",sectorEndoEmi_11)$(sectorEndoEmi2te_11(enty,enty2,te,sectorEndoEmi_11))  = pm_emifac("2005",regi,enty,enty2,te,"OC")  + 0.0001;
 
 *** EOF ./modules/11_aerosols/exoGAINS2025/datainput.gms
