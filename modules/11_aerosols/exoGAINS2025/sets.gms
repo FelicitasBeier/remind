@@ -6,7 +6,7 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./modules/11_aerosols/exoGAINS2025/sets.gms
 sets
-emisForEmiFac_11(all_enty)  "types of emissions that are only calculated in a post-processing routine after the optimization"
+emisForEmiFac11(all_enty)  "types of emissions that are only calculated in a post-processing routine after the optimization"
 /
         NOx
         CO
@@ -17,7 +17,7 @@ emisForEmiFac_11(all_enty)  "types of emissions that are only calculated in a po
         NH3
 /
 
-all_sectorEmi_11 "all sectors with emissions"
+all_sectorEmi11 "all sectors with emissions"
 /   indst        "emissions from industry sector"
     res          "emissions from residential sector"
     trans        "emissions from transport sector"
@@ -28,7 +28,7 @@ all_sectorEmi_11 "all sectors with emissions"
     waste        "emissions from waste"
 /
 
-sectorEndoEmi_11(all_sectorEmi_11)   "sectors with endogenous emissions"
+sectorEndoEmi11(all_sectorEmi11)   "sectors with endogenous emissions"
 /
     indst    "industry"
     res      "residential"
@@ -36,7 +36,7 @@ sectorEndoEmi_11(all_sectorEmi_11)   "sectors with endogenous emissions"
     power    "power"
 /
 
-sectorEndoEmi2te_11(all_enty,all_enty,all_te,sectorEndoEmi_11)   "map sectors to technologies"
+sectorEndoEmi2te11(all_enty,all_enty,all_te,sectorEndoEmi11)   "map sectors to technologies"
 /
     pegas.seel.ngcc.power
     pegas.seel.ngt.power
@@ -73,7 +73,7 @@ sectorEndoEmi2te_11(all_enty,all_enty,all_te,sectorEndoEmi_11)   "map sectors to
     seliqsyn.fepet.tdsynpet.trans
 /
 
-sectorEndoEmi2te_dyn_11(all_enty,all_enty,all_te,sectorEndoEmi_11)  "map sectors to technologies"
+sectorEndoEmi2te_dyn11(all_enty,all_enty,all_te,sectorEndoEmi11)  "map sectors to technologies"
 /
 pecoal.seel.igcc.power
 pecoal.seel.igccc.power
@@ -87,6 +87,6 @@ pebiolc.segabio.biogas.power
 ***-------------------------------------------------------------------------
 ***  add module specific sets and mappings to the global sets and mappings
 ***-------------------------------------------------------------------------
-sectorEndoEmi2te_11(sectorEndoEmi2te_dyn_11) = YES;
+sectorEndoEmi2te11(sectorEndoEmi2te_dyn11) = YES;
 
 *** EOF ./modules/11_aerosols/exoGAINS2025/sets.gms
