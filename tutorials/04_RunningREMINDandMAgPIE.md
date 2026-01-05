@@ -4,9 +4,9 @@ David Klein (<dklein@pik-potsdam.de>)
 
 ## Summary of new MAgPIE-Nash coupling
 
-The previous coupling, in which REMIND and MAgPIE run sequentially, has been replaced with shifting the MAgPIE runs between the Nash iterations. `start_bundle_coupled.R` and `start_coupled.R` have been removed. Use `start.R` together with a `scenario_config_magpie*.csv` file (formerly known as `scenario_config_coupled.csv`) to activate the MAgPIE coupling, e.g.
+The previous coupling, in which REMIND and MAgPIE run sequentially, has been replaced with shifting the MAgPIE runs between the Nash iterations. `start_bundle_coupled.R` and `start_coupled.R` have been removed. Use `start.R` together with a `scenario_config_magpie*.csv` file (formerly known as `scenario_config_coupled.csv`) specifying your MAgPIE settings and a `scenario_config*.csv` file specifying your REMIND seeting to activate the MAgPIE coupling, e.g.
 ```
-Rscript start.R config/scenario_config_magpie.R
+Rscript start.R config/scenario_config_magpie*.csv
 ```
 The new coupling is mainly perforemd in `core/presolve.gms`, by calling the R script `scripts/input/magpie.R`, that transfers the data of the latest Nash solution to MAgPIE, runs MAgPIE, and transfers the MAgPIE data to a `magpieData.gdx`. Then REMIND GAMS continues, reads the `magpieData.gdx` and continues the Nash iterations.
 
