@@ -21,8 +21,7 @@ REMIND configuration
 
 MAgPIE configuration
 
-- A `scenario_config_magpie*.csv` file defining your MAgPIE settings.
-- This file replaces the former scenario_config_coupled.csv.
+- A `scenario_config_magpie*.csv` file defining your MAgPIE settings. This file replaces the former `scenario_config_coupled.csv`.
 
 In both cases, `*` is a placeholder for your personalized scenario suffix and should be consistent across files.
 
