@@ -919,7 +919,7 @@ parameter
 *' * (7): [requires 45_carbonprice = functionalForm and emiscen = 9] iterative adjustment of CO2 tax based on economy-wide CO2 cumulative emission peak budget, for runs with emission budget or CO2 tax constraints. Features: results in a peak budget with zero net CO2 emissions after peak budget is reached. See core/postsolve.gms for direct algorithms [see 45_carbonprice/functionalForm/postsolve.gms for direct algorithm]
 *' * (9): [requires 45_carbonprice = functionalForm and emiscen = 9] global: iterative adjustment of CO2 tax based on economy-wide CO2 cumulative emission peak budget, for runs with emission budget or CO2 tax constraints. Features: 1) after the year when budget peaks, CO2 tax has an annual increase by cm_taxCO2_IncAfterPeakBudgYr, 2) automatically shifts cm_peakBudgYr to find the correct year of budget peaking for a given budget. [see 45_carbonprice/functionalForm/postsolve.gms for direct algorithm]
 parameter
-  cm_taxCO2_Shape             "Only used with [functionalFormRegi and functionalForm if EOC budget], determines whether the carbon price increases until 2100 or is constant as of the exogenously set cm_peakYear"
+  cm_taxCO2_Shape             "Only used with [functionalFormRegi, and functionalForm if cm_iterative_target_adj=5 (i.e. EOC budget)], determines whether the carbon price increases until 2100 or is constant as of the exogenously set cm_peakYear"
 ;
   cm_taxCO2_Shape = 1;            !! def = 1    !! regexp = 1|2
 *' * (1): EOC -  pm_taxCO2eq increases until 2100 according to cm_taxCO2_functionalForm for EOC budget targets
