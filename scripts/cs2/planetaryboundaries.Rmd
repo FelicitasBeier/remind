@@ -1,0 +1,456 @@
+# Scenario Overview 
+
+## Indicator for Residual Emissions 
+
+```{r}
+items <- c(
+  "Emi|CO2|CDR",
+  "Emi|CO2|Gross",
+  "Emi|CO2|Gross|Energy",
+  "Emi|CO2|Gross|Land-Use Change",
+  "Emi|CO2|Gross|Waste")
+showAreaAndBarPlots(data, items, scales = "fixed")
+```
+
+## CO2 by sector - Copied from cs2 
+
+```{r CO2 by sector (w/ gross emissions, excl. negative emissions from CCS of non-fossil carbon)}
+tot <- "Emi|CO2"
+items <- c(
+  "Emi|CO2|Land-Use Change",
+  "Emi|CO2|Industrial Processes|Industry",
+  "Emi|CO2|Industrial Processes|CDR Sector",
+  "Emi|CO2|Gross|Waste",
+  "Emi|CO2|Energy|Demand|Transport",
+  "Emi|CO2|Gross|Energy|Demand|Industry",
+  "Emi|CO2|Energy|Demand|Buildings",
+  "Emi|CO2|Gross|Energy|Demand|CDR Sector",
+  "Emi|CO2|Gross|Energy|Supply|Non-electric",
+  "Emi|CO2|Gross|Energy|Supply|Electricity",
+  "Emi|CO2|CDR|BECCS",
+  "Emi|CO2|CDR|Biochar",
+  "Emi|CO2|CDR|Synthetic Fuels CCS",
+  "Emi|CO2|CDR|Materials",
+  "Emi|CO2|CDR|DACCS",
+  "Emi|CO2|CDR|OAE",
+  "Emi|CO2|CDR|EW")
+showAreaAndBarPlots(data, items, tot, scales = "fixed")
+```
+
+## Land Use Change 
+
+```{r}
+items <- c(
+  "Resources|Land Cover Change|Cropland", # this should be divided in bioenergy and food crops or something
+  "Resources|Land Cover Change|Pastures and Rangelands",
+  "Resources|Land Cover Change|Forest",
+  "Resources|Land Cover Change|Other Land",
+  "Resources|Land Cover Change|Urban Area")
+showAreaAndBarPlots(data, items, scales = "fixed")
+```
+
+# Planetary Boundaries indicators
+
+## PB 1: Climate Change Indictator 
+
+
+### Atmospheric CO2 concentration 
+
+```{r}
+# from Richardson et al 2023 
+safePB   <- 350
+highRisk <- 450
+
+zones <- data.frame(
+  ymin = c(-Inf, safePB, highRisk),
+  ymax = c(safePB, highRisk, Inf),
+  fill = c("#c7e9c0", "#fff7bc","#fee0d2")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "MAGICC7 AR6|Atmospheric Concentrations|CO2|67.0th Percentile",
+  layers = layers
+)
+
+```
+
+### Radiative Forcing 
+
+```{r}
+# from Richardson et al 2023 
+safePB   <- 1
+highRisk <- 1.5
+
+zones <- data.frame(
+  ymin = c(-Inf, safePB, highRisk),
+  ymax = c(safePB, highRisk, Inf),
+  fill = c("#c7e9c0", "#fff7bc","#fee0d2")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "MAGICC7 AR6|Effective Radiative Forcing|Basket|Anthropogenic|67.0th Percentile",
+  layers = layers
+)
+
+```
+
+### Global Mean Surface Temperature  
+
+```{r}
+# as from Feli (not in Richardson or Steffen)
+safePB   <- 1
+highRisk <- 2
+
+zones <- data.frame(
+  ymin = c(-Inf, safePB, highRisk),
+  ymax = c(safePB, highRisk, Inf),
+  fill = c("#c7e9c0", "#fff7bc","#fee0d2")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "MAGICC7 AR6|Surface Temperature (GSAT)|67.0th Percentile",
+  layers = layers
+)
+
+```
+
+## PB 2: Ozone 
+
+van Vuuren et al (2025) used CMIP6 data, mostly over the Antarctica region 
+
+## PB 3: Aerosols 
+
+van Vuuren et al (2025) calculates something, and plug it into the FASST model 
+
+## PB 4: Ocean Acidification 
+
+```{r}
+# This is the approach from van Vuuren, MAGICC also has net transport to ocean, maybe that is more exact?
+a <- -5e-8 # vanVuuren value was given by Gt, so I changed to exponent from e-5 to e-8 to adjust to our values in Mt
+b <- 8.0957
+
+# data2 <- data %>%
+#   dplyr::mutate(
+#     dplyr::across(
+#       .cols = value,
+#       .fns = ~ dplyr::if_else(
+#         variable == "Emi|CO2|Cumulated",
+#         a * .x + b,
+#         .x
+#       )
+#     ),
+#     variable = dplyr::if_else(
+#       variable == "Emi|CO2|Cumulated",
+#       "pH",
+#       variable
+#     )
+#   )
+
+data2 <- data %>%
+  dplyr::mutate(
+    value = dplyr::if_else(
+      variable == "Emi|CO2|Cumulated",
+      a * value + b,
+      value
+    ),
+    variable = dplyr::if_else(
+      variable == "Emi|CO2|Cumulated",
+      "pH",
+      variable
+    ),
+    unit = dplyr::if_else(
+      variable == "pH",
+      "pH",
+      unit
+    )
+  )
+
+safePB   <- 8.01
+highRisk <- 7.94
+
+zones <- data.frame(
+  ymin = c(-Inf, highRisk, safePB),
+  ymax = c(highRisk, safePB, Inf),
+  fill = c("#fee0d2", "#fff7bc", "#c7e9c0")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data2,
+  "pH",
+  layers = layers,
+  ylim = c(7.9,8.1)
+)
+
+```
+
+
+## PB 5: Nitrogen Balance 
+
+### Nitrogen Surplus 
+```{r}
+# this is taken from Feli paper, Richardson et al 2023 state 62, and upper limit 82
+safePB   <- 61
+highRisk <- 84
+
+zones <- data.frame(
+  ymin = c(-Inf, safePB, highRisk),
+  ymax = c(safePB, highRisk, Inf),
+  fill = c("#c7e9c0", "#fff7bc","#fee0d2")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "Planetary Boundary|Nitrogen|Agricultural Nitrogen surplus",
+  layers = layers
+)
+
+```
+
+
+
+
+## PB 6: Phosphorus Balance 
+
+## PB 7: Freshwater Use 
+
+### Freshwater Consumption 
+
+```{r}
+# why is this so low? 
+safePB   <- 2800
+highRisk <- 4500
+
+zones <- data.frame(
+  ymin = c(-Inf, safePB, highRisk),
+  ymax = c(safePB, highRisk, Inf),
+  fill = c("#c7e9c0", "#fff7bc","#fee0d2")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "Planetary Boundary|Freshwater|Water consumption",
+  layers = layers
+)
+
+```
+
+
+
+## PB 8: Land System Change / Land Cover 
+
+### Forest Cover 
+
+```{r}
+safePB   <- 4790
+highRisk <- 3449
+
+zones <- data.frame(
+  ymin = c(-Inf, highRisk, safePB),
+  ymax = c(highRisk, safePB, Inf),
+  fill = c("#fee0d2", "#fff7bc", "#c7e9c0")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "Planetary Boundary|Land|Forest cover",
+  layers = layers,
+  ylim = c(2500,5000)
+)
+
+```
+                "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)",
+                "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target (unitless)",
+  
+
+
+## PB 9: Biosphere Integrity
+
+### Share of intact land relative to total land area 
+
+```{r}
+# from Feli 
+safePB   <- 0.6
+highRisk <- 0.5
+
+zones <- data.frame(
+  ymin = c(-Inf, highRisk, safePB),
+  ymax = c(highRisk, safePB, Inf),
+  fill = c("#fee0d2", "#fff7bc", "#c7e9c0")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c"),
+  geom_hline(yintercept = highRisk, linetype = 2, linewidth = 1, color = "#e31a1c")
+)
+
+showLinePlots(
+  data,
+  "Planetary Boundary|Biosphere|Share of intact land relative to total land area",
+  layers = layers,
+  ylim = c(0.35,0.7)
+)
+
+```
+
+### Share of land area that satisfies landscape target 
+
+```{r}
+# why is this so low? 
+safePB   <- 1
+#highRisk <- 4500
+
+zones <- data.frame(
+  ymin = c(-Inf, safePB),
+  ymax = c(safePB, Inf),
+  fill = c("#fff7bc", "#c7e9c0")
+)
+
+layers <- list(
+  geom_rect(
+    data = zones,
+    aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = fill),
+    inherit.aes = FALSE,
+    alpha = 0.5
+  ),
+  scale_fill_identity(),
+  geom_hline(yintercept = safePB, linetype = 4, linewidth = 1, color = "#33a02c")
+)
+
+showLinePlots(
+  data,
+  "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target",
+  layers = layers,
+  ylim = c(0.7,1.05)
+)
+
+```
+
+```{r results='asis'}
+items <- c(
+  "Biodiversity|BII",
+  "Biodiversity|Biodiversity Hotspot BII",
+  "Biodiversity|Cropland Landscapes BII",
+  "Biodiversity|Key Biodiversity Area BII",
+  "Biodiversity|BII in areas outside Biodiversity Hotspots, Intact Forest & Cropland Landscapes",
+  "Biodiversity|Shannon crop area diversity index")
+walk(items, function(v) {
+  cat("###", v, "\n\n")
+  showLinePlots(data, v, ylim = NULL, scales = "fixed")
+  cat("\n\n")
+})
+```
+
+# SDG Indicators 
+
+## SDG - Food Security Indicator 
+
+```{r results='asis'}
+items <- c(
+  "SDG|SDG02|Agricultural commodity price index wrt 2020",
+  "SDG|SDG02|Food availability",
+  "SDG|SDG02|Food expenditure share",
+  "SDG|SDG02|Agricultural primary product expenditure share",
+  "SDG|SDG15|Industrial and intentional biological fixation of N",
+  "SDG|SDG12|Food waste",
+  "SDG|SDG06|Agricultural water use")
+walk(items, function(v) {
+  cat("###", v, "\n\n")
+  showLinePlots(data, v)
+  cat("\n\n")
+})
+```
+
