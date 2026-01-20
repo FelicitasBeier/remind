@@ -6,6 +6,180 @@
 |  REMIND License Exception, version 1.0 (see LICENSE file).
 |  Contact: remind@pik-potsdam.de
 -->
+
+# Planetary Boundaries Indicators
+
+## PB 1: Climate Change Indictator 
+
+
+### Atmospheric CO2 concentration 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "MAGICC7 AR6|Atmospheric Concentrations|CO2|67.0th Percentile",
+  # from Richardson et al 2023
+  safePB = 350,
+  highRisk = 450
+)
+```
+
+
+### Radiative Forcing 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "MAGICC7 AR6|Effective Radiative Forcing|Basket|Anthropogenic|67.0th Percentile",
+  # from Richardson et al 2023
+  safePB = 1,
+  highRisk = 1.5
+)
+```
+
+
+### Global Mean Surface Temperature  
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "MAGICC7 AR6|Surface Temperature (GSAT)|67.0th Percentile",
+  # similar to Beier et al 2025
+  safePB = 1,
+  highRisk = 2
+)
+```
+
+
+## PB 2: Ozone 
+
+<!-- van Vuuren et al (2025) used CMIP6 data, mostly over the Antarctica region  -->
+
+## PB 3: Aerosols 
+
+<!-- van Vuuren et al (2025) calculates something, and plug it into the FASST model  -->
+
+## PB 4: Ocean Acidification 
+
+```{r}
+# This is the approach from van Vuuren, MAGICC also has net transport to ocean, maybe that is more exact?
+a <- -5e-8 # vanVuuren value was given by Gt, so I changed to exponent from e-5 to e-8 to adjust to our values in Mt
+b <- 8.0957
+
+data2 <- data %>%
+  dplyr::mutate(
+    value = dplyr::if_else(
+      variable == "Emi|CO2|Cumulated",
+      a * value + b,
+      value
+    ),
+    variable = dplyr::if_else(
+      variable == "Emi|CO2|Cumulated",
+      "pH",
+      variable
+    ),
+    unit = dplyr::if_else(
+      variable == "pH",
+      "pH",
+      unit
+    )
+  )
+
+showLinePlotsWithZones(
+  data2,
+  "pH",
+  # similar to Beier et al 2025
+  safePB = 8.01,
+  highRisk = 7.94,
+  ylim = c(7.85,8.1)
+)
+```
+
+
+## PB 5: Nitrogen Balance 
+
+### Nitrogen Surplus 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "Planetary Boundary|Nitrogen|Agricultural Nitrogen surplus",
+  # # similar to Beier et al 2025, Richardson et al 2023 state 62, and upper limit 82
+  safePB = 61,
+  highRisk = 84
+)
+```
+
+
+
+## PB 6: Phosphorus Balance 
+
+## PB 7: Freshwater Use 
+
+### Freshwater Consumption 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "Planetary Boundary|Freshwater|Water consumption",
+  # similar to Beier et al 2025 - why is this so low compared to other literature?
+  safePB = 2800,
+  highRisk = 4500
+)
+```
+
+
+## PB 8: Land System Change / Land Cover 
+
+### Forest Cover 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "Planetary Boundary|Land|Forest cover",
+  # similar to Beier et al 2025
+  safePB = 4790,
+  highRisk = 3449
+)
+```
+
+
+  
+
+
+## PB 9: Biosphere Integrity
+
+<!-- 
+  "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)",
+  "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target (unitless)", -->
+
+### Share of intact land relative to total land area 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "Planetary Boundary|Biosphere|Share of intact land relative to total land area",
+  # similar to Beier et al 2025
+  safePB = 0.6,
+  highRisk = 0.5,
+  ylim = c(0.35,0.7)
+)
+```
+
+
+### Share of land area that satisfies landscape target 
+
+```{r}
+showLinePlotsWithZones(
+  data,
+  "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target",
+  # similar to Beier et al 2025 
+  safePB = 1,
+  #highRisk = 4500, ### RoSa: This has to be added until then it will fail. 
+  ylim = c(0.7,1.05)
+)
+```
+
 # MAgPIE
 
 ## Resources|Land Cover Change
