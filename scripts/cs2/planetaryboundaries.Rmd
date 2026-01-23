@@ -1,7 +1,7 @@
 # Planetary Boundaries indicators
+<!-- The order of boundaries and names follow Richardson et al. (2023) -->
 
 ## PB 1: Climate Change Indictator 
-
 
 ### Atmospheric CO2 concentration 
 
@@ -42,16 +42,31 @@ showLinePlotsWithZones(
 ```
 
 
-## PB 2: Ozone 
+## PB 2: Novel Entities
 
-van Vuuren et al (2025) used CMIP6 data, mostly over the Antarctica region 
+<!-- This is not defined yet. -->
 
-## PB 3: Aerosols 
+## PB 3: Stratospheric Ozone Depletion 
 
-van Vuuren et al (2025) calculates something, and plug it into the FASST model 
+<!-- 
+This is not defined yet.
+van Vuuren et al (2025) used CMIP6 data, mostly over the Antarctica region. 
+Is there MAGICC output that could be used?
+  -->
 
-## PB 4: Ocean Acidification 
+## PB 4: Atmospheric Aerosol Loading 
 
+<!-- 
+This is not defined yet.
+There is MAGICC output that could be used.
+RoSa: van Vuuren et al (2025) calculates something, and plugs it into the FASST model 
+ -->
+
+## PB 5: Ocean Acidification 
+
+<!-- This approach is based on van Vuuren et al (2025) 
+RoSa: We have better output and results for this, so this should be preliminary.
+-->
 ```{r}
 # This is the approach from van Vuuren, MAGICC also has net transport to ocean, maybe that is more exact?
 a <- -5e-8 # vanVuuren value was given by Gt, so I changed to exponent from e-5 to e-8 to adjust to our values in Mt
@@ -87,7 +102,7 @@ showLinePlotsWithZones(
 ```
 
 
-## PB 5: Nitrogen Balance 
+## PB 6: Biogeochemical Flows 
 
 ### Nitrogen Surplus 
 
@@ -95,7 +110,7 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "Planetary Boundary|Nitrogen|Agricultural Nitrogen surplus",
-  # this is taken from Feli paper, Richardson et al 2023 state 62, and upper limit 82
+  # this is taken from Beier et al (2025), Richardson et al (2023) state 62, and upper limit 82
   safePB = 61,
   highRisk = 84
 )
@@ -103,9 +118,9 @@ showLinePlotsWithZones(
 
 
 
-## PB 6: Phosphorus Balance 
+### PB 6: Phosphorus Balance 
 
-## PB 7: Freshwater Use 
+## PB 7: Freshwater Change 
 
 ### Freshwater Consumption 
 
@@ -113,7 +128,7 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "Planetary Boundary|Freshwater|Water consumption",
-  # why is this so low? 
+  # based on Beier et al (2025)
   safePB = 2800,
   highRisk = 4500
 )
@@ -128,6 +143,7 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "Planetary Boundary|Land|Forest cover",
+  # based on Beier et al (2025)
   safePB = 4790,
   highRisk = 3449
 )
@@ -139,9 +155,6 @@ showLinePlotsWithZones(
 
 ## PB 9: Biosphere Integrity
 
-<!-- 
-  "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)",
-  "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target (unitless)", -->
 
 ### Share of intact land relative to total land area 
 

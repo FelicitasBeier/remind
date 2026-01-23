@@ -78,7 +78,7 @@
 	},
 	"REMIND-MAgPIE": {
   	"projectLibrary": "'remind2'",
-		"userSectionPath": "normalizePath('./scripts/cs2/magpie.Rmd')"
+		"userSectionPath":  "c(normalizePath('./scripts/cs2/magpie.Rmd'), normalizePath('./scripts/cs2/planetaryboundaries.Rmd'))"
 	},
 	"MAgPIE": {
 		"sections": "0",
