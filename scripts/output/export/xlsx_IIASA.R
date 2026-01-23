@@ -48,6 +48,10 @@ projects <- list(
   NGFS       = list(model = "REMIND-MAgPIE 3.3-4.8",
                     mapping = c("AR6", "AR6_NGFS"),
                     iiasatemplate = "https://files.ece.iiasa.ac.at/ngfs-phase-5/ngfs-phase-5-template.xlsx",
+                    removeFromScen = "C_"),
+  NGFS6      = list(model = "REMIND-MAgPIE 3.5.2-4.13",
+                    mapping = c("ScenarioMIP"),
+                    iiasatemplate = "https://files.ece.iiasa.ac.at/ngfs-phase-6/ngfs-phase-6-template.xlsx",
                     removeFromScen = "C_|_bIT|_bit|_bIt|_KLW"),
   RIKEN = list(model = "REMIND-MAgPIE 3.4-4.8",
                mapping = c("ScenarioMIP", "MAGICC7_AR6"),
@@ -96,6 +100,11 @@ projects <- list(
   SHAPE      = list(mapping = c("NAVIGATE", "NAVIGATE_coupled", "SHAPE")),
   TESTTHAT   = list(mapping = "AR6")
 )
+# EarthCommission uses the ScenarioMIP scenarios with a different mapping and template:
+projects$EC <- modifyList(projects$ScenarioMIP, list(
+  mapping = c("ScenarioMIP", "EC"),
+  iiasatemplate = "https://files.ece.iiasa.ac.at/earthcommission/earthcommission-template.xlsx"))
+  
 
 # add pure mapping from piamInterfaces
 mappings <- setdiff(names(piamInterfaces::mappingNames()), c(names(projects), "AR6_NGFS"))
