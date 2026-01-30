@@ -6,10 +6,10 @@ jobs:
   check-pr-template:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-    env:
-      PR_DESCRIPTION: ${{ github.event.pull_request.body }}
     steps:
       - name: Check PR description
+        env:
+          PR_DESCRIPTION: ${{ github.event.pull_request.body }}
         id: check_pr_description
         run: |
             SECTION=$(echo "$PR_DESCRIPTION" | sed -n '/## Checklist/,/## Further information (optional)/p')
