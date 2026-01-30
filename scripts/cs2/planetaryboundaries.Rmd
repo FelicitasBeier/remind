@@ -1,7 +1,7 @@
-# Planetary Boundaries indicators
+# Planetary Boundaries Indicators
 <!-- The order of boundaries and names follow Richardson et al. (2023) -->
 
-## PB 1: Climate Change Indictator 
+## PB 1: Climate Change Indicators
 
 ### Atmospheric CO2 concentration 
 
@@ -9,7 +9,7 @@
 showLinePlotsWithZones(
   data,
   "MAGICC7 AR6|Atmospheric Concentrations|CO2|67.0th Percentile",
-  # from Richardson et al 2023
+  # from Richardson et al.(2023)
   safePB = 350,
   highRisk = 450
 )
@@ -22,7 +22,7 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "MAGICC7 AR6|Effective Radiative Forcing|Basket|Anthropogenic|67.0th Percentile",
-  # from Richardson et al 2023
+  # from Richardson et al.(2023)
   safePB = 1,
   highRisk = 1.5
 )
@@ -35,7 +35,7 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "MAGICC7 AR6|Surface Temperature (GSAT)|67.0th Percentile",
-  # as from Feli (not in Richardson or Steffen)
+  # from Beier et al.(2025)
   safePB = 1,
   highRisk = 2
 )
@@ -46,6 +46,7 @@ showLinePlotsWithZones(
 
 <!-- This is not defined yet. -->
 
+
 ## PB 3: Stratospheric Ozone Depletion 
 
 <!-- 
@@ -53,6 +54,7 @@ This is not defined yet.
 van Vuuren et al (2025) used CMIP6 data, mostly over the Antarctica region. 
 Is there MAGICC output that could be used?
   -->
+
 
 ## PB 4: Atmospheric Aerosol Loading 
 
@@ -62,14 +64,15 @@ There is MAGICC output that could be used.
 RoSa: van Vuuren et al (2025) calculates something, and plugs it into the FASST model 
  -->
 
+
 ## PB 5: Ocean Acidification 
 
 <!-- This approach is based on van Vuuren et al (2025) 
-RoSa: We have better output and results for this, so this should be preliminary.
+RoSa: We have better output and results for this, so this should be preliminary. For example: Soergel et al. (2021) couple to ClimberX with more appropriate approach. MAGICC also has net transport to ocean, maybe that is more exact? 
 -->
+
 ```{r}
-# This is the approach from van Vuuren, MAGICC also has net transport to ocean, maybe that is more exact?
-a <- -5e-8 # vanVuuren value was given by Gt, so I changed to exponent from e-5 to e-8 to adjust to our values in Mt
+a <- -5e-8 # RoSa:van Vuuren et al. (2025) value was given by Gt, so I changed to exponent from e-5 to e-8 to adjust to our values in Mt
 b <- 8.0957
 
 data2 <- data %>%
@@ -94,7 +97,7 @@ data2 <- data %>%
 showLinePlotsWithZones(
   data2,
   "pH",
-  # as from Feli (not in Richardson or Steffen)
+  # from van Vuuren et al.(2025)
   safePB = 8.01,
   highRisk = 7.94,
   ylim = c(7.85,8.1)
@@ -110,15 +113,18 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "Planetary Boundary|Nitrogen|Agricultural Nitrogen surplus",
-  # this is taken from Beier et al (2025), Richardson et al (2023) state 62, and upper limit 82
+  # taken from Beier et al. (2025) based on Rockström et al. (2023), Richardson et al (2023) state 62, and upper limit 82
   safePB = 61,
   highRisk = 84
 )
 ```
 
+### Phosphorus Balance 
 
+<!-- 
+This is not defined yet. Might change eventually.
+  -->
 
-### PB 6: Phosphorus Balance 
 
 ## PB 7: Freshwater Change 
 
@@ -150,11 +156,7 @@ showLinePlotsWithZones(
 ```
 
 
-  
-
-
 ## PB 9: Biosphere Integrity
-
 
 ### Share of intact land relative to total land area 
 
@@ -162,13 +164,12 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "Planetary Boundary|Biosphere|Share of intact land relative to total land area",
-  # from Feli 
+  # from Beier et al. (2025) based on Rockström et al. (2023) 
   safePB = 0.6,
   highRisk = 0.5,
   ylim = c(0.35,0.7)
 )
 ```
-
 
 ### Share of land area that satisfies landscape target 
 
@@ -176,10 +177,9 @@ showLinePlotsWithZones(
 showLinePlotsWithZones(
   data,
   "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target",
-  # from Feli 
+  # from Beier et al. (2025) based on Rockström et al. (2023) 
   safePB = 1,
   #highRisk = 4500,
   ylim = c(0.7,1.05)
 )
 ```
-
